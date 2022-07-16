@@ -1,4 +1,3 @@
-import org.w3c.dom.CanvasRenderingContext2D
 import react.FC
 import react.Props
 import react.dom.html.InputType
@@ -7,7 +6,6 @@ import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
 external interface CanvasProps : Props {
-    var canvas: CanvasRenderingContext2D
     var puzzle: Puzzle
     var onPuzzleChange: (Puzzle) -> Unit
     var onNext: ()-> Unit

@@ -4,7 +4,6 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 
 
-
 fun createCanvas(canvas: HTMLCanvasElement, width: Int, height: Int): CanvasRenderingContext2D {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
     context.canvas.width = width
@@ -13,14 +12,35 @@ fun createCanvas(canvas: HTMLCanvasElement, width: Int, height: Int): CanvasRend
     return context
 }
 
-fun CanvasRenderingContext2D.init(puzzle: Puzzle) {
+fun CanvasRenderingContext2D.drawAlgo(surface: String, population: Array<Chromosome>, generation: Int) {
+    init(surface)
+
+    val best = population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
+    val mean = population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
+    drawInformations(generation, best, mean)
+
+    console.log(population)
+    for (chromosome in population) {
+        val color = when {
+            chromosome.score < 50.0 -> NamedColor.orange
+            chromosome.score < 100 -> NamedColor.yellow
+            else -> NamedColor.green
+        }
+        if (chromosome.path.isNotEmpty()) {
+            drawPath(chromosome.path.map { (x, y) -> x / 10 to y / 10 }, color)
+        }
+    }
+}
+
+
+fun CanvasRenderingContext2D.init(surface: String) {
     fillStyle = NamedColor.black
     fillRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
 
     fillStyle = NamedColor.red
-    drawSurface(puzzle.surface)
-
+    drawSurface(surface)
 }
+
 
 fun CanvasRenderingContext2D.drawLine(color: NamedColor, x1: Double, y1: Double, x2: Double, y2: Double) {
     strokeStyle = color
@@ -47,11 +67,25 @@ fun CanvasRenderingContext2D.drawRandomLine() {
     drawLine(colors.random(), x1, y1, x2, y2)
 }
 
+fun CanvasRenderingContext2D.drawText(x: Double, y: Double, message: String) {
+    font = "15px Arial"
+    fillStyle = NamedColor.red
+    fillText(message, x, y)
+
+}
+
+fun CanvasRenderingContext2D.drawInformations(generation: Int, best: Double, mean: Double) {
+    drawText(10.0, 20.0, "Generation : $generation")
+    drawText(10.0, 40.0, "Best : ${best.asDynamic().toFixed(5)}")
+    drawText(10.0, 60.0, "Mean : ${mean.asDynamic().toFixed(5)}")
+
+}
+
 fun CanvasRenderingContext2D.drawSurface(surface: String) {
     val points = surface.split(" ")
         .map { it.toDouble() / 10 }
         .chunked(2)
-        .map{(x,y) -> x to y}
+        .map { (x, y) -> x to y }
     drawPath(points, NamedColor.red)
 }
 

@@ -9,8 +9,7 @@ class AlgoOptions(
     var chromosomeSize: Int,
     var populationSize: Int,
     var puzzle: Puzzle,
-    var onGeneration: (Array<Chromosome>) -> Unit,
-    var onInit: (Puzzle) -> Unit
+    var onChange:(surface: String, population: Array<Chromosome>, generation:Int) -> Unit
 )
 
 class GeneticAlgorithm(
@@ -20,15 +19,22 @@ class GeneticAlgorithm(
     var population = generateRandomPopulation()
     var generationCount = 0
 
+    init{
+        options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
+    }
+
     fun updateOptions(puzzle: Puzzle) {
         this.options.puzzle = puzzle
+        reset()
+    }
+
+    fun reset() {
         generationCount = 0
         population = generateRandomPopulation()
-        options.onInit(this.options.puzzle)
+        options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
     }
 
     fun generateChromosome(): Chromosome {
-
         var rotate = options.puzzle.initialState.rotate
         var power = options.puzzle.initialState.power
         return Chromosome((0 until options.chromosomeSize).map {
@@ -108,7 +114,8 @@ class GeneticAlgorithm(
 
     fun next() {
         evaluation()
-        options.onGeneration(population)
+        //options.onGeneration(population)
+        options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
         nextGeneration()
         generationCount++
 
