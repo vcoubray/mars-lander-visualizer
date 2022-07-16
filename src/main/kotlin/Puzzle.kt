@@ -38,7 +38,6 @@ data class State(
         this.power = action.power
         this.rotate = action.rotate
 
-
         val newXSpeed = (this.xSpeed + this.power * X_VECTOR[this.rotate]!!)
         val newYSPeed = (this.ySpeed + this.power * Y_VECTOR[this.rotate]!!)
 
@@ -70,21 +69,17 @@ data class State(
         }
 
         if (crossing == CrossingEnum.NOPE) {
-            console.log(distanceMax, surface.distanceToLandingZone(x,y))
             return (distanceMax - surface.distanceToLandingZone(x, y)) / distanceMax * 50
         } else {
             if (crossing == CrossingEnum.CRASH) {
-                console.log(distanceMax, surface.distanceToLandingZone(lastX,lastY))
                 return (distanceMax - surface.distanceToLandingZone(lastX, lastY)) / distanceMax * 50
             } else {
-                if(xSpeed in (-20.0..20.0) && ySpeed in (0.0..-40.0) && rotate in (-10..10) ) {
+                if (xSpeed in (-20.0..20.0) && ySpeed in (0.0..-40.0) && rotate in (-10..10)) {
                     return 100.0
-                }
-                else {
+                } else {
                     console.log(xSpeed, ySpeed, rotate)
                     return 50 + (1090 - (xSpeed.absoluteValue + ySpeed.absoluteValue + rotate.absoluteValue)) / 1090 * 50
                 }
-
             }
 
         }
@@ -119,10 +114,28 @@ val puzzles = listOf(
         "Vitesse d'entrée, bon côté",
         "0.0 100.0 1000.0 500.0 1500.0 100.0 3000.0 100.0 3500.0 500.0 3700.0 200.0 5000.0 1500.0 5800.0 300.0 6000.0 1000.0 6999.0 2000.0",
         State(x = 6500.0, y = 2800.0, xSpeed = -100.0, ySpeed = 0.0, fuel = 600, rotate = 90, power = 0)
+    ),
+    Puzzle(
+        3,
+        "Vitesse d'entrée, mauvais côté",
+        "0.0 100.0 1000.0 500.0 1500.0 1500.0 3000.0 1000.0 4000.0 150.0 5500.0 150.0 6999.0 800.0",
+        State(x = 6500.0, y = 2800.0, xSpeed = -90.0, ySpeed = 0.0, fuel = 750, rotate = 90, power = 0)
+    ),
+    Puzzle(
+        4,
+        "Gorge profonde",
+        "0.0 1000.0 300.0 1500.0 350.0 1400.0 500.0 2000.0 800.0 1800.0 1000.0 2500.0 1200.0 2100.0 1500.0 2400.0 2000.0 1000.0 2200.0 500.0 2500.0 100.0 2900.0 800.0 3000.0 500.0 3200.0 1000.0 3500.0 2000.0 3800.0 800.0 4000.0 200.0 5000.0 200.0 5500.0 1500.0 6999.0 2800.0",
+        State(x = 500.0, y = 2700.0, xSpeed = 100.0, ySpeed = 0.0, fuel = 800, rotate = -90, power = 0)
+    ),
+    Puzzle(
+        5,
+        "Haut plateau",
+        "0.0 1000.0 300.0 1500.0 350.0 1400.0 500.0 2100.0 1500.0 2100.0 2000.0 200.0 2500.0 500.0 2900.0 300.0 3000.0 200.0 3200.0 1000.0 3500.0 500.0 3800.0 800.0 4000.0 200.0 4200.0 800.0 4800.0 600.0 5000.0 1200.0 5500.0 900.0 6000.0 500.0 6500.0 300.0 6999.0 500.0",
+        State(x = 6500.0, y = 2700.0, xSpeed = -50.0, ySpeed = 0.0, fuel = 1000, rotate = 90, power = 0)
+
     )
+
 )
-
-
 val puzzleMap = puzzles.associateBy { it.id }
 
 

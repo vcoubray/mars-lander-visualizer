@@ -19,7 +19,6 @@ fun CanvasRenderingContext2D.drawAlgo(surface: String, population: Array<Chromos
     val mean = population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
     drawInformations(generation, best, mean)
 
-    console.log(population)
     for (chromosome in population) {
         val color = when {
             chromosome.score < 50.0 -> NamedColor.orange

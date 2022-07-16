@@ -12,7 +12,7 @@ fun main() {
     val currentPuzzle = puzzles.first()
     val algoOptions = AlgoOptions(
         chromosomeSize = 60,
-        populationSize = 10,
+        populationSize = 60,
         puzzle = currentPuzzle,
         onChange = {surface, population, generation ->
             context.drawAlgo(surface,population, generation)

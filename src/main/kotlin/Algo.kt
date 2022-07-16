@@ -68,7 +68,6 @@ class GeneticAlgorithm(
         }
         val totalSize = eliteSize + randomSize
         population.sortByDescending { it.score }
-        console.log(population)
         return Array(totalSize) {
             if (it < eliteSize) population[it]
             else population[randomIndices[it - eliteSize]]
@@ -85,7 +84,7 @@ class GeneticAlgorithm(
     }
 
     fun mutation(chromosome: Chromosome) {
-        val mutationProbability = 0.2
+        val mutationProbability = 0.8
         for (i in chromosome.actions.indices) {
             if(Random.nextDouble(1.0) < mutationProbability){
                 val (rotate, power) = if (i == 0) {
@@ -114,7 +113,6 @@ class GeneticAlgorithm(
 
     fun next() {
         evaluation()
-        //options.onGeneration(population)
         options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
         nextGeneration()
         generationCount++
