@@ -3,11 +3,12 @@ import kotlinx.browser.document
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 
+const val ZOOM_FACTOR = 0.2
 
 fun createCanvas(canvas: HTMLCanvasElement, width: Int, height: Int): CanvasRenderingContext2D {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
-    context.canvas.width = width
-    context.canvas.height = height
+    context.canvas.width = (width * ZOOM_FACTOR).toInt()
+    context.canvas.height = (height * ZOOM_FACTOR).toInt()
     document.body!!.appendChild(canvas)
     return context
 }
@@ -26,7 +27,7 @@ fun CanvasRenderingContext2D.drawAlgo(surface: String, population: Array<Chromos
             else -> NamedColor.green
         }
         if (chromosome.path.isNotEmpty()) {
-            drawPath(chromosome.path.map { (x, y) -> x / 10 to y / 10 }, color)
+            drawPath(chromosome.path.map { (x, y) -> x * ZOOM_FACTOR to y * ZOOM_FACTOR }, color)
         }
     }
 }
@@ -82,7 +83,7 @@ fun CanvasRenderingContext2D.drawInformations(generation: Int, best: Double, mea
 
 fun CanvasRenderingContext2D.drawSurface(surface: String) {
     val points = surface.split(" ")
-        .map { it.toDouble() / 10 }
+        .map { it.toDouble() * ZOOM_FACTOR}
         .chunked(2)
         .map { (x, y) -> x to y }
     drawPath(points, NamedColor.red)
@@ -92,10 +93,10 @@ fun CanvasRenderingContext2D.drawPath(path: List<Pair<Double, Double>>, color: N
     strokeStyle = color
     beginPath()
     val (startX, startY) = path.first()
-    moveTo(startX, 300 - startY)
+    moveTo(startX, canvas.height - startY)
 
     for ((x, y) in path.drop(1)) {
-        lineTo(x, 300 - y)
+        lineTo(x, canvas.height - y)
         stroke()
     }
 }

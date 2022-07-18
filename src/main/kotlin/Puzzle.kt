@@ -77,7 +77,6 @@ data class State(
                 if (xSpeed in (-20.0..20.0) && ySpeed in (0.0..-40.0) && rotate in (-10..10)) {
                     return 100.0
                 } else {
-                    console.log(xSpeed, ySpeed, rotate)
                     return 50 + (1090 - (xSpeed.absoluteValue + ySpeed.absoluteValue + rotate.absoluteValue)) / 1090 * 50
                 }
             }

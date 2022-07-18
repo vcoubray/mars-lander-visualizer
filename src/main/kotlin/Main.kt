@@ -7,7 +7,7 @@ import react.dom.client.createRoot
 fun main() {
 
     val canvas = document.createElement("canvas") as HTMLCanvasElement
-    val context = createCanvas(canvas, 700, 300)
+    val context = createCanvas(canvas, 7000, 3000)
 
     val currentPuzzle = puzzles.first()
     val algoOptions = AlgoOptions(
@@ -16,7 +16,6 @@ fun main() {
         puzzle = currentPuzzle,
         onChange = {surface, population, generation ->
             context.drawAlgo(surface,population, generation)
-
         }
     )
     val algo = GeneticAlgorithm(algoOptions)
@@ -26,13 +25,13 @@ fun main() {
     val app = App.create {
         this.puzzle = currentPuzzle
         this.onPuzzleChange = { puzzle ->
-            algo.updateOptions(puzzle)
+            algo.updatePuzzle(puzzle)
         }
         this.onNext = {
             algo.next()
         }
         this.onReset = {
-            algo.reset()
+            algo.updateOptions(it)
         }
     }
     createRoot(container).render(app)

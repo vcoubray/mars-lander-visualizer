@@ -23,8 +23,13 @@ class GeneticAlgorithm(
         options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
     }
 
-    fun updateOptions(puzzle: Puzzle) {
+    fun updatePuzzle(puzzle: Puzzle) {
         this.options.puzzle = puzzle
+        reset()
+    }
+
+    fun updateOptions(populationSize: Int) {
+        options.populationSize = populationSize
         reset()
     }
 
@@ -77,14 +82,15 @@ class GeneticAlgorithm(
 
     fun crossover(parent1: Chromosome, parent2: Chromosome): Chromosome {
         val childActions = parent1.actions.copyOf()
-        for (i in options.chromosomeSize / 2 until options.chromosomeSize) {
+        val realSize = parent1.path.size
+        for (i in realSize / 2 until options.chromosomeSize) {
             childActions[i] = parent2.actions[i]
         }
         return Chromosome(childActions)
     }
 
     fun mutation(chromosome: Chromosome) {
-        val mutationProbability = 0.8
+        val mutationProbability = 0.2
         for (i in chromosome.actions.indices) {
             if(Random.nextDouble(1.0) < mutationProbability){
                 val (rotate, power) = if (i == 0) {
