@@ -1,0 +1,14 @@
+body {
+    display: flex;
+    align-content: space-between;
+}
+
+label {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0
+}
+
+input[type="text"] {
+    margin-left: 10px;
+}

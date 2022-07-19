@@ -1,5 +1,7 @@
-
 import kotlinx.browser.document
+import kotlinx.js.timers.Timeout
+import kotlinx.js.timers.clearInterval
+import kotlinx.js.timers.setInterval
 import org.w3c.dom.HTMLCanvasElement
 import react.create
 import react.dom.client.createRoot
@@ -10,28 +12,37 @@ fun main() {
     val context = createCanvas(canvas, 7000, 3000)
 
     val currentPuzzle = puzzles.first()
-    val algoOptions = AlgoOptions(
+    val algoSettings = AlgoSettings(
         chromosomeSize = 60,
         populationSize = 60,
+        mutationProbability = 0.2,
         puzzle = currentPuzzle,
-        onChange = {surface, population, generation ->
-            context.drawAlgo(surface,population, generation)
+    )
+
+    val algo = GeneticAlgorithm(
+        algoSettings,
+        onChange = { surface, population, generation ->
+            context.drawAlgo(surface, population, generation)
         }
     )
-    val algo = GeneticAlgorithm(algoOptions)
 
     val container = document.createElement("div")
     document.body!!.appendChild(container)
+    var intervalId : Timeout? = null
     val app = App.create {
-        this.puzzle = currentPuzzle
-        this.onPuzzleChange = { puzzle ->
-            algo.updatePuzzle(puzzle)
+        this.algoSettings = algoSettings
+        this.onUpdateSettings = {
+            intervalId?.let(::clearInterval)
+            algo.updateSettings(it)
         }
         this.onNext = {
             algo.next()
         }
-        this.onReset = {
-            algo.updateOptions(it)
+        this.onPlay = {
+            intervalId = setInterval(algo::next,100 )
+        }
+        this.onStop = {
+            intervalId?.let(::clearInterval)
         }
     }
     createRoot(container).render(app)

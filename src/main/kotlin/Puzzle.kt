@@ -41,8 +41,8 @@ data class State(
         val newXSpeed = (this.xSpeed + this.power * X_VECTOR[this.rotate]!!)
         val newYSPeed = (this.ySpeed + this.power * Y_VECTOR[this.rotate]!!)
 
-        this.x += (this.xSpeed + newXSpeed) * 0.5
-        this.y += (this.ySpeed + newYSPeed) * 0.5
+        this.x += (this.xSpeed + newXSpeed)
+        this.y += (this.ySpeed + newYSPeed)
 
         this.xSpeed = newXSpeed
         this.ySpeed = newYSPeed

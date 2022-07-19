@@ -2,47 +2,43 @@ import kotlin.random.Random
 
 class Chromosome(var actions: Array<Action>) {
     var score = 0.0
-    var path = emptyList<Pair<Double,Double>>()
+    var path = emptyList<Pair<Double, Double>>()
 }
 
-class AlgoOptions(
+class AlgoSettings(
     var chromosomeSize: Int,
     var populationSize: Int,
+    var mutationProbability: Double,
     var puzzle: Puzzle,
-    var onChange:(surface: String, population: Array<Chromosome>, generation:Int) -> Unit
 )
 
 class GeneticAlgorithm(
-    var options: AlgoOptions
+    var settings: AlgoSettings,
+    var onChange: (surface: String, population: Array<Chromosome>, generation: Int) -> Unit
 ) {
 
     var population = generateRandomPopulation()
     var generationCount = 0
 
-    init{
-        options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
+    init {
+        onChange(this.settings.puzzle.surface, this.population, this.generationCount)
     }
 
-    fun updatePuzzle(puzzle: Puzzle) {
-        this.options.puzzle = puzzle
-        reset()
-    }
-
-    fun updateOptions(populationSize: Int) {
-        options.populationSize = populationSize
+    fun updateSettings(settings: AlgoSettings) {
+        this.settings = settings
         reset()
     }
 
     fun reset() {
         generationCount = 0
         population = generateRandomPopulation()
-        options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
+        onChange(this.settings.puzzle.surface, this.population, this.generationCount)
     }
 
     fun generateChromosome(): Chromosome {
-        var rotate = options.puzzle.initialState.rotate
-        var power = options.puzzle.initialState.power
-        return Chromosome((0 until options.chromosomeSize).map {
+        var rotate = settings.puzzle.initialState.rotate
+        var power = settings.puzzle.initialState.power
+        return Chromosome((0 until settings.chromosomeSize).map {
             power = boundedValue(power + (-1..1).random(), 0, 4)
             rotate = boundedValue(rotate + (-15..15).random(), -90, 90)
             Action(rotate, power)
@@ -50,24 +46,24 @@ class GeneticAlgorithm(
     }
 
     fun generateRandomPopulation(): Array<Chromosome> {
-        return Array(options.populationSize) { generateChromosome() }
+        return Array(settings.populationSize) { generateChromosome() }
     }
 
     fun evaluation() {
         population.forEach {
-            val state = options.puzzle.initialState.copy()
-            it.score = state.play(it.actions, options.puzzle.getSurfacePath())
+            val state = settings.puzzle.initialState.copy()
+            it.score = state.play(it.actions, settings.puzzle.getSurfacePath())
             it.path = state.path
         }
     }
 
-    fun selection() :Array<Chromosome> {
+    fun selection(): Array<Chromosome> {
 
-        val eliteSize = (options.populationSize * 0.3).toInt()
-        val randomSize = (options.populationSize * 0.2).toInt()
+        val eliteSize = (settings.populationSize * 0.3).toInt()
+        val randomSize = (settings.populationSize * 0.2).toInt()
         val randomIndices = buildList {
             while (this.size < randomSize) {
-                val random = (eliteSize until options.populationSize).random()
+                val random = (eliteSize until settings.populationSize).random()
                 if (random !in this) add(random)
             }
         }
@@ -83,18 +79,18 @@ class GeneticAlgorithm(
     fun crossover(parent1: Chromosome, parent2: Chromosome): Chromosome {
         val childActions = parent1.actions.copyOf()
         val realSize = parent1.path.size
-        for (i in realSize / 2 until options.chromosomeSize) {
+        val index= Random.nextInt(realSize)
+        for (i in index until settings.chromosomeSize) {
             childActions[i] = parent2.actions[i]
         }
         return Chromosome(childActions)
     }
 
     fun mutation(chromosome: Chromosome) {
-        val mutationProbability = 0.2
         for (i in chromosome.actions.indices) {
-            if(Random.nextDouble(1.0) < mutationProbability){
+            if (Random.nextDouble(1.0) < settings.mutationProbability) {
                 val (rotate, power) = if (i == 0) {
-                    options.puzzle.initialState.rotate to options.puzzle.initialState.power
+                    settings.puzzle.initialState.rotate to settings.puzzle.initialState.power
                 } else {
                     chromosome.actions[i - 1].rotate to chromosome.actions[i - 1].power
                 }
@@ -108,7 +104,7 @@ class GeneticAlgorithm(
         val select = selection()
         val children = mutableListOf<Chromosome>()
 
-        while (children.size < options.populationSize / 2) {
+        while (children.size < settings.populationSize / 2) {
             val parent1 = select.random()
             val parent2 = select.random()
             val child = crossover(parent1, parent2).apply(::mutation)
@@ -119,7 +115,7 @@ class GeneticAlgorithm(
 
     fun next() {
         evaluation()
-        options.onChange(this.options.puzzle.surface, this.population, this.generationCount)
+        onChange(this.settings.puzzle.surface, this.population, this.generationCount)
         nextGeneration()
         generationCount++
 
