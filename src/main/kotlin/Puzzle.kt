@@ -3,7 +3,7 @@ import kotlin.math.*
 const val MARS_GRAVITY = 3.711
 
 fun toRadians(value: Double) = value * PI / 180
-val Y_VECTOR = (-90..90).associateWith { cos(toRadians(it.toDouble())) - MARS_GRAVITY }
+val Y_VECTOR = (-90..90).associateWith { cos(toRadians(it.toDouble())) }
 val X_VECTOR = (-90..90).associateWith { -sin(toRadians(it.toDouble())) }
 
 fun boundedValue(value: Int, min: Int, max: Int) = when {
@@ -12,10 +12,18 @@ fun boundedValue(value: Int, min: Int, max: Int) = when {
     else -> value
 }
 
-fun generateAction(rotate: Int, power: Int) = Action(
-    boundedValue(rotate + (-15..15).random(), -90, 90),
-    boundedValue(power + (-1..+1).random(), 0, 4)
-)
+fun generateAction(rotate: Int, power: Int): Action {
+    val minPower =  boundedValue ( 0 - power, -1,0)
+    val maxPower = boundedValue (4 - power , 0, 1)
+    val minRotate = boundedValue ( -90 - rotate, -15,0)
+    val maxRotate = boundedValue ( 90- rotate , 0,15)
+    return Action(
+        boundedValue(rotate + (-15..15).random(), -90, 90),
+        boundedValue(power + (-1..1).random(), 0, 4)
+//            boundedValue(rotate + (minRotate..maxRotate).random(), -90, 90),
+//        boundedValue(power + (minPower..maxPower).random(), 0, 4)
+    )
+}
 
 data class Action(val rotate: Int, val power: Int) {
     override fun toString() = "$rotate $power"
@@ -39,10 +47,10 @@ data class State(
         this.rotate = action.rotate
 
         val newXSpeed = (this.xSpeed + this.power * X_VECTOR[this.rotate]!!)
-        val newYSPeed = (this.ySpeed + this.power * Y_VECTOR[this.rotate]!!)
+        val newYSPeed = (this.ySpeed + this.power * Y_VECTOR[this.rotate]!!) - MARS_GRAVITY
 
-        this.x += (this.xSpeed + newXSpeed)
-        this.y += (this.ySpeed + newYSPeed)
+        this.x += (this.xSpeed + newXSpeed) * 0.5
+        this.y += (this.ySpeed + newYSPeed) * 0.5
 
         this.xSpeed = newXSpeed
         this.ySpeed = newYSPeed
@@ -101,7 +109,7 @@ data class Puzzle(
     )
 }
 
-val puzzles = listOf(
+val PUZZLES = listOf(
     Puzzle(
         1,
         "Facile à droite",
@@ -147,7 +155,7 @@ val puzzles = listOf(
 
 
 )
-val puzzleMap = puzzles.associateBy { it.id }
+val PUZZLE_MAP = PUZZLES.associateBy { it.id }
 
 
 data class Segment(val start: Pair<Double, Double>, val end: Pair<Double, Double>)

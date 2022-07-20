@@ -38,10 +38,13 @@ class GeneticAlgorithm(
     fun generateChromosome(): Chromosome {
         var rotate = settings.puzzle.initialState.rotate
         var power = settings.puzzle.initialState.power
+        var action = Action(rotate, power)
         return Chromosome((0 until settings.chromosomeSize).map {
-            power = boundedValue(power + (-1..1).random(), 0, 4)
-            rotate = boundedValue(rotate + (-15..15).random(), -90, 90)
-            Action(rotate, power)
+            action = generateAction(action.rotate, action.power)
+            action
+//            power = boundedValue(power + (-1..1).random(), 0, 4)
+//            rotate = boundedValue(rotate + (-15..15).random(), -90, 90)
+//            Action(rotate, power)
         }.toTypedArray())
     }
 
@@ -116,6 +119,7 @@ class GeneticAlgorithm(
     fun next() {
         evaluation()
         onChange(this.settings.puzzle.surface, this.population, this.generationCount)
+        console.log(population)
         nextGeneration()
         generationCount++
 

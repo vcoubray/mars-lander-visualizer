@@ -14,7 +14,6 @@ dependencies {
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
 }
 
 kotlin {
