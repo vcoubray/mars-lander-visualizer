@@ -12,16 +12,24 @@ fun boundedValue(value: Int, min: Int, max: Int) = when {
     else -> value
 }
 
-fun generateAction(rotate: Int, power: Int): Action {
-    val minPower =  boundedValue ( 0 - power, -1,0)
-    val maxPower = boundedValue (4 - power , 0, 1)
-    val minRotate = boundedValue ( -90 - rotate, -15,0)
-    val maxRotate = boundedValue ( 90- rotate , 0,15)
-    return Action(
-        boundedValue(rotate + (-15..15).random(), -90, 90),
-        boundedValue(power + (-1..1).random(), 0, 4)
+//fun generateAction(rotate: Int, power: Int): Action {
+
+//    val minPower =  boundedValue ( 0 - power, -1,0)
+//    val maxPower = boundedValue (4 - power , 0, 1)
+//    val minRotate = boundedValue ( -90 - rotate, -15,0)
+//    val maxRotate = boundedValue ( 90- rotate , 0,15)
+//    return Action(
+//        boundedValue(rotate + (-15..15).random(), -90, 90),
+//        boundedValue(power + (-1..1).random(), 0, 4)
 //            boundedValue(rotate + (minRotate..maxRotate).random(), -90, 90),
 //        boundedValue(power + (minPower..maxPower).random(), 0, 4)
+//    )
+//}
+
+fun generateAction(): Action {
+    return Action(
+        (-15..15).random(),
+        (-1..1).random()
     )
 }
 
@@ -43,8 +51,10 @@ data class State(
 
     fun play(action: Action) {
 
-        this.power = action.power
-        this.rotate = action.rotate
+        this.power = boundedValue(this.power + action.power, 0, 4)
+        this.rotate = boundedValue(this.rotate + action.rotate, -90, 90)
+//        this.power = action.power
+//        this.rotate = action.rotate
 
         val newXSpeed = (this.xSpeed + this.power * X_VECTOR[this.rotate]!!)
         val newYSPeed = (this.ySpeed + this.power * Y_VECTOR[this.rotate]!!) - MARS_GRAVITY
@@ -58,7 +68,6 @@ data class State(
         this.fuel -= power
         path.add(this.x to this.y)
     }
-
 
     fun play(actions: Array<Action>, surface: Surface): Double {
 
@@ -78,10 +87,10 @@ data class State(
 
         if (crossing == CrossingEnum.NOPE) {
             return (distanceMax - surface.distanceToLandingZone(x, y)) / distanceMax * 50
-          //  return (distanceMax - surface.distanceXToLandingZone(x)) / distanceMax * 50
+            //  return (distanceMax - surface.distanceXToLandingZone(x)) / distanceMax * 50
         } else {
             if (crossing == CrossingEnum.CRASH) {
-                return (distanceMax - surface.distanceToLandingZone(lastX,lastY)) / distanceMax * 50
+                return (distanceMax - surface.distanceToLandingZone(lastX, lastY)) / distanceMax * 50
 //                return (distanceMax - surface.distanceXToLandingZone(lastX)) / distanceMax * 50
             } else {
                 if (xSpeed in (-20.0..20.0) && ySpeed in (0.0..-40.0) && rotate in (-10..10)) {
@@ -207,7 +216,7 @@ data class Surface(
         }
     }
 
-    fun distanceXToLandingZone(x:Double) : Double{
+    fun distanceXToLandingZone(x: Double): Double {
         return when {
             x < landingZoneX.first -> landingZoneX.first - x
             x > landingZoneX.second -> x - landingZoneX.second

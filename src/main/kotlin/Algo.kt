@@ -41,17 +41,15 @@ class GeneticAlgorithm(
     }
 
     fun generateChromosome(): Chromosome {
-        var rotate = settings.puzzle.initialState.rotate
-        var power = settings.puzzle.initialState.power
-        var action = Action(rotate, power)
+//        var rotate = settings.puzzle.initialState.rotate
+//        var power = settings.puzzle.initialState.power
+//        var action = Action(rotate, power)
         return Chromosome(
             chromosomeIndex++,
             (0 until settings.chromosomeSize).map {
-                action = generateAction(action.rotate, action.power)
-                action
-//            power = boundedValue(power + (-1..1).random(), 0, 4)
-//            rotate = boundedValue(rotate + (-15..15).random(), -90, 90)
-//            Action(rotate, power)
+//                action = generateAction(action.rotate, action.power)
+//                action
+                generateAction()
             }.toTypedArray()
         )
     }
@@ -152,15 +150,23 @@ class GeneticAlgorithm(
     }
 
 
+//    fun mutation(chromosome: Chromosome) {
+//        for (i in chromosome.actions.indices) {
+//            if (Random.nextDouble(1.0) < settings.mutationProbability) {
+//                val (rotate, power) = if (i == 0) {
+//                    settings.puzzle.initialState.rotate to settings.puzzle.initialState.power
+//                } else {
+//                    chromosome.actions[i - 1].rotate to chromosome.actions[i - 1].power
+//                }
+//                chromosome.actions[i] = generateAction(rotate, power)
+//            }
+//        }
+//    }
+
     fun mutation(chromosome: Chromosome) {
         for (i in chromosome.actions.indices) {
             if (Random.nextDouble(1.0) < settings.mutationProbability) {
-                val (rotate, power) = if (i == 0) {
-                    settings.puzzle.initialState.rotate to settings.puzzle.initialState.power
-                } else {
-                    chromosome.actions[i - 1].rotate to chromosome.actions[i - 1].power
-                }
-                chromosome.actions[i] = generateAction(rotate, power)
+                chromosome.actions[i] = generateAction()
             }
         }
     }
