@@ -78,9 +78,11 @@ data class State(
 
         if (crossing == CrossingEnum.NOPE) {
             return (distanceMax - surface.distanceToLandingZone(x, y)) / distanceMax * 50
+          //  return (distanceMax - surface.distanceXToLandingZone(x)) / distanceMax * 50
         } else {
             if (crossing == CrossingEnum.CRASH) {
-                return (distanceMax - surface.distanceToLandingZone(lastX, lastY)) / distanceMax * 50
+                return (distanceMax - surface.distanceToLandingZone(lastX,lastY)) / distanceMax * 50
+//                return (distanceMax - surface.distanceXToLandingZone(lastX)) / distanceMax * 50
             } else {
                 if (xSpeed in (-20.0..20.0) && ySpeed in (0.0..-40.0) && rotate in (-10..10)) {
                     return 100.0
@@ -204,6 +206,23 @@ data class Surface(
             else -> abs(y - landingZoneY)
         }
     }
+
+    fun distanceXToLandingZone(x:Double) : Double{
+        return when {
+            x < landingZoneX.first -> landingZoneX.first - x
+            x > landingZoneX.second -> x - landingZoneX.second
+            else -> 0.0
+        }
+    }
+
+
+//    fun distanceYtoLandingZone(y:Double) : Double{
+//        return when {
+//            x < landingZoneX.first -> landingZoneX.first - x
+//            x > landingZoneX.second -> x - landingZoneX.second
+//            else -> 0.0
+//        }
+//    }
 }
 
 enum class CrossingEnum {

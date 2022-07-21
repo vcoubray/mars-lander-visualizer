@@ -3,6 +3,7 @@ import kotlin.random.Random
 class Chromosome(var actions: Array<Action>) {
     var score = 0.0
     var path = emptyList<Pair<Double, Double>>()
+    var state: State? = null
 }
 
 class AlgoSettings(
@@ -57,13 +58,14 @@ class GeneticAlgorithm(
             val state = settings.puzzle.initialState.copy()
             it.score = state.play(it.actions, settings.puzzle.getSurfacePath())
             it.path = state.path
+            it.state = state
         }
     }
 
     fun selection(): Array<Chromosome> {
 
-        val eliteSize = (settings.populationSize * 0.3).toInt()
-        val randomSize = (settings.populationSize * 0.2).toInt()
+        val eliteSize = (settings.populationSize * 0.1).toInt()
+        val randomSize = (settings.populationSize * 0.4).toInt()
         val randomIndices = buildList {
             while (this.size < randomSize) {
                 val random = (eliteSize until settings.populationSize).random()
@@ -79,15 +81,66 @@ class GeneticAlgorithm(
 
     }
 
-    fun crossover(parent1: Chromosome, parent2: Chromosome): Chromosome {
-        val childActions = parent1.actions.copyOf()
-        val realSize = parent1.path.size
-        val index= Random.nextInt(realSize)
-        for (i in index until settings.chromosomeSize) {
-            childActions[i] = parent2.actions[i]
+    fun normalizeScores() {
+        val sum = population.sumOf { it.score }
+        for (chromosome in population) {
+            chromosome.score /= sum
         }
-        return Chromosome(childActions)
     }
+
+    fun cumulativeScores() {
+        normalizeScores()
+        population.sortBy { it.score }
+        var cumul = 0.0
+        for (chromosome in population) {
+            chromosome.score += cumul
+            cumul = chromosome.score
+        }
+    }
+
+
+    fun wheelSelection(): Chromosome {
+        val rnd = Random.nextDouble(1.0)
+        var i = -1
+        do {
+            i++
+        } while (i < population.size && rnd > population[i].score )
+
+        return population[i]
+    }
+
+    fun crossover(parent1: Chromosome, parent2: Chromosome): Pair<Chromosome, Chromosome> {
+        val child1Actions = parent1.actions.copyOf()
+        val child2Actions = parent2.actions.copyOf()
+        val realSize = parent1.path.size
+        val index = Random.nextInt(realSize)
+        for (i in index until settings.chromosomeSize) {
+            child1Actions[i] = parent2.actions[i]
+            child2Actions[i] = parent1.actions[i]
+        }
+        return Chromosome(child1Actions) to Chromosome(child2Actions)
+    }
+
+    fun weightCrossOver(parent1: Chromosome, parent2: Chromosome): Pair<Chromosome, Chromosome> {
+
+        val child1Actions = mutableListOf<Action>()
+        val child2Actions = mutableListOf<Action>()
+
+        for (i in 0 until settings.chromosomeSize) {
+            val weight = Random.nextDouble(1.0)
+
+            val rotate1 = weight * parent1.actions[i].rotate + (1.0 - weight) * parent2.actions[2].rotate
+            val rotate2 = (1.0 - weight) * parent1.actions[i].rotate + weight * parent2.actions[2].rotate
+            val power1 = weight * parent1.actions[i].power + (1.0 - weight) * parent2.actions[2].power
+            val power2 = (1.0 - weight) * parent1.actions[i].power + weight * parent2.actions[2].power
+            child1Actions.add(Action(rotate1.toInt(), power1.toInt()))
+            child2Actions.add(Action(rotate2.toInt(), power2.toInt()))
+        }
+
+        return Chromosome(child1Actions.toTypedArray()) to Chromosome(child2Actions.toTypedArray())
+
+    }
+
 
     fun mutation(chromosome: Chromosome) {
         for (i in chromosome.actions.indices) {
@@ -104,16 +157,29 @@ class GeneticAlgorithm(
 
     fun nextGeneration() {
 
-        val select = selection()
-        val children = mutableListOf<Chromosome>()
+//        val select = selection()
+//        val children = mutableListOf<Chromosome>()
+//
+//        while (children.size < settings.populationSize / 2) {
+//            val parent1 = select.random()
+//            val parent2 = select.random()
+//            val (child1, child2) = crossover(parent1, parent2).also { (a, b) -> mutation(a);mutation(b) }
+//            children.add(child1)
+//            children.add(child2)
+//        }
+//        population = select + children
 
-        while (children.size < settings.populationSize / 2) {
-            val parent1 = select.random()
-            val parent2 = select.random()
-            val child = crossover(parent1, parent2).apply(::mutation)
-            children.add(child)
+        val eliteSize = 2
+        cumulativeScores()
+        val children = mutableListOf<Chromosome>()
+        while (children.size < settings.populationSize - eliteSize) {
+            val parent1 = wheelSelection()
+            val parent2 = wheelSelection()
+            val (child1, child2) = crossover(parent1, parent2).also { (a, b) -> mutation(a);mutation(b) }
+            children.add(child1)
+            children.add(child2)
         }
-        population = select + children
+        population = population.takeLast(eliteSize).toTypedArray() + children.toTypedArray()
     }
 
     fun next() {

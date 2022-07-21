@@ -13,7 +13,7 @@ fun main() {
     val currentPuzzle = PUZZLES.first()
     val algoSettings = AlgoSettings(
         chromosomeSize = 60,
-        populationSize = 60,
+        populationSize = 10,
         mutationProbability = 0.2,
         puzzle = currentPuzzle,
     )

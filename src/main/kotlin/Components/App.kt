@@ -9,6 +9,8 @@ import kotlinx.js.timers.clearInterval
 import kotlinx.js.timers.setInterval
 import react.FC
 import react.Props
+import react.createContext
+import react.dom.html.ReactHTML.canvas
 import react.dom.html.ReactHTML.div
 import react.useState
 
