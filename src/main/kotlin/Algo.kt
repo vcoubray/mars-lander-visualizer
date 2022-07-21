@@ -1,11 +1,17 @@
 import kotlin.random.Random
 
-class Chromosome(var actions: Array<Action>) {
+class Chromosome(var id: Int, var actions: Array<Action>) {
     var score = 0.0
     var cumulativeScore = 0.0
     var path = emptyList<Pair<Double, Double>>()
     var state: State? = null
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Chromosome) id == other.id
+        else false
+    }
 }
+
 
 class AlgoSettings(
     var chromosomeSize: Int,
@@ -20,14 +26,16 @@ class GeneticAlgorithm(
 
     var population = generateRandomPopulation()
     var generationCount = 0
+    var chromosomeIndex = 0
 
-    fun updateSettings(settings: AlgoSettings) : AlgoResult {
+    fun updateSettings(settings: AlgoSettings): AlgoResult {
         this.settings = settings
         return reset()
     }
 
-    fun reset() : AlgoResult {
+    fun reset(): AlgoResult {
         generationCount = 0
+        chromosomeIndex = 0
         population = generateRandomPopulation()
         return AlgoResult(this.settings.puzzle.surface, this.population, this.generationCount)
     }
@@ -36,13 +44,16 @@ class GeneticAlgorithm(
         var rotate = settings.puzzle.initialState.rotate
         var power = settings.puzzle.initialState.power
         var action = Action(rotate, power)
-        return Chromosome((0 until settings.chromosomeSize).map {
-            action = generateAction(action.rotate, action.power)
-            action
+        return Chromosome(
+            chromosomeIndex++,
+            (0 until settings.chromosomeSize).map {
+                action = generateAction(action.rotate, action.power)
+                action
 //            power = boundedValue(power + (-1..1).random(), 0, 4)
 //            rotate = boundedValue(rotate + (-15..15).random(), -90, 90)
 //            Action(rotate, power)
-        }.toTypedArray())
+            }.toTypedArray()
+        )
     }
 
     fun generateRandomPopulation(): Array<Chromosome> {
@@ -100,7 +111,7 @@ class GeneticAlgorithm(
         var i = -1
         do {
             i++
-        } while (i < population.size && rnd > population[i].cumulativeScore )
+        } while (i < population.size && rnd > population[i].cumulativeScore)
 
         return population[i]
     }
@@ -114,7 +125,7 @@ class GeneticAlgorithm(
             child1Actions[i] = parent2.actions[i]
             child2Actions[i] = parent1.actions[i]
         }
-        return Chromosome(child1Actions) to Chromosome(child2Actions)
+        return Chromosome(chromosomeIndex++, child1Actions) to Chromosome(chromosomeIndex++, child2Actions)
     }
 
     fun weightCrossOver(parent1: Chromosome, parent2: Chromosome): Pair<Chromosome, Chromosome> {
@@ -133,7 +144,10 @@ class GeneticAlgorithm(
             child2Actions.add(Action(rotate2.toInt(), power2.toInt()))
         }
 
-        return Chromosome(child1Actions.toTypedArray()) to Chromosome(child2Actions.toTypedArray())
+        return Chromosome(chromosomeIndex++, child1Actions.toTypedArray()) to Chromosome(
+            chromosomeIndex++,
+            child2Actions.toTypedArray()
+        )
 
     }
 
@@ -178,10 +192,9 @@ class GeneticAlgorithm(
         population = population.takeLast(eliteSize).toTypedArray() + children.toTypedArray()
     }
 
-    fun next() : AlgoResult {
+    fun next(): AlgoResult {
         evaluation()
         val result = AlgoResult(this.settings.puzzle.surface, this.population, this.generationCount)
-        console.log(population)
         nextGeneration()
         generationCount++
         return result

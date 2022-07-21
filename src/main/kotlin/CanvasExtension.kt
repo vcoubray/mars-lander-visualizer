@@ -9,7 +9,7 @@ class AlgoResult(
     val generation: Int
 )
 
-fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult) {
+fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult, selectedChromosome: Chromosome?) {
     init(result.surface)
 
     val best = result.population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
@@ -18,6 +18,7 @@ fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult) {
 
     for (chromosome in result.population) {
         val color = when {
+            chromosome == selectedChromosome -> NamedColor.red
             chromosome.score < 50.0 -> NamedColor.orange
             chromosome.score < 100 -> NamedColor.yellow
             else -> NamedColor.green

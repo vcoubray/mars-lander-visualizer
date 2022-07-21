@@ -2,11 +2,10 @@ package Components
 
 import AlgoResult
 import AlgoSettings
+import Chromosome
 import GeneticAlgorithm
 import Puzzle
-import csstype.AlignContent
-import csstype.Display
-import csstype.px
+import csstype.*
 import emotion.react.css
 import kotlinx.js.timers.Timeout
 import kotlinx.js.timers.clearInterval
@@ -26,8 +25,9 @@ val App = FC<CanvasProps> { props ->
 
     var intervalId: Timeout? by useState(null)
     var algoResult: AlgoResult? by useState(null)
+    var selectedChromosome : Chromosome? by useState(null)
 
-    val algo = GeneticAlgorithm(props.algoSettings)
+    val algo by useState(GeneticAlgorithm(props.algoSettings))
 
     useEffectOnce {
         algoResult = algo.reset()
@@ -40,13 +40,15 @@ val App = FC<CanvasProps> { props ->
         }
     }
 
+
     div {
         css {
             display = Display.flex
-            alignContent = AlignContent.spaceBetween
+            justifyContent = JustifyContent.spaceBetween
         }
         MarsCanvas {
             this.algoResult = algoResult
+            this.selectedChromosome = selectedChromosome
         }
 
         div {
@@ -60,6 +62,7 @@ val App = FC<CanvasProps> { props ->
                 this.onUpdateSettings = { algoSettings ->
                     stop()
                     algoResult = algo.updateSettings(algoSettings)
+                    selectedChromosome = null
                 }
             }
 
@@ -78,12 +81,28 @@ val App = FC<CanvasProps> { props ->
                 this.onReset = {
                     stop()
                     algoResult = algo.reset()
+                    selectedChromosome = null
                 }
             }
         }
     }
-    PopulationList{
-        this.algoResult = algoResult
+    div {
+        css {
+            display = Display.flex
+            justifyContent = JustifyContent.spaceBetween
+        }
+
+        PopulationList {
+            this.algoResult = algoResult
+            this.selectedChromosome = selectedChromosome
+            this.onSelect = {chromosome -> selectedChromosome = chromosome}
+        }
+
+        selectedChromosome?.let { chromosome ->
+            ChromosomeDetail {
+                this.chromosome = chromosome
+            }
+        }
     }
 
 }
