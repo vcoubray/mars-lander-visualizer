@@ -1,26 +1,22 @@
 import csstype.NamedColor
-import kotlinx.browser.document
 import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
 
 const val ZOOM_FACTOR = 0.2
 
-fun createCanvas(canvas: HTMLCanvasElement, width: Int, height: Int): CanvasRenderingContext2D {
-    val context = canvas.getContext("2d") as CanvasRenderingContext2D
-    context.canvas.width = (width * ZOOM_FACTOR).toInt()
-    context.canvas.height = (height * ZOOM_FACTOR).toInt()
-    document.body!!.appendChild(canvas)
-    return context
-}
+class AlgoResult(
+    val surface: String,
+    val population: Array<Chromosome>,
+    val generation: Int
+)
 
-fun CanvasRenderingContext2D.drawAlgo(surface: String, population: Array<Chromosome>, generation: Int) {
-    init(surface)
+fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult) {
+    init(result.surface)
 
-    val best = population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
-    val mean = population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
-    drawInformations(generation, best, mean)
+    val best = result.population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
+    val mean = result.population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
+    drawInformations(result.generation, best, mean)
 
-    for (chromosome in population) {
+    for (chromosome in result.population) {
         val color = when {
             chromosome.score < 50.0 -> NamedColor.orange
             chromosome.score < 100 -> NamedColor.yellow

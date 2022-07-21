@@ -2,6 +2,7 @@ import kotlin.random.Random
 
 class Chromosome(var actions: Array<Action>) {
     var score = 0.0
+    var cumulativeScore = 0.0
     var path = emptyList<Pair<Double, Double>>()
     var state: State? = null
 }
@@ -14,26 +15,21 @@ class AlgoSettings(
 )
 
 class GeneticAlgorithm(
-    var settings: AlgoSettings,
-    var onChange: (surface: String, population: Array<Chromosome>, generation: Int) -> Unit
+    var settings: AlgoSettings
 ) {
 
     var population = generateRandomPopulation()
     var generationCount = 0
 
-    init {
-        onChange(this.settings.puzzle.surface, this.population, this.generationCount)
-    }
-
-    fun updateSettings(settings: AlgoSettings) {
+    fun updateSettings(settings: AlgoSettings) : AlgoResult {
         this.settings = settings
-        reset()
+        return reset()
     }
 
-    fun reset() {
+    fun reset() : AlgoResult {
         generationCount = 0
         population = generateRandomPopulation()
-        onChange(this.settings.puzzle.surface, this.population, this.generationCount)
+        return AlgoResult(this.settings.puzzle.surface, this.population, this.generationCount)
     }
 
     fun generateChromosome(): Chromosome {
@@ -84,17 +80,17 @@ class GeneticAlgorithm(
     fun normalizeScores() {
         val sum = population.sumOf { it.score }
         for (chromosome in population) {
-            chromosome.score /= sum
+            chromosome.cumulativeScore = chromosome.score / sum
         }
     }
 
     fun cumulativeScores() {
         normalizeScores()
-        population.sortBy { it.score }
+        population.sortBy { it.cumulativeScore }
         var cumul = 0.0
         for (chromosome in population) {
-            chromosome.score += cumul
-            cumul = chromosome.score
+            chromosome.cumulativeScore += cumul
+            cumul = chromosome.cumulativeScore
         }
     }
 
@@ -104,7 +100,7 @@ class GeneticAlgorithm(
         var i = -1
         do {
             i++
-        } while (i < population.size && rnd > population[i].score )
+        } while (i < population.size && rnd > population[i].cumulativeScore )
 
         return population[i]
     }
@@ -182,14 +178,13 @@ class GeneticAlgorithm(
         population = population.takeLast(eliteSize).toTypedArray() + children.toTypedArray()
     }
 
-    fun next() {
+    fun next() : AlgoResult {
         evaluation()
-        onChange(this.settings.puzzle.surface, this.population, this.generationCount)
+        val result = AlgoResult(this.settings.puzzle.surface, this.population, this.generationCount)
         console.log(population)
         nextGeneration()
         generationCount++
-
-
+        return result
     }
 
 //    fun findBestResult(): Chromosome {

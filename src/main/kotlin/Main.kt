@@ -1,41 +1,25 @@
 import Components.App
 import kotlinx.browser.document
-import org.w3c.dom.HTMLCanvasElement
 import react.create
 import react.dom.client.createRoot
 
-
 fun main() {
 
-    val canvas = document.createElement("canvas") as HTMLCanvasElement
-    val context = createCanvas(canvas, 7000, 3000)
+//    val canvas = document.createElement("canvas") as HTMLCanvasElement
+//    val context = createCanvas(canvas, 7000, 3000)
 
-    val currentPuzzle = PUZZLES.first()
-    val algoSettings = AlgoSettings(
+    val defaultSettings = AlgoSettings(
         chromosomeSize = 60,
         populationSize = 10,
         mutationProbability = 0.2,
-        puzzle = currentPuzzle,
-    )
-
-    val algo = GeneticAlgorithm(
-        algoSettings,
-        onChange = { surface, population, generation ->
-            context.drawAlgo(surface, population, generation)
-        }
+        puzzle =  PUZZLES.first(),
     )
 
     val container = document.createElement("div")
     document.body!!.appendChild(container)
     val app = App.create {
         this.puzzles = PUZZLES
-        this.algoSettings = algoSettings
-        this.onUpdateSettings = {
-            algo.updateSettings(it)
-        }
-        this.onNext = {
-            algo.next()
-        }
+        this.algoSettings = defaultSettings
     }
     createRoot(container).render(app)
 }

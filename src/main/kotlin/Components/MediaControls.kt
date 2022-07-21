@@ -1,19 +1,17 @@
 package Components
 
 import kotlinx.js.timers.Timeout
-import kotlinx.js.timers.clearInterval
-import kotlinx.js.timers.setInterval
 import react.FC
 import react.Props
 import react.dom.html.InputType
 import react.dom.html.ReactHTML.input
-import react.useState
 
 external interface MediaControlsProps : Props {
     var intervalId: Timeout?
     var onPlay: () -> Unit
     var onStop: () -> Unit
     var onNext: () -> Unit
+    var onReset: () -> Unit
 }
 
 
@@ -24,7 +22,7 @@ val MediaControls = FC<MediaControlsProps> { props ->
         value = "Next"
         disabled = props.intervalId != null
         onClick = {
-           props.onNext()
+            props.onNext()
         }
     }
 
@@ -43,6 +41,13 @@ val MediaControls = FC<MediaControlsProps> { props ->
             onClick = {
                 props.onStop()
             }
+        }
+    }
+    input {
+        type = InputType.button
+        value = "Reset"
+        onClick = {
+            props.onReset()
         }
     }
 }
