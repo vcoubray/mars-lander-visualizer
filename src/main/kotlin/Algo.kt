@@ -22,6 +22,7 @@ class AlgoSettings(
     var chromosomeSize: Int,
     var populationSize: Int,
     var mutationProbability: Double,
+    var elitismPercent: Double,
     var puzzle: Puzzle,
 )
 
@@ -190,7 +191,11 @@ class GeneticAlgorithm(
 //        }
 //        population = select + children
 
-        val eliteSize = 2
+
+        var eliteSize = (settings.populationSize * settings.elitismPercent).toInt()
+        if (eliteSize %2 !=0){
+            eliteSize++
+        }
         cumulativeScores()
         val children = mutableListOf<Chromosome>()
         while (children.size < settings.populationSize - eliteSize) {

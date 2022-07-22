@@ -9,6 +9,7 @@ fun main() {
         chromosomeSize = 60,
         populationSize = 10,
         mutationProbability = 0.01,
+        elitismPercent = 0.1,
         puzzle =  PUZZLES.first(),
     )
 

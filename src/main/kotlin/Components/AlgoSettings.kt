@@ -82,5 +82,17 @@ val AlgoSettings = FC<AlgoSettingsProps> {props ->
             }
         }
 
+        label {
+            +"Elitism (0 to 1)"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.elitismPercent.toString()
+                onChange = { event ->
+                    props.algoSettings.elitismPercent = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
+
     }
 }
