@@ -40,7 +40,7 @@ val PopulationList = FC<PopulationListProps> { props ->
                     }
 
                     key = chromosome.id.toString()
-                    +"${chromosome.id} -> ${chromosome.score.asDynamic().toFixed(5)}"
+                    +"${chromosome.id} -> ${chromosome.score.asDynamic().toFixed(5)} - ${chromosome.cumulativeScore.asDynamic().toFixed(5)}"
 
                     onClick = {
                         props.onSelect(chromosome)

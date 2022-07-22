@@ -1,3 +1,4 @@
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class Chromosome(var id: Int, var actions: Array<Action>) {
@@ -9,6 +10,10 @@ class Chromosome(var id: Int, var actions: Array<Action>) {
     override fun equals(other: Any?): Boolean {
         return if (other is Chromosome) id == other.id
         else false
+    }
+
+    override fun hashCode(): Int {
+        return id
     }
 }
 
@@ -134,12 +139,12 @@ class GeneticAlgorithm(
         for (i in 0 until settings.chromosomeSize) {
             val weight = Random.nextDouble(1.0)
 
-            val rotate1 = weight * parent1.actions[i].rotate + (1.0 - weight) * parent2.actions[2].rotate
-            val rotate2 = (1.0 - weight) * parent1.actions[i].rotate + weight * parent2.actions[2].rotate
-            val power1 = weight * parent1.actions[i].power + (1.0 - weight) * parent2.actions[2].power
-            val power2 = (1.0 - weight) * parent1.actions[i].power + weight * parent2.actions[2].power
-            child1Actions.add(Action(rotate1.toInt(), power1.toInt()))
-            child2Actions.add(Action(rotate2.toInt(), power2.toInt()))
+            val rotate1 = weight * parent1.actions[i].rotate + (1.0 - weight) * parent2.actions[i].rotate
+            val rotate2 = (1.0 - weight) * parent1.actions[i].rotate + weight * parent2.actions[i].rotate
+            val power1 = weight * parent1.actions[i].power + (1.0 - weight) * parent2.actions[i].power
+            val power2 = (1.0 - weight) * parent1.actions[i].power + weight * parent2.actions[i].power
+            child1Actions.add(Action(rotate1.roundToInt(), power1.roundToInt()))
+            child2Actions.add(Action(rotate2.roundToInt(), power2.roundToInt()))
         }
 
         return Chromosome(chromosomeIndex++, child1Actions.toTypedArray()) to Chromosome(
@@ -190,8 +195,11 @@ class GeneticAlgorithm(
         val children = mutableListOf<Chromosome>()
         while (children.size < settings.populationSize - eliteSize) {
             val parent1 = wheelSelection()
-            val parent2 = wheelSelection()
-            val (child1, child2) = crossover(parent1, parent2).also { (a, b) -> mutation(a);mutation(b) }
+            var parent2 : Chromosome? = null
+            while (parent2 == null || parent2.id == parent1.id) {
+                parent2 = wheelSelection()
+            }
+            val (child1, child2) = weightCrossOver(parent1, parent2).also { (a, b) -> mutation(a);mutation(b) }
             children.add(child1)
             children.add(child2)
         }

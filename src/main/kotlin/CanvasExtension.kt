@@ -19,8 +19,9 @@ fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult, selectedChromoso
     for (chromosome in result.population) {
         val color = when {
             chromosome == selectedChromosome -> NamedColor.red
-            chromosome.score < 50.0 -> NamedColor.orange
-            chromosome.score < 100 -> NamedColor.yellow
+            chromosome.state?.status == CrossingEnum.NOPE  -> NamedColor.orange
+            chromosome.state?.status == CrossingEnum.CRASH  -> NamedColor.orange
+            chromosome.score < 200 -> NamedColor.yellow
             else -> NamedColor.green
         }
         if (chromosome.path.isNotEmpty()) {
