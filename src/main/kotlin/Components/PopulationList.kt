@@ -28,7 +28,7 @@ val PopulationList = FC<PopulationListProps> { props ->
         }
 
         props.algoResult?.let { result ->
-            for (chromosome in result.population) {
+            for (chromosome in result.population.sortedByDescending { it.score }) {
                 div {
 
                     css {

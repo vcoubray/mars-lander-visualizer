@@ -1,3 +1,4 @@
+import kotlin.jvm.Synchronized
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -67,7 +68,7 @@ class GeneticAlgorithm(
     fun evaluation() {
         population.forEach {
             val state = settings.puzzle.initialState.copy()
-            it.score = state.play(it.actions, settings.puzzle.getSurfacePath())
+            it.score = state.play(it.id, it.actions, settings.puzzle.getSurfacePath())
             it.path = state.path
             it.state = state
         }
@@ -211,9 +212,10 @@ class GeneticAlgorithm(
         population = population.takeLast(eliteSize).toTypedArray() + children.toTypedArray()
     }
 
+    @Synchronized
     fun next(): AlgoResult {
         evaluation()
-        val result = AlgoResult(this.settings.puzzle.surface, this.population, this.generationCount)
+        val result = AlgoResult(this.settings.puzzle.surface, this.population.copyOf(), this.generationCount)
         nextGeneration()
         generationCount++
         return result
