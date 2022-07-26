@@ -47,8 +47,11 @@ enum class CrossingEnum {
     NOPE, CRASH, LANDING_ZONE
 }
 
-data class Segment(val start: Pair<Double, Double>, val end: Pair<Double, Double>) {
-    val length = sqrt((start.first - end.first).pow(2) + (start.second - end.second).pow(2))
+
+data class Point (val x: Double, val y: Double)
+
+data class Segment(val start: Point, val end: Point) {
+    val length = sqrt((start.x - end.x).pow(2) + (start.y - end.y).pow(2))
     var isLandingZone: Boolean = false
     var distanceToLanding = 0.0
     lateinit var proportion: (Segment, Double) -> Double
@@ -59,16 +62,16 @@ data class Segment(val start: Pair<Double, Double>, val end: Pair<Double, Double
     }
 
     fun distanceForProjection(x: Double, y: Double): Double {
-        return distanceToLanding(x) + (y - start.second)
+        return distanceToLanding(x) + (y - start.y)
     }
 
     fun getYProjection (x: Double): Double {
-        return (start.first - x) / (start.first - end.first) * (start.second - end.second) + end.second
+        return (start.x - x) / (start.x - end.x) * (start.y - end.y) + end.y
     }
 
     fun getProjection(x: Double, y: Double): Pair<Double, Double> {
-        val yp = (start.first - x) / (start.first - end.first) * (start.second - end.second) + end.second
-        val xp = (start.second - y) / (start.second - end.second) * (start.first - end.first) + end.first
+        val yp = (start.x - x) / (start.x - end.x) * (start.y - end.y) + end.y
+        val xp = (start.y - y) / (start.y - end.y) * (start.x - end.x) + end.x
         return xp to yp
     }
 
@@ -86,17 +89,17 @@ data class Surface(
 
     init {
 
-        val landingZoneIndex = segments.indexOfFirst { it.start.second == it.end.second }
+        val landingZoneIndex = segments.indexOfFirst { it.start.y == it.end.y }
         segments[landingZoneIndex].isLandingZone = true
-        landingZoneY = segments[landingZoneIndex].start.second
-        landingZoneX = segments[landingZoneIndex].start.first to segments[landingZoneIndex].end.first
+        landingZoneY = segments[landingZoneIndex].start.y
+        landingZoneX = segments[landingZoneIndex].start.x to segments[landingZoneIndex].end.x
 
 
         var sum = 0.0
         for (i in landingZoneIndex - 1 downTo 0) {
             segments[i].distanceToLanding = sum
             segments[i].proportion =
-                { segment, x -> (x - segment.end.first) / (segment.start.first - segment.end.first) }
+                { segment, x -> (x - segment.end.x) / (segment.start.x - segment.end.x) }
             sum += segments[i].length
 
         }
@@ -105,7 +108,7 @@ data class Surface(
         for (i in landingZoneIndex + 1 until segments.size) {
             segments[i].distanceToLanding = sum
             segments[i].proportion =
-                { segment, x -> (x - segment.start.first) / (segment.end.first - segment.start.first) }
+                { segment, x -> (x - segment.start.x) / (segment.end.x - segment.start.x) }
             sum += segments[i].length
         }
 
@@ -116,15 +119,15 @@ data class Surface(
     }
 
     fun cross(s1: Segment, s2: Segment): Boolean {
-        val s1x = s1.end.first - s1.start.first
-        val s1y = s1.end.second - s1.start.second
-        val s2x = s2.end.first - s2.start.first
-        val s2y = s2.end.second - s2.start.second
+        val s1x = s1.end.x - s1.start.x
+        val s1y = s1.end.y - s1.start.y
+        val s2x = s2.end.x - s2.start.x
+        val s2y = s2.end.y - s2.start.y
 
         val s =
-            (-s1y * (s1.start.first - s2.start.first) + s1x * (s1.start.second - s2.start.second)) / (-s2x * s1y + s1x * s2y)
+            (-s1y * (s1.start.x - s2.start.x) + s1x * (s1.start.y - s2.start.y)) / (-s2x * s1y + s1x * s2y)
         val t =
-            (-s2y * (s1.start.first - s2.start.first) + s2x * (s1.start.second - s2.start.second)) / (-s2x * s1y + s1x * s2y)
+            (-s2y * (s1.start.x - s2.start.x) + s2x * (s1.start.y - s2.start.y)) / (-s2x * s1y + s1x * s2y)
 
         return (s in 0.0..1.0 && t in 0.0..1.0)
     }
@@ -143,7 +146,6 @@ data class Surface(
 //    }
 
     fun cross(path: Segment): Segment? {
-        val (x, y) = path.end
         for (segment in segments) {
             if (cross(segment, path)) {
                 return segment
@@ -207,7 +209,7 @@ data class State(
             lastX = x
             lastY = y
             play(action)
-            crossing = surface.cross(Segment(lastX to lastY, x to y))
+            crossing = surface.cross(Segment(Point(lastX ,lastY), Point(x, y)))
             if (crossing != null || x.toInt() !in (0..surface.width) || y.toInt() !in (0..surface.height) ) {
                 break
             }
@@ -227,7 +229,7 @@ data class State(
                 return ((surface.distanceMax - crossing.distanceToLanding(x)) / surface.distanceMax * 100) - (xSpeedDist + ySpeedDist) * 0.1
             }
         } else {
-            val projection = Segment(x to y, x to 0.0)
+            val projection = Segment(Point(x, y), Point(x, 0.0))
             val crossings = surface.segments.filter{surface.cross(it, projection)}
             console.log(id)
             console.log(crossings)

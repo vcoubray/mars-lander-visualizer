@@ -14,7 +14,7 @@ data class Puzzle(
             .asSequence()
             .map { it.toDouble() }
             .chunked(2)
-            .map { (a, b) -> a to b }
+            .map { (x, y) -> Point(x, y) }
             .windowed(2)
             .map { (a, b) -> Segment(a, b) }
             .toList()
