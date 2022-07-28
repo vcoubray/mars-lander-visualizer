@@ -24,7 +24,7 @@ val PopulationList = FC<PopulationListProps> { props ->
     div {
 
         h2 {
-            +"Population List"
+            +"Population"
         }
 
         props.algoResult?.let { result ->
@@ -33,9 +33,15 @@ val PopulationList = FC<PopulationListProps> { props ->
 
                     css {
                         cursor = Cursor.pointer
-                        if (props.selectedChromosome == chromosome) {
-                            color = NamedColor.red
+//                        if (props.selectedChromosome == chromosome) {
                             fontWeight = FontWeight.bold
+//                        }
+                        color = when {
+                            props.selectedChromosome == chromosome -> NamedColor.red
+                            chromosome.state?.status == CrossingEnum.NOPE -> NamedColor.grey
+                            chromosome.state?.status == CrossingEnum.CRASH -> NamedColor.orange
+                            chromosome.score < 200 -> NamedColor.yellow
+                            else -> NamedColor.green
                         }
                     }
 

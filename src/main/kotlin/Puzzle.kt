@@ -1,4 +1,3 @@
-import kotlin.math.*
 
 const val HEIGHT = 3000
 const val WIDTH = 7000

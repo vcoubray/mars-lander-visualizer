@@ -11,6 +11,7 @@ fun boundedValue(value: Int, min: Int, max: Int) = when {
     value >= max -> max
     else -> value
 }
+
 fun boundedValue(value: Double, min: Double, max: Double) = when {
     value <= min -> min
     value >= max -> max
@@ -48,7 +49,7 @@ enum class CrossingEnum {
 }
 
 
-data class Point (val x: Double, val y: Double)
+data class Point(val x: Double, val y: Double)
 
 data class Segment(val start: Point, val end: Point) {
     val length = sqrt((start.x - end.x).pow(2) + (start.y - end.y).pow(2))
@@ -65,7 +66,7 @@ data class Segment(val start: Point, val end: Point) {
         return distanceToLanding(x) + (y - start.y)
     }
 
-    fun getYProjection (x: Double): Double {
+    fun getYProjection(x: Double): Double {
         return (start.x - x) / (start.x - end.x) * (start.y - end.y) + end.y
     }
 
@@ -118,7 +119,7 @@ data class Surface(
 
     }
 
-    fun cross(s1: Segment, s2: Segment): Boolean {
+    fun cross(s1: Segment, s2: Segment): Point? {
         val s1x = s1.end.x - s1.start.x
         val s1y = s1.end.y - s1.start.y
         val s2x = s2.end.x - s2.start.x
@@ -129,7 +130,13 @@ data class Surface(
         val t =
             (-s2y * (s1.start.x - s2.start.x) + s2x * (s1.start.y - s2.start.y)) / (-s2x * s1y + s1x * s2y)
 
-        return (s in 0.0..1.0 && t in 0.0..1.0)
+        if (s in 0.0..1.0 && t in 0.0..1.0) {
+            return Point(
+                s1.start.x + (t * s1x),
+                s1.start.y + (t * s1y)
+            )
+        }
+        return null
     }
 
 //    fun cross(path: Segment): CrossingEnum {
@@ -145,10 +152,10 @@ data class Surface(
 //        return CrossingEnum.NOPE
 //    }
 
-    fun cross(path: Segment): Segment? {
+    fun cross(path: Segment): Pair<Segment, Point>? {
         for (segment in segments) {
-            if (cross(segment, path)) {
-                return segment
+            cross(segment,path)?.let{
+                return segment to it
             }
         }
         return null
@@ -164,7 +171,6 @@ data class Surface(
     }
 
 
-
 }
 
 data class State(
@@ -175,7 +181,7 @@ data class State(
     var fuel: Int,
     var rotate: Int,
     var power: Int
-    ) {
+) {
 
     val path = mutableListOf(x to y)
     var status = CrossingEnum.NOPE
@@ -204,13 +210,13 @@ data class State(
 
         var lastX = x
         var lastY = y
-        var crossing: Segment? = null
+        var crossing: Pair<Segment,Point>? = null
         for (action in actions) {
             lastX = x
             lastY = y
             play(action)
-            crossing = surface.cross(Segment(Point(lastX ,lastY), Point(x, y)))
-            if (crossing != null || x.toInt() !in (0..surface.width) || y.toInt() !in (0..surface.height) ) {
+            crossing = surface.cross(Segment(Point(lastX, lastY), Point(x, y)))
+            if (crossing != null || x.toInt() !in (0..surface.width) || y.toInt() !in (0..surface.height)) {
                 break
             }
         }
@@ -221,30 +227,35 @@ data class State(
         val rotateMax = 80
 
         if (crossing != null) {
-            if (crossing.isLandingZone) {
+            if (crossing.first.isLandingZone) {
                 status = CrossingEnum.LANDING_ZONE
                 return 200.0 - ((rotateDist * 100.0 / rotateMax) + (xSpeedDist + ySpeedDist))
             } else {
                 status = CrossingEnum.CRASH
-                return ((surface.distanceMax - crossing.distanceToLanding(x)) / surface.distanceMax * 100) - (xSpeedDist + ySpeedDist) * 0.1
+                return ((surface.distanceMax - crossing.first.distanceToLanding(crossing.second.x)) / surface.distanceMax * 100) - (xSpeedDist + ySpeedDist) * 0.1
             }
         } else {
             val projection = Segment(Point(x, y), Point(x, 0.0))
-            val crossings = surface.segments.filter{surface.cross(it, projection)}
+            val crossings = surface.segments
+                .mapNotNull { segment -> surface.cross(segment, projection)?.let { segment to it } }
             console.log(id)
             console.log(crossings)
             var yCrossing = 0.0
             crossing = null
-            for (segment in crossings) {
-                val yProjected = segment.getYProjection(x)
-                console.log(yProjected)
-                if ( yProjected < y && yProjected > yCrossing) {
-                    yCrossing = yProjected
-                    crossing = segment
+            for (cross in crossings) {
+                val (_, point ) = cross
+                console.log(point)
+                if (point.y < y && point.y > yCrossing) {
+                    yCrossing = point.y
+                    crossing = cross
                 }
             }
             console.log(surface.distanceMax, yCrossing, crossing)
-            val distance = boundedValue( y - yCrossing + (crossing?.distanceToLanding(x) ?:surface.distanceMax), 0.0, surface.distanceMax)
+            val distance = boundedValue(
+                y - yCrossing + (crossing?.first?.distanceToLanding(crossing.second.x) ?: surface.distanceMax),
+                0.0,
+                surface.distanceMax
+            )
             console.log(distance)
             return (surface.distanceMax - distance) / surface.distanceMax * 100 - (xSpeedDist + ySpeedDist) * 0.1
         }
