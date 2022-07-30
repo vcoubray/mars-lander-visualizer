@@ -1,4 +1,4 @@
-package Components
+package components
 
 import kotlinx.js.timers.Timeout
 import react.FC

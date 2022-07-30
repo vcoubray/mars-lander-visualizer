@@ -25,6 +25,8 @@ class AlgoSettings(
     var mutationProbability: Double,
     var elitismPercent: Double,
     var puzzle: Puzzle,
+    var speedMax: Double,
+    var speedWeight: Double
 )
 
 class GeneticAlgorithm(
@@ -68,7 +70,7 @@ class GeneticAlgorithm(
     fun evaluation() {
         population.forEach {
             val state = settings.puzzle.initialState.copy()
-            it.score = state.play(it.id, it.actions, settings.puzzle.getSurfacePath())
+            it.score = state.play(it.actions, settings.puzzle.getSurfacePath(), settings)
             it.path = state.path
             it.state = state
         }

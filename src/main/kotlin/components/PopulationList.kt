@@ -1,4 +1,4 @@
-package Components
+package components
 
 import AlgoResult
 import Chromosome
@@ -40,7 +40,7 @@ val PopulationList = FC<PopulationListProps> { props ->
                             props.selectedChromosome == chromosome -> NamedColor.red
                             chromosome.state?.status == CrossingEnum.NOPE -> NamedColor.grey
                             chromosome.state?.status == CrossingEnum.CRASH -> NamedColor.orange
-                            chromosome.score < 200 -> NamedColor.yellow
+                            chromosome.score < 200 -> NamedColor.black
                             else -> NamedColor.green
                         }
                     }

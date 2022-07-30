@@ -1,4 +1,4 @@
-package Components
+package components
 
 
 import AlgoSettings
@@ -94,5 +94,30 @@ val AlgoSettings = FC<AlgoSettingsProps> {props ->
             }
         }
 
+        label {
+            +"Speed max"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.speedMax.toString()
+                onChange = { event ->
+                    props.algoSettings.speedMax = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
+
+        label {
+            +"Speed weight"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.speedWeight.toString()
+                onChange = { event ->
+                    props.algoSettings.speedWeight = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
+
     }
 }
+

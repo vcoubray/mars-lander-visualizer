@@ -1,4 +1,4 @@
-import Components.App
+import components.App
 import kotlinx.browser.document
 import react.create
 import react.dom.client.createRoot
@@ -6,11 +6,13 @@ import react.dom.client.createRoot
 fun main() {
 
     val defaultSettings = AlgoSettings(
-        chromosomeSize = 60,
-        populationSize = 10,
+        chromosomeSize = 180,
+        populationSize = 60,
         mutationProbability = 0.01,
-        elitismPercent = 0.1,
+        elitismPercent = 0.2,
         puzzle =  PUZZLES.first(),
+        250.0,
+        0.4
     )
 
     val container = document.createElement("div")
