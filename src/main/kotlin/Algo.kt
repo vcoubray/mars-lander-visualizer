@@ -50,14 +50,9 @@ class GeneticAlgorithm(
     }
 
     fun generateChromosome(): Chromosome {
-//        var rotate = settings.puzzle.initialState.rotate
-//        var power = settings.puzzle.initialState.power
-//        var action = Action(rotate, power)
         return Chromosome(
             chromosomeIndex++,
             (0 until settings.chromosomeSize).map {
-//                action = generateAction(action.rotate, action.power)
-//                action
                 generateAction()
             }.toTypedArray()
         )
@@ -159,18 +154,6 @@ class GeneticAlgorithm(
     }
 
 
-//    fun mutation(chromosome: Chromosome) {
-//        for (i in chromosome.actions.indices) {
-//            if (Random.nextDouble(1.0) < settings.mutationProbability) {
-//                val (rotate, power) = if (i == 0) {
-//                    settings.puzzle.initialState.rotate to settings.puzzle.initialState.power
-//                } else {
-//                    chromosome.actions[i - 1].rotate to chromosome.actions[i - 1].power
-//                }
-//                chromosome.actions[i] = generateAction(rotate, power)
-//            }
-//        }
-//    }
 
     fun mutation(chromosome: Chromosome) {
         for (i in chromosome.actions.indices) {
@@ -181,19 +164,6 @@ class GeneticAlgorithm(
     }
 
     fun nextGeneration() {
-
-//        val select = selection()
-//        val children = mutableListOf<Chromosome>()
-//
-//        while (children.size < settings.populationSize / 2) {
-//            val parent1 = select.random()
-//            val parent2 = select.random()
-//            val (child1, child2) = crossover(parent1, parent2).also { (a, b) -> mutation(a);mutation(b) }
-//            children.add(child1)
-//            children.add(child2)
-//        }
-//        population = select + children
-
 
         var eliteSize = (settings.populationSize * settings.elitismPercent).toInt()
         if (eliteSize %2 !=0){

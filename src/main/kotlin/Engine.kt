@@ -18,21 +18,6 @@ fun boundedValue(value: Double, min: Double, max: Double) = when {
     else -> value
 }
 
-
-//fun generateAction(rotate: Int, power: Int): Action {
-
-//    val minPower =  boundedValue ( 0 - power, -1,0)
-//    val maxPower = boundedValue (4 - power , 0, 1)
-//    val minRotate = boundedValue ( -90 - rotate, -15,0)
-//    val maxRotate = boundedValue ( 90- rotate , 0,15)
-//    return Action(
-//        boundedValue(rotate + (-15..15).random(), -90, 90),
-//        boundedValue(power + (-1..1).random(), 0, 4)
-//            boundedValue(rotate + (minRotate..maxRotate).random(), -90, 90),
-//        boundedValue(power + (minPower..maxPower).random(), 0, 4)
-//    )
-//}
-
 fun generateAction(): Action {
     return Action(
         (-15..15).random(),
@@ -211,8 +196,8 @@ data class State(
 
         val xSpeedDist = max(xSpeed.absoluteValue - 20, 0.0)
         val ySpeedDist = max(ySpeed.absoluteValue - 40, 0.0)
-        val rotateDist = max(rotate.absoluteValue - 10, 0)
-        val rotateMax = 80
+        val rotateDist = rotate.absoluteValue
+        val rotateMax = 90
 
         val speedMax = settings.speedMax
         normalizedSpeed = (speedMax - xSpeedDist - ySpeedDist) * 100.0 / speedMax
@@ -235,7 +220,6 @@ data class State(
             crossing = null
             for (cross in crossings) {
                 val (_, point ) = cross
-                console.log(point)
                 if (point.y < y && point.y > yCrossing) {
                     yCrossing = point.y
                     crossing = cross
