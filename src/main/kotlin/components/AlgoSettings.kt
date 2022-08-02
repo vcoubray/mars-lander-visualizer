@@ -107,12 +107,48 @@ val AlgoSettings = FC<AlgoSettingsProps> {props ->
         }
 
         label {
-            +"Speed weight"
+            +"X Speed weight"
             input {
                 type = InputType.text
-                defaultValue = props.algoSettings.speedWeight.toString()
+                defaultValue = props.algoSettings.xSpeedWeight.toString()
                 onChange = { event ->
-                    props.algoSettings.speedWeight = event.target.value.toDouble()
+                    props.algoSettings.xSpeedWeight = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
+
+        label {
+            +"Y Speed weight"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.ySpeedWeight.toString()
+                onChange = { event ->
+                    props.algoSettings.ySpeedWeight = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
+
+        label {
+            +"Rotate weight"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.rotateWeight.toString()
+                onChange = { event ->
+                    props.algoSettings.rotateWeight = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
+
+        label {
+            +"Distance weight"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.distanceWeight.toString()
+                onChange = { event ->
+                    props.algoSettings.distanceWeight = event.target.value.toDouble()
                     props.onUpdateSettings(props.algoSettings)
                 }
             }

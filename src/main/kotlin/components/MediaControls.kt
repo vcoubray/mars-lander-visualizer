@@ -5,13 +5,16 @@ import react.FC
 import react.Props
 import react.dom.html.InputType
 import react.dom.html.ReactHTML.input
+import react.dom.html.ReactHTML.label
 
 external interface MediaControlsProps : Props {
     var intervalId: Timeout?
+    var autoStop: Boolean
     var onPlay: () -> Unit
     var onStop: () -> Unit
     var onNext: () -> Unit
     var onReset: () -> Unit
+    var toggleAutoStop: (Boolean) -> Unit
 }
 
 
@@ -48,6 +51,17 @@ val MediaControls = FC<MediaControlsProps> { props ->
         value = "Reset"
         onClick = {
             props.onReset()
+        }
+    }
+
+    label {
+        +"Auto Stop"
+        input {
+            type = InputType.checkbox
+            checked = props.autoStop
+            onClick = {
+                props.toggleAutoStop(!props.autoStop)
+            }
         }
     }
 }

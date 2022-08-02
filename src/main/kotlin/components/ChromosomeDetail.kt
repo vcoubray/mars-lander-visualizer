@@ -23,22 +23,19 @@ val ChromosomeDetail = FC<ChromosomeDetailProps> { props ->
         }
         props.chromosome.state?.let { state ->
             p {
-                +"State : ${state}"
+                +"State : $state"
             }
+        }
+        props.chromosome.result?.let{result ->
             p {
-                +"Status : ${state.status}"
-            }
-            p {
-                +"Normalized distance : ${state.normalizedDistance.asDynamic().toFixed(5)}, Normalized speed : ${state.normalizedSpeed.asDynamic().toFixed(5)}, Normalized rotate : ${state.normalizedRotate.asDynamic().toFixed(5)}"
+                +"Result : $result"
             }
         }
 
-        var i = 0
-        for (action in props.chromosome.actions) {
+        for ((i, action) in props.chromosome.actions.withIndex()) {
             div {
                 +"$action ${if (i == props.chromosome.path.size - 2) "<- Crashing here" else ""}"
             }
-            i++
         }
     }
 

@@ -16,6 +16,7 @@ external interface PopulationListProps : Props {
     var algoResult: AlgoResult?
     var selectedChromosome: Chromosome?
     var onSelect: (Chromosome) -> Unit
+    var maxScore: Double
 }
 
 
@@ -38,15 +39,15 @@ val PopulationList = FC<PopulationListProps> { props ->
 //                        }
                         color = when {
                             props.selectedChromosome == chromosome -> NamedColor.red
-                            chromosome.state?.status == CrossingEnum.NOPE -> NamedColor.grey
-                            chromosome.state?.status == CrossingEnum.CRASH -> NamedColor.orange
-                            chromosome.score < 200 -> NamedColor.black
+                            chromosome.result?.status == CrossingEnum.NOPE -> NamedColor.grey
+                            chromosome.result?.status == CrossingEnum.CRASH -> NamedColor.orange
+                            chromosome.score < props.maxScore -> NamedColor.black
                             else -> NamedColor.green
                         }
                     }
 
                     key = chromosome.id.toString()
-                    +"${chromosome.id} -> ${chromosome.score.asDynamic().toFixed(5)} - ${chromosome.cumulativeScore.asDynamic().toFixed(5)}"
+                    +"${chromosome.id} -> ${chromosome.score.asDynamic().toFixed(5)} - ${chromosome.normalizedScore.asDynamic().toFixed(5)} - ${chromosome.cumulativeScore.asDynamic().toFixed(5)}"
 
                     onClick = {
                         props.onSelect(chromosome)

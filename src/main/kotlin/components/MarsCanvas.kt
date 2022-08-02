@@ -14,6 +14,8 @@ import react.dom.html.ReactHTML.canvas
 external interface MarsCanvasProps : Props {
     var algoResult: AlgoResult?
     var selectedChromosome: Chromosome?
+    var maxScore: Double
+    var autoStop: Boolean
 }
 
 val MarsCanvas = FC<MarsCanvasProps> { props ->
@@ -21,7 +23,14 @@ val MarsCanvas = FC<MarsCanvasProps> { props ->
     react.useEffect(props.algoResult, props.selectedChromosome) {
         val canvas = document.getElementById("mars-canvas")!! as HTMLCanvasElement
         val canvasContext = canvas.getContext("2d") as CanvasRenderingContext2D
-        props.algoResult?.let{result -> canvasContext.drawAlgoResult(result, props.selectedChromosome)}
+        props.algoResult?.let { result ->
+            canvasContext.drawAlgoResult(
+                result,
+                props.selectedChromosome,
+                props.autoStop,
+                props.maxScore
+            )
+        }
     }
 
     canvas {

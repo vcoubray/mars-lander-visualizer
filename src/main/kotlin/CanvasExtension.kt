@@ -7,19 +7,26 @@ class AlgoResult(
     val surface: String,
     val population: Array<Chromosome>,
     val generation: Int
-)
+) {
+    val best = population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
+    val mean = population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
+}
 
-fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult, selectedChromosome: Chromosome?) {
+fun CanvasRenderingContext2D.drawAlgoResult(result: AlgoResult, selectedChromosome: Chromosome?, hideBadChromomoses: Boolean, maxScore: Double) {
     init(result.surface)
 
-    val best = result.population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
-    val mean = result.population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
-    drawInformations(result.generation, best, mean)
-    for (chromosome in result.population.sortedBy{ it.score } ) {
+    drawInformations(result.generation, result.best, result.mean)
+
+    val listToDraw = if (hideBadChromomoses && result.best >= maxScore) {
+        result.population.filter{it.score >= maxScore}
+    } else {
+        result.population.toList()
+    }
+    for (chromosome in listToDraw.sortedBy{ it.score } ) {
         val color = when {
-            chromosome.state?.status == CrossingEnum.NOPE  -> NamedColor.grey
-            chromosome.state?.status == CrossingEnum.CRASH  -> NamedColor.orange
-            chromosome.score < 200 -> NamedColor.yellow
+            chromosome.result?.status == CrossingEnum.NOPE  -> NamedColor.grey
+            chromosome.result?.status == CrossingEnum.CRASH  -> NamedColor.orange
+            chromosome.score < maxScore -> NamedColor.yellow
             else -> NamedColor.green
         }
         if (chromosome.path.isNotEmpty()) {

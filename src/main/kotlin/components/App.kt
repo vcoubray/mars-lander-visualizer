@@ -25,7 +25,8 @@ val App = FC<CanvasProps> { props ->
 
     var intervalId: Timeout? by useState(null)
     var algoResult: AlgoResult? by useState(null)
-    var selectedChromosome : Chromosome? by useState(null)
+    var selectedChromosome: Chromosome? by useState(null)
+    var autoStop: Boolean by useState(true)
 
     val algo by useState(GeneticAlgorithm(props.algoSettings))
 
@@ -40,6 +41,12 @@ val App = FC<CanvasProps> { props ->
         }
     }
 
+    react.useEffect(algoResult) {
+        console.log(algoResult?.best)
+        if (autoStop && (algoResult?.best ?: 0.0) >= props.algoSettings.maxScore()) {
+            stop()
+        }
+    }
 
     div {
         css {
@@ -49,6 +56,8 @@ val App = FC<CanvasProps> { props ->
         MarsCanvas {
             this.algoResult = algoResult
             this.selectedChromosome = selectedChromosome
+            this.autoStop = autoStop
+            this.maxScore = algo.settings.maxScore()
         }
 
         div {
@@ -68,6 +77,7 @@ val App = FC<CanvasProps> { props ->
 
             MediaControls {
                 this.intervalId = intervalId
+                this.autoStop = autoStop
                 this.onNext = {
                     stop()
                     algoResult = algo.next()
@@ -83,6 +93,9 @@ val App = FC<CanvasProps> { props ->
                     algoResult = algo.reset()
                     selectedChromosome = null
                 }
+                this.toggleAutoStop = { it ->
+                    autoStop = it
+                }
             }
         }
     }
@@ -95,7 +108,8 @@ val App = FC<CanvasProps> { props ->
         PopulationList {
             this.algoResult = algoResult
             this.selectedChromosome = selectedChromosome
-            this.onSelect = {chromosome -> selectedChromosome = chromosome}
+            this.onSelect = { chromosome -> selectedChromosome = chromosome }
+            this.maxScore = algo.settings.maxScore()
         }
 
         selectedChromosome?.let { chromosome ->

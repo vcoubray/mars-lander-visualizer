@@ -8,7 +8,7 @@ data class Puzzle(
     val surface: String,
     val initialState: State
 ) {
-    fun getSurfacePath() = Surface(HEIGHT, WIDTH,
+    val surfacePath = Surface(HEIGHT, WIDTH,
         surface.split(" ")
             .asSequence()
             .map { it.toDouble() }

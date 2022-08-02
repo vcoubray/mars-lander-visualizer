@@ -47,20 +47,6 @@ data class Segment(val start: Point, val end: Point) {
         else distanceToLanding + (proportion(this, x) * length)
     }
 
-    fun distanceForProjection(x: Double, y: Double): Double {
-        return distanceToLanding(x) + (y - start.y)
-    }
-
-    fun getYProjection(x: Double): Double {
-        return (start.x - x) / (start.x - end.x) * (start.y - end.y) + end.y
-    }
-
-    fun getProjection(x: Double, y: Double): Pair<Double, Double> {
-        val yp = (start.x - x) / (start.x - end.x) * (start.y - end.y) + end.y
-        val xp = (start.y - y) / (start.y - end.y) * (start.x - end.x) + end.x
-        return xp to yp
-    }
-
 }
 
 data class Surface(
@@ -128,22 +114,21 @@ data class Surface(
 
     fun cross(path: Segment): Pair<Segment, Point>? {
         for (segment in segments) {
-            cross(segment,path)?.let{
+            cross(segment, path)?.let {
                 return segment to it
             }
         }
         return null
     }
-
-
-    fun distanceToLandingZone(x: Double, y: Double): Double {
-        return when {
-            x < landingZoneX.first -> sqrt((x - landingZoneX.first).pow(2) + (y - landingZoneY).pow(2))
-            x > landingZoneX.second -> sqrt((x - landingZoneX.second).pow(2) + (y - landingZoneY).pow(2))
-            else -> abs(y - landingZoneY)
-        }
-    }
 }
+
+data class Result(
+    var distance: Double,
+    var xSpeedOverflow: Double,
+    var ySpeedOverflow: Double,
+    var rotateOverflow: Int,
+    var status: CrossingEnum
+)
 
 data class State(
     var x: Double,
@@ -156,10 +141,10 @@ data class State(
 ) {
 
     val path = mutableListOf(x to y)
-    var status = CrossingEnum.NOPE
-    var normalizedDistance = 0.0
-    var normalizedSpeed = 0.0
-    var normalizedRotate = 0.0
+//    var status = CrossingEnum.NOPE
+//    var normalizedDistance = 0.0
+//    var normalizedSpeed = 0.0
+//    var normalizedRotate = 0.0
 
     fun play(action: Action) {
 
@@ -179,11 +164,11 @@ data class State(
         path.add(this.x to this.y)
     }
 
-    fun play(actions: Array<Action>, surface: Surface, settings: AlgoSettings): Double {
+    fun play(actions: Array<Action>, surface: Surface): Result {
 
         var lastX: Double
         var lastY: Double
-        var crossing: Pair<Segment,Point>? = null
+        var crossing: Pair<Segment, Point>? = null
         for (action in actions) {
             lastX = x
             lastY = y
@@ -196,21 +181,31 @@ data class State(
 
         val xSpeedDist = max(xSpeed.absoluteValue - 20, 0.0)
         val ySpeedDist = max(ySpeed.absoluteValue - 40, 0.0)
-        val rotateDist = rotate.absoluteValue
-        val rotateMax = 90
+//        val rotateDist = rotate.absoluteValue
+//        val rotateMax = 90
 
-        val speedMax = settings.speedMax
-        normalizedSpeed = (speedMax - xSpeedDist - ySpeedDist) * 100.0 / speedMax
-        normalizedRotate = (rotateMax - rotateDist) * 100.0 / rotateMax
+//        val speedMax = settings.speedMax
+//        val xSpeedMax = settings.speedMax * 0.5
+//        val ySpeedMax = settings.speedMax * 0.5
+//        normalizedSpeed = max(0.0, (speedMax - xSpeedDist - ySpeedDist) * 100.0 / speedMax)
+//        val normalizedXSpeed = max(0.0, (xSpeedMax - xSpeedDist) * 100.0 / xSpeedMax)
+//        val normalizedYSpeed = max(0.0, (ySpeedMax - ySpeedDist) * 100.0 / ySpeedMax)
+
+//        normalizedRotate = (rotateMax - rotateDist) * 100.0 / rotateMax
 
 
-        if ( crossing?.first?.isLandingZone == true) {
-            status = CrossingEnum.LANDING_ZONE
-            return 100.0 + normalizedRotate * 0.5 + normalizedSpeed * 0.5
-        }
+        var status = CrossingEnum.NOPE
+//        if (crossing?.first?.isLandingZone == true) {
+//            status = CrossingEnum.LANDING_ZONE
+////            return 100.0 + normalizedRotate * 0.2 + normalizedXSpeed * 0.4 + normalizedYSpeed * 0.4
+//        }
 
         val distance = if (crossing != null) {
-            status = CrossingEnum.CRASH
+            status = if (crossing.first.isLandingZone) {
+                CrossingEnum.LANDING_ZONE
+            } else {
+                CrossingEnum.CRASH
+            }
             crossing.first.distanceToLanding(crossing.second.x)
         } else {
             val projection = Segment(Point(x, y), Point(x, 0.0))
@@ -219,22 +214,31 @@ data class State(
             var yCrossing = 0.0
             crossing = null
             for (cross in crossings) {
-                val (_, point ) = cross
+                val (_, point) = cross
                 if (point.y < y && point.y > yCrossing) {
                     yCrossing = point.y
                     crossing = cross
                 }
             }
-             boundedValue(
+            boundedValue(
                 y - yCrossing + (crossing?.first?.distanceToLanding(crossing.second.x) ?: surface.distanceMax),
                 0.0,
                 surface.distanceMax
             )
         }
 
-        normalizedDistance = (surface.distanceMax - distance) * 100 / surface.distanceMax
+//        normalizedDistance = (surface.distanceMax - distance) * 100 / surface.distanceMax
 
-        return normalizedDistance * (1-settings.speedWeight) + normalizedSpeed * settings.speedWeight
+        return Result(
+            distance = distance,
+            xSpeedOverflow = xSpeedDist,
+            ySpeedOverflow = ySpeedDist,
+            rotateOverflow = rotate.absoluteValue,
+            status = status
+        )
+
+
+//        return normalizedDistance * (1 - settings.speedWeight) + normalizedSpeed * settings.speedWeight
     }
 }
 
