@@ -1,123 +1,65 @@
 package components
 
-import AlgoResult
 import AlgoSettings
-import Chromosome
-import GeneticAlgorithm
-import Puzzle
-import csstype.*
-import emotion.react.css
-import kotlinx.js.timers.Timeout
-import kotlinx.js.timers.clearInterval
-import kotlinx.js.timers.setInterval
+import Benchmark
+import PUZZLES
 import react.FC
 import react.Props
+import react.create
+import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.div
-import react.useEffectOnce
-import react.useState
+import react.router.Route
+import react.router.Routes
+import react.router.dom.BrowserRouter
+import react.router.dom.Link
 
-external interface CanvasProps : Props {
-    var puzzles: List<Puzzle>
-    var algoSettings: AlgoSettings
-}
 
-val App = FC<CanvasProps> { props ->
+val App = FC<Props> {
 
-    var intervalId: Timeout? by useState(null)
-    var algoResult: AlgoResult? by useState(null)
-    var selectedChromosome: Chromosome? by useState(null)
-    var autoStop: Boolean by useState(true)
-    var refreshRate: Int by useState(1)
-    val algo by useState(GeneticAlgorithm(props.algoSettings))
+    val defaultSettings = AlgoSettings(
+        chromosomeSize = 180,
+        populationSize = 80,
+        mutationProbability = 0.02,
+        elitismPercent = 0.2,
+        puzzle = PUZZLES.first(),
+        100.0,
+        30.0,
+        50.0,
+        10.0,
+        110.0,
+        0.9
+    )
 
-    useEffectOnce {
-        algoResult = algo.reset()
-    }
 
-    fun stop() {
-        intervalId?.let {
-            clearInterval(it)
-            intervalId = null
-        }
-    }
 
-    react.useEffect(algoResult) {
-        console.log(algoResult?.best)
-        if (autoStop && (algoResult?.best ?: 0.0) >= props.algoSettings.maxScore()) {
-            stop()
-        }
-    }
-
-    div {
-        css {
-            display = Display.flex
-            justifyContent = JustifyContent.spaceBetween
-        }
-        MarsCanvas {
-            this.algoResult = algoResult
-            this.selectedChromosome = selectedChromosome
-            this.autoStop = autoStop
-            this.maxScore = algo.settings.maxScore()
-        }
-
+    BrowserRouter {
         div {
-            css {
-                marginLeft = 10.px
-            }
-
-            AlgoSettings {
-                this.puzzles = props.puzzles
-                this.algoSettings = props.algoSettings
-                this.onUpdateSettings = { algoSettings ->
-                    stop()
-                    algoResult = algo.updateSettings(algoSettings)
-                    selectedChromosome = null
+            ReactHTML.nav {
+                Link {
+                    +"Visualizer"
+                    to = "/visualizer"
                 }
-            }
-
-            MediaControls {
-                this.intervalId = intervalId
-                this.autoStop = autoStop
-                this.refreshRate = refreshRate
-                this.onNext = {
-                    stop()
-                    algoResult = algo.next(refreshRate)
+                Link {
+                    +"Benchmark"
+                    to = "/benchmark"
                 }
-                this.onPlay = {
-                    intervalId = setInterval({ algoResult = algo.next(refreshRate) }, 100)
-                }
-                this.onStop = {
-                    stop()
-                }
-                this.onReset = {
-                    stop()
-                    algoResult = algo.reset()
-                    selectedChromosome = null
-                }
-                this.toggleAutoStop = { it ->
-                    autoStop = it
-                }
-                this.onUpdateRefreshRate = { it -> refreshRate = it}
             }
         }
-    }
-    div {
-        css {
-            display = Display.flex
-            justifyContent = JustifyContent.spaceBetween
-        }
+        Routes {
+            Route {
+                index = true
+                path = "/visualizer"
+                element =  Visualizer.create {
+                    this.puzzles = PUZZLES
+                    this.algoSettings = defaultSettings
+                }
 
-        PopulationList {
-            this.algoResult = algoResult
-            this.selectedChromosome = selectedChromosome
-            this.onSelect = { chromosome -> selectedChromosome = chromosome }
-            this.maxScore = algo.settings.maxScore()
-        }
-
-        selectedChromosome?.let { chromosome ->
-            ChromosomeDetail {
-                this.chromosome = chromosome
             }
+            Route {
+                path = "/benchmark"
+                element = Benchmark.create()
+            }
+
         }
     }
 
