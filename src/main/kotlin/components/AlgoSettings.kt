@@ -154,6 +154,17 @@ val AlgoSettings = FC<AlgoSettingsProps> {props ->
             }
         }
 
+        label {
+            +"Speed weight (No landing zone)"
+            input {
+                type = InputType.text
+                defaultValue = props.algoSettings.crashSpeedWeight.toString()
+                onChange = { event ->
+                    props.algoSettings.crashSpeedWeight = event.target.value.toDouble()
+                    props.onUpdateSettings(props.algoSettings)
+                }
+            }
+        }
     }
 }
 

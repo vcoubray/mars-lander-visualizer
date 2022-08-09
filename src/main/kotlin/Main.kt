@@ -8,14 +8,15 @@ fun main() {
     val defaultSettings = AlgoSettings(
         chromosomeSize = 180,
         populationSize = 80,
-        mutationProbability = 0.01,
-        elitismPercent = 0.1,
-        puzzle =  PUZZLES.first(),
+        mutationProbability = 0.02,
+        elitismPercent = 0.2,
+        puzzle = PUZZLES.first(),
         100.0,
-        35.0,
-        35.0,
+        30.0,
+        50.0,
         10.0,
-        120.0
+        110.0,
+        0.9
     )
 
     val container = document.createElement("div")

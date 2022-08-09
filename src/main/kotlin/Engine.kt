@@ -168,10 +168,12 @@ data class State(
 
         var lastX: Double
         var lastY: Double
+        var lastRotate= rotate
         var crossing: Pair<Segment, Point>? = null
         for (action in actions) {
             lastX = x
             lastY = y
+            lastRotate = rotate
             play(action)
             crossing = surface.cross(Segment(Point(lastX, lastY), Point(x, y)))
             if (crossing != null || x.toInt() !in (0..surface.width) || y.toInt() !in (0..surface.height)) {
@@ -181,27 +183,11 @@ data class State(
 
         val xSpeedDist = max(xSpeed.absoluteValue - 20, 0.0)
         val ySpeedDist = max(ySpeed.absoluteValue - 40, 0.0)
-//        val rotateDist = rotate.absoluteValue
-//        val rotateMax = 90
-
-//        val speedMax = settings.speedMax
-//        val xSpeedMax = settings.speedMax * 0.5
-//        val ySpeedMax = settings.speedMax * 0.5
-//        normalizedSpeed = max(0.0, (speedMax - xSpeedDist - ySpeedDist) * 100.0 / speedMax)
-//        val normalizedXSpeed = max(0.0, (xSpeedMax - xSpeedDist) * 100.0 / xSpeedMax)
-//        val normalizedYSpeed = max(0.0, (ySpeedMax - ySpeedDist) * 100.0 / ySpeedMax)
-
-//        normalizedRotate = (rotateMax - rotateDist) * 100.0 / rotateMax
-
-
         var status = CrossingEnum.NOPE
-//        if (crossing?.first?.isLandingZone == true) {
-//            status = CrossingEnum.LANDING_ZONE
-////            return 100.0 + normalizedRotate * 0.2 + normalizedXSpeed * 0.4 + normalizedYSpeed * 0.4
-//        }
 
         val distance = if (crossing != null) {
             status = if (crossing.first.isLandingZone) {
+                if (lastRotate in (-15..15)) rotate = 0
                 CrossingEnum.LANDING_ZONE
             } else {
                 CrossingEnum.CRASH
@@ -227,18 +213,14 @@ data class State(
             )
         }
 
-//        normalizedDistance = (surface.distanceMax - distance) * 100 / surface.distanceMax
-
         return Result(
             distance = distance,
             xSpeedOverflow = xSpeedDist,
             ySpeedOverflow = ySpeedDist,
-            rotateOverflow = rotate.absoluteValue,
+            rotateOverflow = max(lastRotate.absoluteValue - 10,0),
             status = status
         )
 
-
-//        return normalizedDistance * (1 - settings.speedWeight) + normalizedSpeed * settings.speedWeight
     }
 }
 

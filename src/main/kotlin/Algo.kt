@@ -32,7 +32,8 @@ class AlgoSettings(
     var xSpeedWeight: Double,
     var ySpeedWeight: Double,
     var rotateWeight: Double,
-    var distanceWeight: Double
+    var distanceWeight: Double,
+    var crashSpeedWeight: Double
 ) {
 
     fun maxScore() = xSpeedWeight + ySpeedWeight + rotateWeight + distanceWeight
@@ -75,29 +76,37 @@ class GeneticAlgorithm(
         population.forEach {
             val state = settings.puzzle.initialState.copy()
             it.result = state.play(it.actions, settings.puzzle.surfacePath)
-            it.score = getScore(it.result!!)
             it.path = state.path
             it.state = state
+        }
+
+        population.forEach {
+            it.score = getScore(it.result!!)
         }
     }
 
     fun getScore(result: Result): Double {
         val xSpeedMax = settings.speedMax
         val ySpeedMax = settings.speedMax
-        val rotateMax = 90.0
+        val rotateMax = 80.0
         val distanceMax = settings.puzzle.surfacePath.distanceMax
 
-        val normalizedXSpeed = max(0.0, (xSpeedMax - result.xSpeedOverflow) * settings.xSpeedWeight / xSpeedMax)
-        val normalizedYSpeed = max(0.0, (ySpeedMax - result.ySpeedOverflow) * settings.ySpeedWeight / ySpeedMax)
-        val normalizedRotate = (rotateMax - result.rotateOverflow) * settings.rotateWeight / rotateMax
-        val normalizedDistance = (distanceMax - result.distance) * settings.distanceWeight / distanceMax
-        return normalizedXSpeed + normalizedYSpeed + normalizedRotate + normalizedDistance
+        val normalizedXSpeed = max(0.0, (xSpeedMax - result.xSpeedOverflow) / xSpeedMax)
+        val normalizedYSpeed = max(0.0, (ySpeedMax - result.ySpeedOverflow) / ySpeedMax)
+        val normalizedRotate = (rotateMax - result.rotateOverflow) / rotateMax
+        val normalizedDistance = (distanceMax - result.distance) / distanceMax
+
+        if (result.status != CrossingEnum.LANDING_ZONE) {
+            return normalizedDistance * settings.distanceWeight + (normalizedYSpeed * settings.ySpeedWeight + normalizedXSpeed * settings.xSpeedWeight) * settings.crashSpeedWeight
+        }
+        return normalizedXSpeed * settings.xSpeedWeight + normalizedYSpeed * settings.ySpeedWeight + normalizedRotate * settings.rotateWeight + normalizedDistance * settings.distanceWeight
     }
 
     fun normalizeScores() {
         val sum = population.sumOf { it.score }
         for (chromosome in population) {
             chromosome.normalizedScore = chromosome.score / sum
+
         }
     }
 
@@ -114,10 +123,10 @@ class GeneticAlgorithm(
 
     fun wheelSelection(): Chromosome {
         val rnd = Random.nextDouble(1.0)
-        var i = -1
-        do {
+        var i = 0
+        while (i < population.size && rnd > population[i].cumulativeScore) {
             i++
-        } while (i < population.size && rnd > population[i].cumulativeScore)
+        }
 
         return population[i]
     }
@@ -128,9 +137,9 @@ class GeneticAlgorithm(
         val child1Actions = mutableListOf<Action>()
         val child2Actions = mutableListOf<Action>()
 
-        val weight = Random.nextDouble(1.0)
+//        val weight = Random.nextDouble(1.0)
+        val weight = Random.nextDouble(0.8) + 0.1
         for (i in 0 until settings.chromosomeSize) {
-
 
             val rotate1 = weight * parent1.actions[i].rotate + (1.0 - weight) * parent2.actions[i].rotate
             val power1 = weight * parent1.actions[i].power + (1.0 - weight) * parent2.actions[i].power
@@ -183,6 +192,13 @@ class GeneticAlgorithm(
         val result = AlgoResult(this.settings.puzzle.surface, this.population.copyOf(), this.generationCount)
         nextGeneration()
         generationCount++
+        return result
+    }
+
+    @Synchronized
+    fun next(step : Int): AlgoResult{
+        lateinit var result: AlgoResult
+        repeat(step){ result = next()}
         return result
     }
 

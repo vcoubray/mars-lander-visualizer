@@ -27,7 +27,7 @@ val App = FC<CanvasProps> { props ->
     var algoResult: AlgoResult? by useState(null)
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
-
+    var refreshRate: Int by useState(1)
     val algo by useState(GeneticAlgorithm(props.algoSettings))
 
     useEffectOnce {
@@ -78,12 +78,13 @@ val App = FC<CanvasProps> { props ->
             MediaControls {
                 this.intervalId = intervalId
                 this.autoStop = autoStop
+                this.refreshRate = refreshRate
                 this.onNext = {
                     stop()
-                    algoResult = algo.next()
+                    algoResult = algo.next(refreshRate)
                 }
                 this.onPlay = {
-                    intervalId = setInterval({ algoResult = algo.next() }, 100)
+                    intervalId = setInterval({ algoResult = algo.next(refreshRate) }, 100)
                 }
                 this.onStop = {
                     stop()
@@ -96,6 +97,7 @@ val App = FC<CanvasProps> { props ->
                 this.toggleAutoStop = { it ->
                     autoStop = it
                 }
+                this.onUpdateRefreshRate = { it -> refreshRate = it}
             }
         }
     }

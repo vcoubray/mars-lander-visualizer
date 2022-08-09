@@ -10,11 +10,13 @@ import react.dom.html.ReactHTML.label
 external interface MediaControlsProps : Props {
     var intervalId: Timeout?
     var autoStop: Boolean
+    var refreshRate: Int
     var onPlay: () -> Unit
     var onStop: () -> Unit
     var onNext: () -> Unit
     var onReset: () -> Unit
     var toggleAutoStop: (Boolean) -> Unit
+    var onUpdateRefreshRate: (Int) -> Unit
 }
 
 
@@ -61,6 +63,16 @@ val MediaControls = FC<MediaControlsProps> { props ->
             checked = props.autoStop
             onClick = {
                 props.toggleAutoStop(!props.autoStop)
+            }
+        }
+    }
+    label {
+        +"Refresh Rate"
+        input {
+            type = InputType.text
+            defaultValue = props.refreshRate.toString()
+            onChange = { event ->
+                props.onUpdateRefreshRate(event.target.value.toInt())
             }
         }
     }
