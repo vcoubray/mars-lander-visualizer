@@ -15,6 +15,8 @@ dependencies {
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react-router-dom")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons")
 }
 
 kotlin {

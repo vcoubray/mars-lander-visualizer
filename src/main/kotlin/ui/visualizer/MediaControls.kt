@@ -1,4 +1,4 @@
-package components
+package ui.visualizer
 
 import kotlinx.js.timers.Timeout
 import react.FC

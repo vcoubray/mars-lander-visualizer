@@ -1,4 +1,4 @@
-package components
+package ui.visualizer
 
 import AlgoResult
 import AlgoSettings
@@ -42,7 +42,6 @@ val Visualizer = FC<CanvasProps> { props ->
     }
 
     react.useEffect(algoResult) {
-        console.log(algoResult?.best)
         if (autoStop && (algoResult?.best ?: 0.0) >= props.algoSettings.maxScore()) {
             stop()
         }

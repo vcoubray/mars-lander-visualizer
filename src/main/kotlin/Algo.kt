@@ -56,7 +56,7 @@ class GeneticAlgorithm(
         generationCount = 0
         chromosomeIndex = 0
         population = generateRandomPopulation()
-        return AlgoResult(this.settings.puzzle.surface, this.population, this.generationCount)
+        return AlgoResult(this.settings.puzzle, this.population, this.generationCount)
     }
 
     fun generateChromosome(): Chromosome {
@@ -189,7 +189,7 @@ class GeneticAlgorithm(
     @Synchronized
     fun next(): AlgoResult {
         evaluation()
-        val result = AlgoResult(this.settings.puzzle.surface, this.population.copyOf(), this.generationCount)
+        val result = AlgoResult(this.settings.puzzle, this.population.copyOf(), this.generationCount)
         nextGeneration()
         generationCount++
         return result

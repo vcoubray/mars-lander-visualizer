@@ -141,10 +141,6 @@ data class State(
 ) {
 
     val path = mutableListOf(x to y)
-//    var status = CrossingEnum.NOPE
-//    var normalizedDistance = 0.0
-//    var normalizedSpeed = 0.0
-//    var normalizedRotate = 0.0
 
     fun play(action: Action) {
 

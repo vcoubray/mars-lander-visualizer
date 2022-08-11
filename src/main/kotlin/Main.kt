@@ -1,5 +1,4 @@
-import components.App
-import components.Visualizer
+import ui.App
 import kotlinx.browser.document
 import react.create
 import react.dom.client.createRoot

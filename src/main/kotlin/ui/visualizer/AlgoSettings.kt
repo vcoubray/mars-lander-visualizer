@@ -1,9 +1,8 @@
-package components
-
+package ui.visualizer
 
 import AlgoSettings
-import PUZZLE_MAP
 import Puzzle
+import config.PUZZLE_MAP
 import csstype.Display
 import csstype.FlexDirection
 import emotion.react.css
@@ -16,7 +15,6 @@ import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select
 
-
 external interface AlgoSettingsProps: Props {
     var puzzles : List<Puzzle>
     var algoSettings: AlgoSettings
@@ -24,7 +22,7 @@ external interface AlgoSettingsProps: Props {
 }
 
 
-val AlgoSettings = FC<AlgoSettingsProps> {props ->
+val AlgoSettings = FC<AlgoSettingsProps> { props ->
 
     select {
         for (puzzle in props.puzzles) {
