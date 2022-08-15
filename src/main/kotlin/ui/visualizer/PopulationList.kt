@@ -10,7 +10,6 @@ import react.FC
 import react.Props
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.h2
-import react.key
 
 external interface PopulationListProps : Props {
     var algoResult: AlgoResult?

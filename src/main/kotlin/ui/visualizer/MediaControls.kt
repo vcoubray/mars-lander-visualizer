@@ -61,7 +61,7 @@ val MediaControls = FC<MediaControlsProps> { props ->
         input {
             type = InputType.checkbox
             checked = props.autoStop
-            onClick = {
+            onChange = {
                 props.toggleAutoStop(!props.autoStop)
             }
         }
