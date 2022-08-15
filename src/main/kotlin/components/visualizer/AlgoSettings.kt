@@ -1,8 +1,8 @@
-package ui.visualizer
+package components.visualizer
 
 import AlgoSettings
+import PUZZLE_MAP
 import Puzzle
-import config.PUZZLE_MAP
 import csstype.Display
 import csstype.FlexDirection
 import emotion.react.css

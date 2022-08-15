@@ -1,4 +1,4 @@
-package ui.visualizer
+package components.visualizer
 
 import Chromosome
 import react.FC

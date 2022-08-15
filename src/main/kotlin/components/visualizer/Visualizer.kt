@@ -1,10 +1,10 @@
-package ui.visualizer
+package components.visualizer
 
 import AlgoResult
-import AlgoSettings
 import Chromosome
 import GeneticAlgorithm
-import Puzzle
+import PUZZLES
+import config.Config
 import csstype.*
 import emotion.react.css
 import kotlinx.js.timers.Timeout
@@ -16,19 +16,16 @@ import react.dom.html.ReactHTML.div
 import react.useEffectOnce
 import react.useState
 
-external interface CanvasProps : Props {
-    var puzzles: List<Puzzle>
-    var algoSettings: AlgoSettings
-}
 
-val Visualizer = FC<CanvasProps> { props ->
+val Visualizer = FC<Props> {
 
     var intervalId: Timeout? by useState(null)
     var algoResult: AlgoResult? by useState(null)
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
     var refreshRate: Int by useState(1)
-    val algo by useState(GeneticAlgorithm(props.algoSettings))
+    val algo by useState(GeneticAlgorithm(Config.defaultSettings))
+    val algoSettings by useState(Config.defaultSettings)
 
     useEffectOnce {
         algoResult = algo.reset()
@@ -42,7 +39,7 @@ val Visualizer = FC<CanvasProps> { props ->
     }
 
     react.useEffect(algoResult) {
-        if (autoStop && (algoResult?.best ?: 0.0) >= props.algoSettings.maxScore()) {
+        if (autoStop && (algoResult?.best ?: 0.0) >= algoSettings.maxScore()) {
             stop()
         }
     }
@@ -65,8 +62,8 @@ val Visualizer = FC<CanvasProps> { props ->
             }
 
             AlgoSettings {
-                this.puzzles = props.puzzles
-                this.algoSettings = props.algoSettings
+                this.puzzles = PUZZLES
+                this.algoSettings = algoSettings
                 this.onUpdateSettings = { algoSettings ->
                     stop()
                     algoResult = algo.updateSettings(algoSettings)
