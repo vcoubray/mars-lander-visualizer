@@ -8,13 +8,13 @@ import config.defaultSettings
 import csstype.*
 import emotion.react.css
 import emotion.styled.styled
+import kotlinx.js.jso
 import mui.icons.material.BarChartSharp
 import mui.icons.material.ChevronLeft
 import mui.icons.material.Menu
 import mui.icons.material.VisibilitySharp
 import mui.material.*
-import mui.material.styles.Theme
-import mui.material.styles.TypographyVariant
+import mui.material.styles.*
 import mui.system.sx
 import react.*
 import react.dom.aria.ariaLabel
@@ -26,6 +26,7 @@ import react.router.dom.BrowserRouter
 import react.router.dom.NavLink
 import ui.visualizer.Visualizer
 
+
 inline operator fun Length.minus(l: Length): Length {
     return "calc($this - $l)".unsafeCast<Length>()
 }
@@ -36,6 +37,7 @@ val DrawerHeader = div.styled { _, theme ->
     alignItems = AlignItems.center
     justifyContent = JustifyContent.flexEnd
     padding = theme.spacing(0, 1)
+    console.log(theme.transitions)
     +theme.mixins.toolbar.unsafeCast<Properties>()
 }
 
@@ -53,12 +55,71 @@ val MainContent = FC<MainContentProps> { props ->
             flexGrow = 1.unsafeCast<FlexGrow>()
             padding = theme.spacing(2)
             marginLeft = if (props.open) 0.px else (-props.drawerWidth).px
+
+            transition = if (props.open) {
+                theme.transitions.create(arrayOf("margin"), jso {
+                    easing = theme.transitions.easing.easeOut
+                    duration = theme.transitions.duration.enteringScreen
+                })
+            } else {
+                theme.transitions.create(arrayOf("margin"), jso {
+                    easing = theme.transitions.easing.sharp
+                    duration = theme.transitions.duration.leavingScreen
+                })
+            }
         }
 
         DrawerHeader {}
         +props.children
     }
 }
+
+external interface MyAppBarProps : Props {
+    var open: Boolean
+    var drawerWidth: Int
+    var onOpen: () -> Unit
+}
+
+val MyAppBar = FC<MyAppBarProps> { props ->
+    val theme by useContext(ThemeContext)
+
+    AppBar {
+        position = AppBarPosition.fixed
+        sx {
+            width = if (props.open) 100.pct - props.drawerWidth.px else 100.pct
+            transition = if (props.open) {
+                theme.transitions.create(arrayOf("margin", "width"), jso {
+                    easing = theme.transitions.easing.easeOut
+                    duration = theme.transitions.duration.enteringScreen
+                })
+            } else {
+                theme.transitions.create(arrayOf("margin", "width"), jso {
+                    easing = theme.transitions.easing.sharp
+                    duration = theme.transitions.duration.leavingScreen
+                })
+            }
+        }
+
+
+        Toolbar {
+            if (!props.open) {
+                IconButton {
+                    ariaLabel = "open"
+                    edge = IconButtonEdge.start
+                    onClick = { props.onOpen() }
+                    Menu()
+                }
+            }
+            Typography {
+                +"Mars Lander Visualizer"
+                variant = TypographyVariant.h6
+                noWrap = true
+                component = div
+            }
+        }
+    }
+}
+
 
 val App = FC<Props> {
     var open by useState(false)
@@ -71,30 +132,10 @@ val App = FC<Props> {
                     display = Display.flex
                 }
 
-                AppBar {
-                    position = AppBarPosition.fixed
-
-                    sx {
-                        width = if (open) 100.pct - drawerWidth.px else 100.pct
-                        transition = "all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms".unsafeCast<Transition>()
-                    }
-
-                    Toolbar {
-                        if (!open) {
-                            IconButton {
-                                ariaLabel = "open"
-                                edge = IconButtonEdge.start
-                                onClick = { open = true }
-                                Menu()
-                            }
-                        }
-                        Typography {
-                            +"Mars Lander Visualizer"
-                            variant = TypographyVariant.h6
-                            noWrap = true
-                            component = div
-                        }
-                    }
+                MyAppBar {
+                    this.open = open
+                    this.drawerWidth = drawerWidth
+                    this.onOpen = { open = true }
                 }
 
                 Drawer {
