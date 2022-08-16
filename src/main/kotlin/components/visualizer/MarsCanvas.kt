@@ -1,8 +1,8 @@
 package components.visualizer
 
-import AlgoResult
-import Chromosome
-import CrossingEnum
+import models.AlgoResult
+import condigame.Chromosome
+import condigame.CrossingEnum
 import csstype.NamedColor
 import kotlinx.browser.document
 import org.w3c.dom.CanvasRenderingContext2D

@@ -1,43 +1,12 @@
+package condigame
+
+import models.AlgoResult
+import models.AlgoSettings
 import kotlin.jvm.Synchronized
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-class Chromosome(var id: Int, var actions: Array<Action>) {
-    var score = 0.0
-    var normalizedScore = 0.0
-    var cumulativeScore = 0.0
-    var path = emptyList<Pair<Double, Double>>()
-    var state: State? = null
-    var result: Result? = null
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is Chromosome) id == other.id
-        else false
-    }
-
-    override fun hashCode(): Int {
-        return id
-    }
-}
-
-
-class AlgoSettings(
-    var chromosomeSize: Int,
-    var populationSize: Int,
-    var mutationProbability: Double,
-    var elitismPercent: Double,
-    var puzzle: Puzzle,
-    var speedMax: Double,
-    var xSpeedWeight: Double,
-    var ySpeedWeight: Double,
-    var rotateWeight: Double,
-    var distanceWeight: Double,
-    var crashSpeedWeight: Double
-) {
-
-    fun maxScore() = xSpeedWeight + ySpeedWeight + rotateWeight + distanceWeight
-}
 
 class GeneticAlgorithm(
     var settings: AlgoSettings
@@ -63,7 +32,7 @@ class GeneticAlgorithm(
         return Chromosome(
             chromosomeIndex++,
             (0 until settings.chromosomeSize).map {
-                generateAction()
+                Action.generate()
             }.toTypedArray()
         )
     }
@@ -160,7 +129,7 @@ class GeneticAlgorithm(
     fun mutation(chromosome: Chromosome) {
         for (i in chromosome.actions.indices) {
             if (Random.nextDouble(1.0) < settings.mutationProbability) {
-                chromosome.actions[i] = generateAction()
+                chromosome.actions[i] = Action.generate()
             }
         }
     }
@@ -196,17 +165,17 @@ class GeneticAlgorithm(
     }
 
     @Synchronized
-    fun next(step : Int): AlgoResult{
+    fun next(step : Int): AlgoResult {
         lateinit var result: AlgoResult
         repeat(step){ result = next()}
         return result
     }
 
-//    fun findBestResult(): Chromosome {
+//    fun findBestResult(): condigame.Chromosome {
 //
 //        var population = generateRandomPopulation()
 //
-//        lateinit var result: Chromosome
+//        lateinit var result: condigame.Chromosome
 //        var generationCount = 0
 //        while (generationCount < 100) {
 //            evaluation(population)

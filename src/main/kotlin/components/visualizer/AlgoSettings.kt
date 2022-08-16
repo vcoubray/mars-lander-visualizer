@@ -1,8 +1,8 @@
 package components.visualizer
 
-import AlgoSettings
+import models.AlgoSettings
 import PUZZLE_MAP
-import Puzzle
+import models.Puzzle
 import csstype.Display
 import csstype.FlexDirection
 import emotion.react.css
@@ -57,7 +57,7 @@ val AlgoSettings = FC<AlgoSettingsProps> { props ->
         }
 
         label {
-            +"Chromosome Size"
+            +"condigame.Chromosome Size"
             input {
                 type = InputType.text
                 defaultValue = props.algoSettings.chromosomeSize.toString()

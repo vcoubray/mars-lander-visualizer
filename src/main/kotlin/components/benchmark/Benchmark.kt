@@ -7,6 +7,6 @@ import react.dom.html.ReactHTML.h1
 val Benchmark = FC<Props> {
 
     h1 {
-        +"ui.benchmark.getBenchmark"
+        +"Benchmark"
     }
 }

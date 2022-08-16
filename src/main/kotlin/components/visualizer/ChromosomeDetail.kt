@@ -1,6 +1,6 @@
 package components.visualizer
 
-import Chromosome
+import condigame.Chromosome
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML.div
@@ -23,12 +23,12 @@ val ChromosomeDetail = FC<ChromosomeDetailProps> { props ->
         }
         props.chromosome.state?.let { state ->
             p {
-                +"State : $state"
+                +"condigame.State : $state"
             }
         }
         props.chromosome.result?.let{result ->
             p {
-                +"Result : $result"
+                +"condigame.Result : $result"
             }
         }
 

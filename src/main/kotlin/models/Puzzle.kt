@@ -1,6 +1,7 @@
+package models
 
-const val HEIGHT = 3000
-const val WIDTH = 7000
+import condigame.*
+
 
 data class Puzzle(
     val id: Int,
@@ -8,7 +9,8 @@ data class Puzzle(
     val surface: String,
     val initialState: State
 ) {
-    val surfacePath = Surface(HEIGHT, WIDTH,
+    val surfacePath = Surface(
+        HEIGHT, WIDTH,
         surface.split(" ")
             .asSequence()
             .map { it.toDouble() }

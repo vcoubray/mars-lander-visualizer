@@ -1,8 +1,8 @@
 package components.visualizer
 
-import AlgoResult
-import Chromosome
-import GeneticAlgorithm
+import models.AlgoResult
+import condigame.Chromosome
+import condigame.GeneticAlgorithm
 import PUZZLES
 import config.Config
 import csstype.*

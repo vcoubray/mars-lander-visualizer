@@ -1,7 +1,8 @@
 package components.visualizer
 
-import AlgoResult
-import Chromosome
+import models.AlgoResult
+import condigame.Chromosome
+import condigame.CrossingEnum
 import csstype.Cursor
 import csstype.FontWeight
 import csstype.NamedColor
@@ -14,7 +15,7 @@ import react.dom.html.ReactHTML.h2
 external interface PopulationListProps : Props {
     var algoResult: AlgoResult?
     var selectedChromosome: Chromosome?
-    var onSelect: (Chromosome) -> Unit
+    var onSelect: (Chromosome?) -> Unit
     var maxScore: Double
 }
 
@@ -34,7 +35,7 @@ val PopulationList = FC<PopulationListProps> { props ->
                     css {
                         cursor = Cursor.pointer
 //                        if (props.selectedChromosome == chromosome) {
-                            fontWeight = FontWeight.bold
+                        fontWeight = FontWeight.bold
 //                        }
                         color = when {
                             props.selectedChromosome == chromosome -> NamedColor.red
@@ -46,10 +47,19 @@ val PopulationList = FC<PopulationListProps> { props ->
                     }
 
                     key = chromosome.id.toString()
-                    +"${chromosome.id} -> ${chromosome.score.asDynamic().toFixed(5)} - ${chromosome.normalizedScore.asDynamic().toFixed(5)} - ${chromosome.cumulativeScore.asDynamic().toFixed(5)}"
+                    +"${chromosome.id} -> ${
+                        chromosome.score.asDynamic().toFixed(5)
+                    } - ${chromosome.normalizedScore.asDynamic().toFixed(5)} - ${
+                        chromosome.cumulativeScore.asDynamic().toFixed(5)
+                    }"
 
                     onClick = {
-                        props.onSelect(chromosome)
+                        if (props.selectedChromosome?.id == chromosome.id) {
+                            props.onSelect(null)
+                        } else {
+                            props.onSelect(chromosome)
+
+                        }
                     }
                 }
             }

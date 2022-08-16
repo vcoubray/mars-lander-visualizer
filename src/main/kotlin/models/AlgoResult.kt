@@ -1,4 +1,6 @@
+package models
 
+import condigame.Chromosome
 
 
 class AlgoResult(

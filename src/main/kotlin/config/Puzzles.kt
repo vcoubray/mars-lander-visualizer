@@ -1,3 +1,6 @@
+import condigame.State
+import models.Puzzle
+
 val PUZZLES = listOf(
     Puzzle(
         1,

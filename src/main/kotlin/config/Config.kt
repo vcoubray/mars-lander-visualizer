@@ -1,6 +1,6 @@
 package config
 
-import AlgoSettings
+import models.AlgoSettings
 import PUZZLES
 
 object Config {
