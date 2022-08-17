@@ -1,6 +1,6 @@
 package components.visualizer
 
-import models.AlgoResult
+import models.PopulationResult
 import condigame.Chromosome
 import condigame.GeneticAlgorithm
 import PUZZLES
@@ -20,7 +20,7 @@ import react.useState
 val Visualizer = FC<Props> {
 
     var intervalId: Timeout? by useState(null)
-    var algoResult: AlgoResult? by useState(null)
+    var populationResult: PopulationResult? by useState(null)
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
     var refreshRate: Int by useState(1)
@@ -28,7 +28,7 @@ val Visualizer = FC<Props> {
     val algoSettings by useState(Config.defaultSettings)
 
     useEffectOnce {
-        algoResult = algo.reset()
+        populationResult = algo.reset()
     }
 
     fun stop() {
@@ -38,8 +38,8 @@ val Visualizer = FC<Props> {
         }
     }
 
-    react.useEffect(algoResult) {
-        if (autoStop && (algoResult?.best ?: 0.0) >= algoSettings.maxScore()) {
+    react.useEffect(populationResult) {
+        if (autoStop && (populationResult?.best ?: 0.0) >= algoSettings.maxScore()) {
             stop()
         }
     }
@@ -50,7 +50,8 @@ val Visualizer = FC<Props> {
             justifyContent = JustifyContent.spaceBetween
         }
         MarsCanvas {
-            this.algoResult = algoResult
+            this.puzzle = algoSettings.puzzle
+            this.populationResult = populationResult
             this.selectedChromosome = selectedChromosome
             this.autoStop = autoStop
             this.maxScore = algo.settings.maxScore()
@@ -66,7 +67,7 @@ val Visualizer = FC<Props> {
                 this.algoSettings = algoSettings
                 this.onUpdateSettings = { algoSettings ->
                     stop()
-                    algoResult = algo.updateSettings(algoSettings)
+                    populationResult = algo.updateSettings(algoSettings)
                     selectedChromosome = null
                 }
             }
@@ -77,17 +78,17 @@ val Visualizer = FC<Props> {
                 this.refreshRate = refreshRate
                 this.onNext = {
                     stop()
-                    algoResult = algo.next(refreshRate)
+                    populationResult = algo.next(refreshRate)
                 }
                 this.onPlay = {
-                    intervalId = setInterval({ algoResult = algo.next(refreshRate) }, 100)
+                    intervalId = setInterval({ populationResult = algo.next(refreshRate) }, 100)
                 }
                 this.onStop = {
                     stop()
                 }
                 this.onReset = {
                     stop()
-                    algoResult = algo.reset()
+                    populationResult = algo.reset()
                     selectedChromosome = null
                 }
                 this.toggleAutoStop = { it ->
@@ -104,7 +105,7 @@ val Visualizer = FC<Props> {
         }
 
         PopulationList {
-            this.algoResult = algoResult
+            this.populationResult = populationResult
             this.selectedChromosome = selectedChromosome
             this.onSelect = { chromosome -> selectedChromosome = chromosome }
             this.maxScore = algo.settings.maxScore()

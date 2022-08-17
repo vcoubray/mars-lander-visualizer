@@ -1,6 +1,6 @@
 package components.visualizer
 
-import models.AlgoResult
+import models.PopulationResult
 import condigame.Chromosome
 import condigame.CrossingEnum
 import csstype.Cursor
@@ -13,7 +13,7 @@ import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.h2
 
 external interface PopulationListProps : Props {
-    var algoResult: AlgoResult?
+    var populationResult: PopulationResult?
     var selectedChromosome: Chromosome?
     var onSelect: (Chromosome?) -> Unit
     var maxScore: Double
@@ -28,7 +28,7 @@ val PopulationList = FC<PopulationListProps> { props ->
             +"Population"
         }
 
-        props.algoResult?.let { result ->
+        props.populationResult?.let { result ->
             for (chromosome in result.population.sortedByDescending { it.score }) {
                 div {
 

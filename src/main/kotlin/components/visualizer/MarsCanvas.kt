@@ -1,20 +1,23 @@
 package components.visualizer
 
-import models.AlgoResult
+import models.PopulationResult
 import condigame.Chromosome
 import condigame.CrossingEnum
 import csstype.NamedColor
 import kotlinx.browser.document
+import models.Puzzle
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML.canvas
+import kotlin.math.min
 
 const val ZOOM_FACTOR = 0.2
 
 external interface MarsCanvasProps : Props {
-    var algoResult: AlgoResult?
+    var puzzle: Puzzle
+    var populationResult: PopulationResult?
     var selectedChromosome: Chromosome?
     var maxScore: Double
     var autoStop: Boolean
@@ -22,17 +25,18 @@ external interface MarsCanvasProps : Props {
 
 val MarsCanvas = FC<MarsCanvasProps> { props ->
 
-    react.useEffect(props.algoResult, props.selectedChromosome) {
+    react.useEffect(props.puzzle, props.populationResult, props.selectedChromosome) {
         val canvas = document.getElementById("mars-canvas")!! as HTMLCanvasElement
         val canvasContext = canvas.getContext("2d") as CanvasRenderingContext2D
-        props.algoResult?.let { result ->
-            canvasContext.drawAlgoResult(
-                result,
-                props.selectedChromosome,
-                props.autoStop,
-                props.maxScore
-            )
-        }
+
+        canvasContext.drawAlgoResult(
+            props.puzzle,
+            props.populationResult,
+            props.selectedChromosome,
+            props.autoStop,
+            props.maxScore
+        )
+
     }
 
     canvas {
@@ -43,23 +47,34 @@ val MarsCanvas = FC<MarsCanvasProps> { props ->
 }
 
 fun CanvasRenderingContext2D.drawAlgoResult(
-    result: AlgoResult,
+    puzzle: Puzzle,
+    result: PopulationResult?,
     selectedChromosome: Chromosome?,
-    hideBadChromosomes: Boolean,
+    showOnlyWinner: Boolean,
     maxScore: Double
 ) {
-    init(result.puzzle.surface)
-    drawInformations(result.generation, result.best, result.mean)
-    drawPopulation(result, selectedChromosome, hideBadChromosomes, maxScore)
+    val ratioX = canvas.width / puzzle.surfacePath.width.toDouble()
+    val ratioY = canvas.height / puzzle.surfacePath.height.toDouble()
+    val ratio = min(ratioX, ratioY)
+    init(puzzle, ratio)
+    drawInformations(result)
+    result?.let {
+        drawPopulation(result, ratio, selectedChromosome, showOnlyWinner, maxScore)
+    }
 }
 
 
-fun CanvasRenderingContext2D.init(surface: String) {
+fun CanvasRenderingContext2D.init(puzzle: Puzzle, ratio: Double) {
     fillStyle = NamedColor.black
     fillRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
 
+    fillStyle = NamedColor.white
+    val startX = puzzle.initialState.x * ratio
+    val startY = canvas.height - puzzle.initialState.y * ratio
+    fillRect(startX, startY, 1.0, 1.0)
+
     fillStyle = NamedColor.red
-    drawSurface(surface)
+    drawSurface(puzzle.surface, ratio)
 }
 
 fun CanvasRenderingContext2D.drawText(x: Double, y: Double, message: String) {
@@ -68,27 +83,28 @@ fun CanvasRenderingContext2D.drawText(x: Double, y: Double, message: String) {
     fillText(message, x, y)
 }
 
-fun CanvasRenderingContext2D.drawInformations(generation: Int, best: Double, mean: Double) {
-    drawText(10.0, 20.0, "Generation : $generation")
-    drawText(10.0, 40.0, "Best : ${best.asDynamic().toFixed(5)}")
-    drawText(10.0, 60.0, "Mean : ${mean.asDynamic().toFixed(5)}")
+fun CanvasRenderingContext2D.drawInformations(result: PopulationResult?) {
+    drawText(10.0, 20.0, "Generation : ${result?.generation ?: 0}")
+    drawText(10.0, 40.0, "Best : ${(result?.best ?: 0).asDynamic().toFixed(5)}")
+    drawText(10.0, 60.0, "Mean : ${(result?.mean ?: 0).asDynamic().toFixed(5)}")
 }
 
-fun CanvasRenderingContext2D.drawSurface(surface: String) {
+fun CanvasRenderingContext2D.drawSurface(surface: String, ratio: Double) {
     val points = surface.split(" ")
-        .map { it.toDouble() * ZOOM_FACTOR }
+        .map { it.toDouble() * ratio }
         .chunked(2)
         .map { (x, y) -> x to y }
     drawPath(points, NamedColor.red)
 }
 
 fun CanvasRenderingContext2D.drawPopulation(
-    result: AlgoResult,
+    result: PopulationResult,
+    ratio: Double,
     selectedChromosome: Chromosome?,
-    hideBadChromosomes: Boolean,
+    showOnlyWinner: Boolean,
     maxScore: Double
 ) {
-    val listToDraw = if (hideBadChromosomes && result.best >= maxScore) {
+    val listToDraw = if (showOnlyWinner && result.best >= maxScore) {
         result.population.filter { it.score >= maxScore }
     } else {
         result.population.toList()
@@ -101,11 +117,11 @@ fun CanvasRenderingContext2D.drawPopulation(
             else -> NamedColor.green
         }
         if (chromosome.path.isNotEmpty()) {
-            drawPath(chromosome.path.map { (x, y) -> x * ZOOM_FACTOR to y * ZOOM_FACTOR }, color)
+            drawPath(chromosome.path.map { (x, y) -> x * ratio to y * ratio }, color)
         }
         // Redraw selected to have it in front of others
         selectedChromosome?.let {
-            drawPath(it.path.map { (x, y) -> x * ZOOM_FACTOR to y * ZOOM_FACTOR }, NamedColor.red)
+            drawPath(it.path.map { (x, y) -> x * ratio to y * ratio }, NamedColor.red)
         }
     }
 }

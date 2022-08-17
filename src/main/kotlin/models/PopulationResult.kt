@@ -3,8 +3,7 @@ package models
 import condigame.Chromosome
 
 
-class AlgoResult(
-    val puzzle: Puzzle,
+class PopulationResult(
     val population: Array<Chromosome>,
     val generation: Int
 ) {

@@ -1,6 +1,6 @@
 package condigame
 
-import models.AlgoResult
+import models.PopulationResult
 import models.AlgoSettings
 import kotlin.jvm.Synchronized
 import kotlin.math.max
@@ -16,16 +16,16 @@ class GeneticAlgorithm(
     var generationCount = 0
     var chromosomeIndex = 0
 
-    fun updateSettings(settings: AlgoSettings): AlgoResult {
+    fun updateSettings(settings: AlgoSettings): PopulationResult {
         this.settings = settings
         return reset()
     }
 
-    fun reset(): AlgoResult {
+    fun reset(): PopulationResult {
         generationCount = 0
         chromosomeIndex = 0
         population = generateRandomPopulation()
-        return AlgoResult(this.settings.puzzle, this.population, this.generationCount)
+        return PopulationResult(this.settings.puzzle, this.population, this.generationCount)
     }
 
     fun generateChromosome(): Chromosome {
@@ -156,17 +156,17 @@ class GeneticAlgorithm(
     }
 
     @Synchronized
-    fun next(): AlgoResult {
+    fun next(): PopulationResult {
         evaluation()
-        val result = AlgoResult(this.settings.puzzle, this.population.copyOf(), this.generationCount)
+        val result = PopulationResult(this.settings.puzzle, this.population.copyOf(), this.generationCount)
         nextGeneration()
         generationCount++
         return result
     }
 
     @Synchronized
-    fun next(step : Int): AlgoResult {
-        lateinit var result: AlgoResult
+    fun next(step : Int): PopulationResult {
+        lateinit var result: PopulationResult
         repeat(step){ result = next()}
         return result
     }
