@@ -1,7 +1,6 @@
 package config
 
 import models.AlgoSettings
-import PUZZLES
 
 object Config {
 
@@ -10,7 +9,7 @@ object Config {
         populationSize = 80,
         mutationProbability = 0.02,
         elitismPercent = 0.2,
-        puzzle = PUZZLES.first(),
+        puzzleId = 0,
         100.0,
         30.0,
         50.0,

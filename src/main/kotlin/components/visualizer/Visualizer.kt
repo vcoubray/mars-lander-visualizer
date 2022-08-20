@@ -1,20 +1,20 @@
 package components.visualizer
 
-import models.PopulationResult
-import condigame.Chromosome
-import condigame.GeneticAlgorithm
 import PUZZLES
+import condigame.Chromosome
 import config.Config
-import csstype.*
+import csstype.Display
+import csstype.FlexDirection
+import csstype.JustifyContent
 import emotion.react.css
 import kotlinx.js.timers.Timeout
 import kotlinx.js.timers.clearInterval
 import kotlinx.js.timers.setInterval
-import react.FC
-import react.Props
-import react.dom.html.ReactHTML.div
-import react.useEffectOnce
-import react.useState
+import models.PopulationResult
+import mui.material.Box
+import mui.system.sx
+import react.*
+import services.algoService
 
 
 val Visualizer = FC<Props> {
@@ -24,11 +24,12 @@ val Visualizer = FC<Props> {
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
     var refreshRate: Int by useState(1)
-    val algo by useState(GeneticAlgorithm(Config.defaultSettings))
     val algoSettings by useState(Config.defaultSettings)
 
+
+
     useEffectOnce {
-        populationResult = algo.reset()
+        populationResult = algoService.updateSettings(algoSettings)
     }
 
     fun stop() {
@@ -38,28 +39,31 @@ val Visualizer = FC<Props> {
         }
     }
 
-    react.useEffect(populationResult) {
+    useEffect(populationResult) {
         if (autoStop && (populationResult?.best ?: 0.0) >= algoSettings.maxScore()) {
             stop()
         }
     }
 
-    div {
+    Box {
         css {
             display = Display.flex
             justifyContent = JustifyContent.spaceBetween
         }
         MarsCanvas {
-            this.puzzle = algoSettings.puzzle
+
+            this.puzzle = PUZZLES[algoSettings.puzzleId]
             this.populationResult = populationResult
             this.selectedChromosome = selectedChromosome
             this.autoStop = autoStop
-            this.maxScore = algo.settings.maxScore()
+            this.maxScore = algoSettings.maxScore()
         }
 
-        div {
-            css {
-                marginLeft = 10.px
+        Box {
+            sx {
+                display = Display.flex
+                flexDirection = FlexDirection.column
+
             }
 
             AlgoSettings {
@@ -67,7 +71,7 @@ val Visualizer = FC<Props> {
                 this.algoSettings = algoSettings
                 this.onUpdateSettings = { algoSettings ->
                     stop()
-                    populationResult = algo.updateSettings(algoSettings)
+                    populationResult = algoService.updateSettings(algoSettings)
                     selectedChromosome = null
                 }
             }
@@ -78,17 +82,17 @@ val Visualizer = FC<Props> {
                 this.refreshRate = refreshRate
                 this.onNext = {
                     stop()
-                    populationResult = algo.next(refreshRate)
+                    populationResult = algoService.next(refreshRate)
                 }
                 this.onPlay = {
-                    intervalId = setInterval({ populationResult = algo.next(refreshRate) }, 100)
+                    intervalId = setInterval({ populationResult = algoService.next(refreshRate) }, 100)
                 }
                 this.onStop = {
                     stop()
                 }
                 this.onReset = {
                     stop()
-                    populationResult = algo.reset()
+                    populationResult = algoService.reset()
                     selectedChromosome = null
                 }
                 this.toggleAutoStop = { it ->
@@ -98,7 +102,7 @@ val Visualizer = FC<Props> {
             }
         }
     }
-    div {
+    Box {
         css {
             display = Display.flex
             justifyContent = JustifyContent.spaceBetween
@@ -108,7 +112,7 @@ val Visualizer = FC<Props> {
             this.populationResult = populationResult
             this.selectedChromosome = selectedChromosome
             this.onSelect = { chromosome -> selectedChromosome = chromosome }
-            this.maxScore = algo.settings.maxScore()
+            this.maxScore = algoSettings.maxScore()
         }
 
         selectedChromosome?.let { chromosome ->

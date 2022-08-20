@@ -1,6 +1,5 @@
 package components.common
 
-import modules.ThemeContext
 import config.Sizes
 import csstype.FlexGrow
 import csstype.Properties
@@ -8,6 +7,8 @@ import csstype.px
 import csstype.unaryMinus
 import emotion.react.css
 import models.Page
+import modules.ThemeContext
+import mui.utils.MuiTransitions
 import react.FC
 import react.Props
 import react.create
@@ -15,7 +16,6 @@ import react.dom.html.ReactHTML
 import react.router.Route
 import react.router.Routes
 import react.useContext
-import mui.utils.MuiTransitions
 
 external interface MainContentProps : Props {
     var pages: Set<Page>
@@ -45,8 +45,6 @@ val MainContent = FC<MainContentProps> { props ->
 
         Routes {
             props.pages.forEachIndexed { i, page ->
-//                for(page in props.pages) {
-                console.log(page)
                 Route {
                     index = i == 0
                     path = page.url

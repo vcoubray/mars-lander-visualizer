@@ -5,7 +5,7 @@ class AlgoSettings(
     var populationSize: Int,
     var mutationProbability: Double,
     var elitismPercent: Double,
-    var puzzle: Puzzle,
+    var puzzleId: Int,
     var speedMax: Double,
     var xSpeedWeight: Double,
     var ySpeedWeight: Double,

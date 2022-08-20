@@ -1,16 +1,14 @@
 package components.visualizer
 
-import models.PopulationResult
 import condigame.Chromosome
 import condigame.CrossingEnum
-import csstype.Cursor
-import csstype.FontWeight
 import csstype.NamedColor
-import emotion.react.css
+import csstype.px
+import models.PopulationResult
+import mui.material.*
+import mui.system.sx
 import react.FC
 import react.Props
-import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.h2
 
 external interface PopulationListProps : Props {
     var populationResult: PopulationResult?
@@ -22,43 +20,47 @@ external interface PopulationListProps : Props {
 
 val PopulationList = FC<PopulationListProps> { props ->
 
-    div {
 
-        h2 {
-            +"Population"
-        }
+    fun Chromosome.label() = "$id : ${score.asDynamic().toFixed(5)} - ${normalizedScore.asDynamic().toFixed(5)} - ${
+        cumulativeScore.asDynamic().toFixed(5)
+    }"
 
-        props.populationResult?.let { result ->
-            for (chromosome in result.population.sortedByDescending { it.score }) {
-                div {
 
-                    css {
-                        cursor = Cursor.pointer
-//                        if (props.selectedChromosome == chromosome) {
-                        fontWeight = FontWeight.bold
-//                        }
-                        color = when {
-                            props.selectedChromosome == chromosome -> NamedColor.red
-                            chromosome.result?.status == CrossingEnum.NOPE -> NamedColor.grey
-                            chromosome.result?.status == CrossingEnum.CRASH -> NamedColor.orange
-                            chromosome.score < props.maxScore -> NamedColor.black
-                            else -> NamedColor.green
+    Box {
+
+        List {
+            sx {
+                maxHeight = 300.px
+            }
+
+            ListSubheader {
+                +"Population"
+            }
+
+            props.populationResult?.let { result ->
+                for (chromosome in result.population.sortedByDescending { it.score }) {
+                    ListItemButton {
+
+                        sx {
+                            color = when {
+                                props.selectedChromosome == chromosome -> NamedColor.red
+                                chromosome.result?.status == CrossingEnum.NOPE -> NamedColor.grey
+                                chromosome.result?.status == CrossingEnum.CRASH -> NamedColor.orange
+                                chromosome.score < props.maxScore -> NamedColor.black
+                                else -> NamedColor.green
+                            }
                         }
-                    }
 
-                    key = chromosome.id.toString()
-                    +"${chromosome.id} -> ${
-                        chromosome.score.asDynamic().toFixed(5)
-                    } - ${chromosome.normalizedScore.asDynamic().toFixed(5)} - ${
-                        chromosome.cumulativeScore.asDynamic().toFixed(5)
-                    }"
+                        selected = props.selectedChromosome == chromosome
+                        key = chromosome.id.toString()
+                        ListItemText { +chromosome.label() }
+                        onClick = {
+                            if (props.selectedChromosome?.id == chromosome.id) {
+                                props.onSelect(null)
+                            } else {
+                                props.onSelect(chromosome)
 
-                    onClick = {
-                        if (props.selectedChromosome?.id == chromosome.id) {
-                            props.onSelect(null)
-                        } else {
-                            props.onSelect(chromosome)
-
+                            }
                         }
                     }
                 }

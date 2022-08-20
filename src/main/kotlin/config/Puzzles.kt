@@ -45,4 +45,3 @@ val PUZZLES = listOf(
         State(x = 6500.0, y = 2000.0, xSpeed = 0.0, ySpeed = 0.0, fuel = 1200, rotate = 0, power = 0)
     )
 )
-val PUZZLE_MAP = PUZZLES.associateBy { it.id }

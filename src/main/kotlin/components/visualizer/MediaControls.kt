@@ -1,11 +1,21 @@
 package components.visualizer
 
+import csstype.px
 import kotlinx.js.timers.Timeout
+import modules.ThemeContext
+import mui.icons.material.NavigateNextSharp
+import mui.icons.material.PlayArrowSharp
+import mui.icons.material.RefreshSharp
+import mui.icons.material.StopSharp
+import mui.material.*
+import mui.system.responsive
+import mui.system.sx
+import org.w3c.dom.HTMLInputElement
 import react.FC
 import react.Props
-import react.dom.html.InputType
-import react.dom.html.ReactHTML.input
-import react.dom.html.ReactHTML.label
+import react.create
+import react.dom.onChange
+import react.useContext
 
 external interface MediaControlsProps : Props {
     var intervalId: Timeout?
@@ -22,58 +32,86 @@ external interface MediaControlsProps : Props {
 
 val MediaControls = FC<MediaControlsProps> { props ->
 
-    input {
-        type = InputType.button
-        value = "Next"
-        disabled = props.intervalId != null
-        onClick = {
-            props.onNext()
-        }
-    }
+    val theme by useContext(ThemeContext)
 
-    if (props.intervalId == null) {
-        input {
-            type = InputType.button
-            value = "Play"
-            onClick = {
-                props.onPlay()
+    Box {
+        sx {
+            marginTop = theme.spacing(2)
+        }
+        FormGroup {
+            FormControlLabel {
+                sx {
+                    marginLeft = 0.px
+                }
+                label = Typography.create { +"Stop when landing" }
+                labelPlacement = LabelPlacement.start
+                control = Switch.create {
+                    defaultChecked = props.autoStop
+                    onChange = { _, value ->
+                        props.toggleAutoStop(value)
+                    }
+                }
             }
         }
-    } else {
-        input {
-            type = InputType.button
-            value = "Stop"
-            onClick = {
-                props.onStop()
-            }
-        }
-    }
-    input {
-        type = InputType.button
-        value = "Reset"
-        onClick = {
-            props.onReset()
-        }
-    }
 
-    label {
-        +"Auto Stop"
-        input {
-            type = InputType.checkbox
-            checked = props.autoStop
-            onChange = {
-                props.toggleAutoStop(!props.autoStop)
-            }
-        }
-    }
-    label {
-        +"Refresh Rate"
-        input {
-            type = InputType.text
+
+        TextField {
+            label = Typography.create { +"Refresh rate" }
+            variant = FormControlVariant.outlined
+            size = Size.small
             defaultValue = props.refreshRate.toString()
+
             onChange = { event ->
-                props.onUpdateRefreshRate(event.target.value.toInt())
+                props.onUpdateRefreshRate(event.target.unsafeCast<HTMLInputElement>().value.toInt())
+            }
+        }
+
+
+        Stack {
+            direction = responsive(StackDirection.row)
+            spacing = responsive(2)
+            Button {
+                +"Next"
+                startIcon = NavigateNextSharp.create()
+                variant = ButtonVariant.contained
+                disabled = props.intervalId != null
+
+                onClick = {
+                    props.onNext()
+                }
+            }
+
+            if (props.intervalId == null) {
+                Button {
+                    +"Play"
+                    startIcon = PlayArrowSharp.create()
+                    variant = ButtonVariant.contained
+
+
+                    onClick = {
+                        props.onPlay()
+                    }
+                }
+            } else {
+                Button {
+                    +"Stop"
+                    startIcon = StopSharp.create()
+                    variant = ButtonVariant.contained
+
+                    onClick = {
+                        props.onStop()
+                    }
+                }
+            }
+            Button {
+                +"Reset"
+                startIcon = RefreshSharp.create()
+                variant = ButtonVariant.outlined
+                onClick = {
+                    props.onReset()
+                }
             }
         }
     }
+
 }
