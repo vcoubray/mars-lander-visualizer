@@ -10,8 +10,8 @@ import components.visualizer.Visualizer
 fun usePages(): Set<Page>{
     return useMemo {
         setOf(
-            Page("/", "Visualizer", VisibilitySharp, Visualizer),
-            Page("/benchmark", "Benchmark", BarChartSharp, Benchmark)
+            Page("/", "Benchmark", BarChartSharp, Benchmark),
+            Page("/visualize", "Visualizer", VisibilitySharp, Visualizer)
         )
     }
 }
