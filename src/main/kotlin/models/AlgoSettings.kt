@@ -1,6 +1,6 @@
 package models
 
-class AlgoSettings(
+data class AlgoSettings(
     var chromosomeSize: Int,
     var populationSize: Int,
     var mutationProbability: Double,

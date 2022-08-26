@@ -1,7 +1,5 @@
 package condigame
 
-import PUZZLES
-import models.AlgoSettings
 import kotlin.jvm.Synchronized
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -9,39 +7,45 @@ import kotlin.random.Random
 
 
 class GeneticAlgorithm(
-    var settings: AlgoSettings
+    val surface: Surface,
+    val initialState: State,
+    val chromosomeSize: Int,
+    val populationSize: Int,
+    val mutationProbability: Double,
+    val elitismPercent: Double,
+    val speedMax: Double,
+    val xSpeedWeight: Double,
+    val ySpeedWeight: Double,
+    val rotateWeight: Double,
+    val distanceWeight: Double,
+    val crashSpeedWeight: Double
 ) {
 
     var chromosomeIndex = 0
     var population = generateRandomPopulation()
 
-    init{
+    init {
         evaluation()
     }
 
-    fun init() {
-        chromosomeIndex = 0
-        population = generateRandomPopulation()
-        evaluation()
-    }
 
     fun generateChromosome(): Chromosome {
         return Chromosome(
             chromosomeIndex++,
-            (0 until settings.chromosomeSize).map {
+            (0 until chromosomeSize).map {
                 Action.generate()
             }.toTypedArray()
         )
     }
 
     fun generateRandomPopulation(): Array<Chromosome> {
-        return Array(settings.populationSize) { generateChromosome() }
+        return Array(populationSize) { generateChromosome() }
     }
 
     fun evaluation() {
         population.forEach {
-            val state = PUZZLES[settings.puzzleId].initialState.copy()
-            it.result = state.play(it.actions, PUZZLES[settings.puzzleId].surfacePath)
+            val state = initialState.copy()
+            it.result = state.play(it.actions, surface)
             it.path = state.path
             it.state = state
         }
@@ -53,10 +57,10 @@ class GeneticAlgorithm(
     }
 
     fun getScore(result: Result): Double {
-        val xSpeedMax = settings.speedMax
-        val ySpeedMax = settings.speedMax
+        val xSpeedMax = speedMax
+        val ySpeedMax = speedMax
         val rotateMax = 80.0
-        val distanceMax = PUZZLES[settings.puzzleId].surfacePath.distanceMax
+        val distanceMax = surface.distanceMax
 
         val normalizedXSpeed = max(0.0, (xSpeedMax - result.xSpeedOverflow) / xSpeedMax)
         val normalizedYSpeed = max(0.0, (ySpeedMax - result.ySpeedOverflow) / ySpeedMax)
@@ -64,9 +68,9 @@ class GeneticAlgorithm(
         val normalizedDistance = (distanceMax - result.distance) / distanceMax
 
         if (result.status != CrossingEnum.LANDING_ZONE) {
-            return normalizedDistance * settings.distanceWeight + (normalizedYSpeed * settings.ySpeedWeight + normalizedXSpeed * settings.xSpeedWeight) * settings.crashSpeedWeight
+            return normalizedDistance * distanceWeight + (normalizedYSpeed * ySpeedWeight + normalizedXSpeed * xSpeedWeight) * crashSpeedWeight
         }
-        return normalizedXSpeed * settings.xSpeedWeight + normalizedYSpeed * settings.ySpeedWeight + normalizedRotate * settings.rotateWeight + normalizedDistance * settings.distanceWeight
+        return normalizedXSpeed * xSpeedWeight + normalizedYSpeed * ySpeedWeight + normalizedRotate * rotateWeight + normalizedDistance * distanceWeight
     }
 
     fun normalizeScores() {
@@ -103,9 +107,8 @@ class GeneticAlgorithm(
         val child1Actions = mutableListOf<Action>()
         val child2Actions = mutableListOf<Action>()
 
-//        val weight = Random.nextDouble(1.0)
         val weight = Random.nextDouble(0.8) + 0.1
-        for (i in 0 until settings.chromosomeSize) {
+        for (i in 0 until chromosomeSize) {
 
             val rotate1 = weight * parent1.actions[i].rotate + (1.0 - weight) * parent2.actions[i].rotate
             val power1 = weight * parent1.actions[i].power + (1.0 - weight) * parent2.actions[i].power
@@ -124,7 +127,7 @@ class GeneticAlgorithm(
 
     fun mutation(chromosome: Chromosome) {
         for (i in chromosome.actions.indices) {
-            if (Random.nextDouble(1.0) < settings.mutationProbability) {
+            if (Random.nextDouble(1.0) < mutationProbability) {
                 chromosome.actions[i] = Action.generate()
             }
         }
@@ -132,13 +135,13 @@ class GeneticAlgorithm(
 
     fun nextGeneration() {
 
-        var eliteSize = (settings.populationSize * settings.elitismPercent).toInt()
+        var eliteSize = (populationSize * elitismPercent).toInt()
         if (eliteSize % 2 != 0) {
             eliteSize++
         }
 
         val children = mutableListOf<Chromosome>()
-        while (children.size < settings.populationSize - eliteSize) {
+        while (children.size < populationSize - eliteSize) {
             val parent1 = wheelSelection()
             var parent2: Chromosome? = null
             while (parent2 == null || parent2.id == parent1.id) {
@@ -158,27 +161,16 @@ class GeneticAlgorithm(
     }
 
 
-//    fun findBestResult(): condigame.Chromosome {
-//
-//        var population = generateRandomPopulation()
-//
-//        lateinit var result: condigame.Chromosome
-//        var generationCount = 0
-//        while (generationCount < 100) {
-//            evaluation(population)
-//            population = nextGeneration(population)
-//            generationCount++
-//            var bestScore = 0.0
-//            for (chromosome in population) {
-//                if (chromosome.score > bestScore) {
-//                    result = chromosome
-//                    bestScore = chromosome.score
-//                }
-//            }
-//            console.log("$generationCount -> $bestScore")
-//        }
-//        return result
-//    }
+    @Synchronized
+    fun search(scoreMax: Double): Int {
+        var generationCount = 0
+        console.log(this)
+        while (population.maxOf { it.score } < scoreMax) {
+            next()
+            generationCount++
+        }
+        return generationCount
+    }
 
 
 }

@@ -9,13 +9,13 @@ import react.FC
 import react.Props
 import react.create
 import react.dom.onChange
+import react.useState
 
 external interface AlgoSettingsProps : Props {
     var puzzles: List<Puzzle>
     var algoSettings: AlgoSettings
     var onUpdateSettings: (AlgoSettings) -> Unit
 }
-
 
 val AlgoSettings = FC<AlgoSettingsProps> { props ->
 
@@ -89,7 +89,7 @@ val AlgoSettings = FC<AlgoSettingsProps> { props ->
         }
 
         TextField {
-            label = Typography.create { +"Elitism (0 to 1)" }
+            label = Typography.create { +"Speed Max" }
             variant = FormControlVariant.outlined
             size = Size.small
             defaultValue = props.algoSettings.speedMax.toString()

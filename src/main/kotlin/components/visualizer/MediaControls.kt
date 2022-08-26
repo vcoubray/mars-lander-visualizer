@@ -20,13 +20,11 @@ import react.useContext
 external interface MediaControlsProps : Props {
     var intervalId: Timeout?
     var autoStop: Boolean
-    var refreshRate: Int
     var onPlay: () -> Unit
     var onStop: () -> Unit
     var onNext: () -> Unit
     var onReset: () -> Unit
     var toggleAutoStop: (Boolean) -> Unit
-    var onUpdateRefreshRate: (Int) -> Unit
 }
 
 
@@ -53,19 +51,6 @@ val MediaControls = FC<MediaControlsProps> { props ->
                 }
             }
         }
-
-
-        TextField {
-            label = Typography.create { +"Refresh rate" }
-            variant = FormControlVariant.outlined
-            size = Size.small
-            defaultValue = props.refreshRate.toString()
-
-            onChange = { event ->
-                props.onUpdateRefreshRate(event.target.unsafeCast<HTMLInputElement>().value.toInt())
-            }
-        }
-
 
         Stack {
             direction = responsive(StackDirection.row)

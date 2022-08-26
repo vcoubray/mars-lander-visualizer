@@ -23,7 +23,6 @@ val Visualizer = FC<Props> {
     var populationResult: PopulationResult? by useState(null)
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
-    var refreshRate: Int by useState(1)
     val algoSettings by useState(Config.defaultSettings)
 
 
@@ -79,13 +78,12 @@ val Visualizer = FC<Props> {
             MediaControls {
                 this.intervalId = intervalId
                 this.autoStop = autoStop
-                this.refreshRate = refreshRate
                 this.onNext = {
                     stop()
-                    populationResult = algoService.next(refreshRate)
+                    populationResult = algoService.next()
                 }
                 this.onPlay = {
-                    intervalId = setInterval({ populationResult = algoService.next(refreshRate) }, 100)
+                    intervalId = setInterval({ populationResult = algoService.next() }, 100)
                 }
                 this.onStop = {
                     stop()
@@ -98,7 +96,6 @@ val Visualizer = FC<Props> {
                 this.toggleAutoStop = { it ->
                     autoStop = it
                 }
-                this.onUpdateRefreshRate = { it -> refreshRate = it}
             }
         }
     }

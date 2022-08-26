@@ -1,33 +1,52 @@
 package components.benchmark
 
 import PUZZLES
-import csstype.*
-import emotion.react.css
+import config.Config
+import csstype.Display
+import csstype.FlexWrap
 import models.PuzzleResult
 import models.PuzzleResults
-import modules.ThemeContext
-import mui.icons.material.Error
-import mui.icons.material.ErrorOutline
-import mui.icons.material.TaskAlt
-import mui.material.*
-import mui.system.responsive
+import mui.icons.material.PlayArrowSharp
+import mui.material.Box
+import mui.material.Button
+import mui.material.ButtonVariant
 import mui.system.sx
 import react.FC
 import react.Props
-import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.h1
-import react.dom.html.ReactHTML.span
-import react.useContext
+import react.create
+import react.useState
+import services.algoService
 import kotlin.random.Random
 
 val Benchmark = FC<Props> {
 
-    val theme by useContext(ThemeContext)
 
-    val results = PUZZLES.map {
-        PuzzleResults(it, List(10) { PuzzleResult(it, Random.nextInt(400), Random.nextLong(4000)) })
+
+
+    val results = PUZZLES.map {puzzle ->
+        useState(PuzzleResults(puzzle , List(10) { PuzzleResult(it, Random.nextInt(400), Random.nextLong(4000)) }))
     }
 
+
+    Button {
+        +"Play "
+        startIcon = PlayArrowSharp.create()
+        variant = ButtonVariant.contained
+
+        onClick = {
+
+            results.forEach { state ->
+                val (result, setResult) = state
+                setResult(PuzzleResults(result.puzzle, List(1) {
+                    val settings = Config.defaultSettings.copy(puzzleId = result.puzzle.id)
+                    algoService.updateSettings(settings)
+                    algoService.play(1)
+                }))
+            }
+
+        }
+
+    }
 
     Box {
         sx {
@@ -36,47 +55,8 @@ val Benchmark = FC<Props> {
         }
 
         results.forEach { result ->
-            Box {
-                sx {
-                    width = 300.px
-                    marginLeft = theme.spacing(2)
-                    marginBottom = theme.spacing(2)
-                }
-                Accordion {
-
-                    AccordionSummary {
-                        val success = result.results.none { it.executionTime > 1000 }
-                        sx {
-                            color = if(success) theme.palette.success.main else theme.palette.error.main
-                        }
-
-                        val icon = if (success) TaskAlt  else ErrorOutline
-                        icon {
-                            sx { marginRight = theme.spacing(1) }
-                        }
-
-                        +result.puzzle.title
-                    }
-                    AccordionDetails {
-
-                        Stack {
-                            sx {
-                                maxHeight = 300.px
-                                overflowY = Overflow.scroll
-                            }
-                            spacing = responsive(1)
-                            result.results.forEach { r ->
-                                Alert {
-                                    severity = if (r.executionTime > 1000) AlertColor.error else AlertColor.success
-                                    +"${r.generationCount} générations in ${r.executionTime}ms"
-
-
-                                }
-                            }
-                        }
-
-                    }
-                }
+            PuzzleStats {
+                this.puzzleResults = result
             }
         }
     }
