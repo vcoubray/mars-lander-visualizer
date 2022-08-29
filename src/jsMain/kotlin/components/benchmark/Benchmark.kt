@@ -15,15 +15,22 @@ import mui.material.ButtonVariant
 import mui.system.sx
 import react.*
 
+
+data class Test(
+    val counter: Int,
+    val puzzleResult: PuzzleResult
+)
+
+
 val mainScope = MainScope()
 
 val Benchmark = FC<Props> {
 
-    var puzzles by useState(emptyList<Pair<Puzzle, Channel<PuzzleResult>>>())
-
+    var puzzles by useState(emptyList<Pair<Puzzle, Channel<PuzzleResult?>>>())
+    val testCount = 10
     useEffectOnce {
         mainScope.launch {
-            puzzles = getPuzzles().map { it to Channel() }
+            puzzles = getPuzzles().map { it to Channel(1) }
         }
     }
 
@@ -35,9 +42,13 @@ val Benchmark = FC<Props> {
 
         onClick = {
             mainScope.launch {
+
+                puzzles.forEach{(_,channel) -> channel.send(null)}
                 puzzles.forEach { (puzzle, channel) ->
                     val settings = Config.defaultSettings.copy(puzzleId = puzzle.id)
-                    channel.send(algoPlay(settings))
+                    repeat(testCount) {
+                        channel.send(algoPlay(settings))
+                    }
                 }
             }
         }

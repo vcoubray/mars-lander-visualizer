@@ -16,19 +16,28 @@ import react.*
 
 external interface PuzzleStatsProps : Props {
     var puzzle: Puzzle
-    var channel : Channel<PuzzleResult>
+    var channel: Channel<PuzzleResult?>
 }
 
-
-
-val PuzzleStats = FC<PuzzleStatsProps> {props ->
+val PuzzleStats = FC<PuzzleStatsProps> { props ->
 
     val theme by useContext(ThemeContext)
     var stats by useState(emptyList<PuzzleResult>())
+    var lastStat : PuzzleResult? by useState(null)
 
-    mainScope.launch{
-        while(true) {
-            stats += props.channel.receive()
+    useEffectOnce {
+        mainScope.launch {
+            while (true) {
+                lastStat = props.channel.receive()
+            }
+        }
+    }
+
+    useEffect(lastStat){
+        if (lastStat != null) {
+            stats = stats + lastStat!!
+        } else {
+            stats = emptyList()
         }
     }
 
