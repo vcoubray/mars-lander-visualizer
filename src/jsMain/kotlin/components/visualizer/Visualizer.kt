@@ -2,7 +2,7 @@ package components.visualizer
 
 import AlgoSettings
 import Config
-import PopulationResult
+import GenerationResult
 import Puzzle
 import apis.algoNext
 import apis.getPuzzles
@@ -13,7 +13,6 @@ import csstype.FlexDirection
 import csstype.JustifyContent
 import emotion.react.css
 import kotlinx.coroutines.*
-import kotlinx.js.timers.Timeout
 import mui.material.Box
 import mui.system.sx
 import react.*
@@ -22,7 +21,7 @@ val mainScope = MainScope()
 
 val Visualizer = FC<Props> {
 
-    var populationResult: PopulationResult? by useState(null)
+    var populationResult: GenerationResult? by useState(null)
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
     val algoSettings by useState(Config.defaultSettings)

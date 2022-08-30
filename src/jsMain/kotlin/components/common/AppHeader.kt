@@ -1,19 +1,19 @@
-package component.common
+package components.common
 
 import config.Sizes
 import csstype.minus
 import csstype.pct
+import modules.ThemeContext
 import mui.icons.material.Menu
 import mui.material.*
 import mui.material.styles.TypographyVariant
 import mui.system.sx
+import mui.utils.MuiTransitions
 import react.FC
 import react.Props
 import react.dom.aria.ariaLabel
 import react.dom.html.ReactHTML
 import react.useContext
-import modules.ThemeContext
-import mui.utils.MuiTransitions
 
 external interface AppHeaderProps : Props {
     var open: Boolean
@@ -28,9 +28,9 @@ val AppHeader = FC<AppHeaderProps> { props ->
         sx {
             width = if (props.open) 100.pct - Sizes.Sidebar.width else 100.pct
             transition = if (props.open) {
-                theme.transitions.create(arrayOf("margin","width"), MuiTransitions.closeSidebarTransition(theme))
+                theme.transitions.create(arrayOf("margin", "width"), MuiTransitions.closeSidebarTransition(theme))
             } else {
-                theme.transitions.create(arrayOf("margin","width"), MuiTransitions.openSidebarTransition(theme))
+                theme.transitions.create(arrayOf("margin", "width"), MuiTransitions.openSidebarTransition(theme))
             }
         }
 

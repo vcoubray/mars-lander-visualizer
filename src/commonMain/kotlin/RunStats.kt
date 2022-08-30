@@ -2,7 +2,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class PuzzleResult(
+data class RunStats(
     var generationCount: Int,
     var executionTime: Long
 )

@@ -1,6 +1,6 @@
 package components.visualizer
 
-import PopulationResult
+import GenerationResult
 import Puzzle
 import codingame.Chromosome
 import codingame.CrossingEnum
@@ -19,7 +19,7 @@ const val ZOOM_FACTOR = 0.2
 
 external interface MarsCanvasProps : Props {
     var puzzle: Puzzle?
-    var populationResult: PopulationResult?
+    var populationResult: GenerationResult?
     var selectedChromosome: Chromosome?
     var maxScore: Double
     var autoStop: Boolean
@@ -50,7 +50,7 @@ val MarsCanvas = FC<MarsCanvasProps> { props ->
 
 fun CanvasRenderingContext2D.drawAlgoResult(
     puzzle: Puzzle?,
-    result: PopulationResult?,
+    result: GenerationResult?,
     selectedChromosome: Chromosome?,
     showOnlyWinner: Boolean,
     maxScore: Double
@@ -88,7 +88,7 @@ fun CanvasRenderingContext2D.drawText(x: Double, y: Double, message: String) {
     fillText(message, x, y)
 }
 
-fun CanvasRenderingContext2D.drawInformations(result: PopulationResult?) {
+fun CanvasRenderingContext2D.drawInformations(result: GenerationResult?) {
     drawText(10.0, 20.0, "Generation : ${result?.generation ?: 0}")
     drawText(10.0, 40.0, "Best : ${(result?.best ?: 0).asDynamic().toFixed(5)}")
     drawText(10.0, 60.0, "Mean : ${(result?.mean ?: 0).asDynamic().toFixed(5)}")
@@ -103,7 +103,7 @@ fun CanvasRenderingContext2D.drawSurface(surface: String, ratio: Double) {
 }
 
 fun CanvasRenderingContext2D.drawPopulation(
-    result: PopulationResult,
+    result: GenerationResult,
     ratio: Double,
     selectedChromosome: Chromosome?,
     showOnlyWinner: Boolean,

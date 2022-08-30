@@ -2,14 +2,11 @@ package services
 
 import AlgoSettings
 import PUZZLES
-import PopulationResult
-import PuzzleResult
+import GenerationResult
+import RunStats
 import condigame.GeneticAlgorithm
 import condigame.toSurface
 import kotlin.system.measureTimeMillis
-
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
 class AlgoService {
     var settings: AlgoSettings = Config.defaultSettings
@@ -18,29 +15,29 @@ class AlgoService {
 
 
     @Synchronized
-    fun reset(settings: AlgoSettings? = null): PopulationResult {
+    fun reset(settings: AlgoSettings? = null): GenerationResult {
         settings?.let { this.settings = it }
         generationCount = 0
         algo = this.settings.toAlgo()
-        return PopulationResult(emptyArray(), this.generationCount)
+        return GenerationResult(emptyArray(), this.generationCount)
     }
 
     @Synchronized
-    fun next(): PopulationResult {
+    fun next(): GenerationResult {
         generationCount++
         algo.next()
-        return PopulationResult(this.algo.population, this.generationCount)
+        return GenerationResult(this.algo.population, this.generationCount)
     }
 
     @Synchronized
-    fun play(settings: AlgoSettings): PuzzleResult {
+    fun play(settings: AlgoSettings): RunStats {
 
         val generationCount: Int
         val elapsedTime = measureTimeMillis {
             val algo = settings.toAlgo()
             generationCount = algo.search(settings.maxScore())
         }
-        return PuzzleResult(generationCount, elapsedTime)
+        return RunStats(generationCount, elapsedTime)
     }
 
 

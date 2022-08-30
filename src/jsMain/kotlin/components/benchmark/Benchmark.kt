@@ -5,32 +5,53 @@ import csstype.Display
 import csstype.FlexWrap
 import kotlinx.coroutines.*
 import Puzzle
-import PuzzleResult
+import RunStats
 import apis.algoPlay
 import kotlinx.coroutines.channels.Channel
 import mui.icons.material.PlayArrowSharp
-import mui.material.Box
-import mui.material.Button
-import mui.material.ButtonVariant
+import mui.material.*
 import mui.system.sx
+import org.w3c.dom.HTMLInputElement
 import react.*
-
-
-data class Test(
-    val counter: Int,
-    val puzzleResult: PuzzleResult
-)
+import react.dom.onChange
 
 
 val mainScope = MainScope()
 
 val Benchmark = FC<Props> {
 
-    var puzzles by useState(emptyList<Pair<Puzzle, Channel<PuzzleResult?>>>())
-    val testCount = 10
+    var puzzles by useState(emptyList<Pair<Puzzle, Channel<List<RunStats>>>>())
+    var runCount by useState(10)
+
     useEffectOnce {
         mainScope.launch {
             puzzles = getPuzzles().map { it to Channel(1) }
+        }
+    }
+
+    fun startRuns() = mainScope.launch {
+
+        puzzles.forEach { (puzzle, channel) ->
+            var list = emptyList<RunStats>()
+            channel.send(list)
+
+            val settings = Config.defaultSettings.copy(puzzleId = puzzle.id)
+            repeat(runCount) {
+                list = list + algoPlay(settings)
+                channel.send(list)
+            }
+        }
+    }
+
+
+    TextField {
+        label = Typography.create { +"Runs count" }
+        variant = FormControlVariant.outlined
+        size = Size.small
+        defaultValue = runCount
+
+        onChange = { event ->
+            runCount = event.target.unsafeCast<HTMLInputElement>().value.toInt()
         }
     }
 
@@ -39,19 +60,7 @@ val Benchmark = FC<Props> {
         +"Play "
         startIcon = PlayArrowSharp.create()
         variant = ButtonVariant.contained
-
-        onClick = {
-            mainScope.launch {
-
-                puzzles.forEach{(_,channel) -> channel.send(null)}
-                puzzles.forEach { (puzzle, channel) ->
-                    val settings = Config.defaultSettings.copy(puzzleId = puzzle.id)
-                    repeat(testCount) {
-                        channel.send(algoPlay(settings))
-                    }
-                }
-            }
-        }
+        onClick = { startRuns() }
     }
 
     Box {
@@ -61,9 +70,10 @@ val Benchmark = FC<Props> {
         }
 
         puzzles.forEach { (puzzle, channel) ->
-            PuzzleStats {
+            RunStats {
                 this.puzzle = puzzle
                 this.channel = channel
+                this.runCount = runCount
             }
         }
     }

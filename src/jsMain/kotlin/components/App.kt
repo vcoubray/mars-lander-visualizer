@@ -1,6 +1,6 @@
 package components
 
-import component.common.AppHeader
+import components.common.AppHeader
 import components.common.Sidebar
 import csstype.Display
 import mui.material.Box

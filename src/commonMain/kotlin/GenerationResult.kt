@@ -2,7 +2,7 @@ import codingame.Chromosome
 import kotlinx.serialization.Serializable
 
 @Serializable
-class PopulationResult(
+class GenerationResult(
     val population: Array<Chromosome>,
     val generation: Int
 ) {

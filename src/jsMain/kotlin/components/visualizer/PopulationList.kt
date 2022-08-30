@@ -1,6 +1,6 @@
 package components.visualizer
 
-import PopulationResult
+import GenerationResult
 import codingame.Chromosome
 import codingame.CrossingEnum
 import csstype.NamedColor
@@ -11,7 +11,7 @@ import react.FC
 import react.Props
 
 external interface PopulationListProps : Props {
-    var populationResult: PopulationResult?
+    var populationResult: GenerationResult?
     var selectedChromosome: Chromosome?
     var onSelect: (Chromosome?) -> Unit
     var maxScore: Double
@@ -38,7 +38,6 @@ val PopulationList = FC<PopulationListProps> { props ->
             props.populationResult?.let { result ->
                 for (chromosome in result.population.sortedByDescending { it.score }) {
                     ListItemButton {
-
                         sx {
                             color = when {
                                 props.selectedChromosome == chromosome -> NamedColor.red
