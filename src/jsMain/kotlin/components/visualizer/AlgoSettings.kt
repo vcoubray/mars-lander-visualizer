@@ -11,7 +11,6 @@ import react.create
 import react.dom.onChange
 
 external interface AlgoSettingsProps : Props {
-    var puzzles: List<Puzzle>
     var algoSettings: AlgoSettings
     var onUpdateSettings: (AlgoSettings) -> Unit
 }
@@ -21,23 +20,6 @@ val AlgoSettings = FC<AlgoSettingsProps> { props ->
 
     Stack {
         spacing = responsive(2)
-
-        Select {
-            props.puzzles.forEachIndexed{i, puzzle ->
-                MenuItem {
-                    value = i
-                    +puzzle.title
-                }
-            }
-
-            size = Size.small
-            value = props.algoSettings.puzzleId
-            onChange = { event, _ ->
-                console.log(event)
-                props.algoSettings.puzzleId = event.target.value.unsafeCast<Int>()
-                props.onUpdateSettings(props.algoSettings)
-            }
-        }
 
         TextField {
             label = Typography.create { +"Population Size" }

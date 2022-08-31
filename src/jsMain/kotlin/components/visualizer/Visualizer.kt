@@ -13,6 +13,7 @@ import csstype.FlexDirection
 import csstype.JustifyContent
 import emotion.react.css
 import kotlinx.coroutines.*
+import modules.ThemeContext
 import mui.material.Box
 import mui.system.sx
 import react.*
@@ -24,10 +25,12 @@ val Visualizer = FC<Props> {
     var populationResult: GenerationResult? by useState(null)
     var selectedChromosome: Chromosome? by useState(null)
     var autoStop: Boolean by useState(true)
-    val algoSettings by useState(Config.defaultSettings)
+    val algoSettings by useState(Config.defaultSettings.copy())
     var puzzles by useState(emptyList<Puzzle>())
 
     var job by useState<Job?>(null)
+
+    val theme by useContext(ThemeContext)
 
     useEffectOnce {
         mainScope.launch {
@@ -76,9 +79,17 @@ val Visualizer = FC<Props> {
                 display = Display.flex
                 flexDirection = FlexDirection.column
             }
-
+            Box {
+                sx {
+                    marginBottom = theme.spacing(2)
+                }
+                PuzzleSelector {
+                    this.puzzles = puzzles
+                    this.defaultValue = algoSettings.puzzleId
+                    this.onPuzzleChange = { puzzleId -> reset(algoSettings.apply { this.puzzleId = puzzleId }) }
+                }
+            }
             AlgoSettings {
-                this.puzzles = puzzles
                 this.algoSettings = algoSettings
                 this.onUpdateSettings = { algoSettings -> reset(algoSettings) }
             }

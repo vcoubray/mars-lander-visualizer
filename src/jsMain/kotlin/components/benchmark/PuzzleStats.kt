@@ -22,13 +22,17 @@ external interface RunStatsProps : Props {
     var puzzle: Puzzle
     var channel: Channel<List<RunStats>>
     var runCount: Int
+    var timeout: Int
 }
 
 val RunStats = FC<RunStatsProps> { props ->
 
     val theme by useContext(ThemeContext)
     var stats by useState(emptyList<RunStats>())
-    val success = stats.none { it.executionTime > 1000 }
+    val success = stats.none { it.executionTime > props.timeout }
+
+    val maxTime = stats.takeIf { it.isNotEmpty() }?.maxOf { it.executionTime } ?: 0
+    val meanTime = stats.takeIf { it.isNotEmpty() }?.map { it.executionTime }?.average()?.toInt() ?: 0
 
 
     useEffectOnce {
@@ -54,7 +58,8 @@ val RunStats = FC<RunStatsProps> { props ->
                         else -> theme.palette.error.main
                     }
                     Selector(".MuiAccordionSummary-content")() {
-                        justifyContent = JustifyContent.spaceBetween
+                        display = Display.flex
+                        flexDirection = FlexDirection.column
                         width = 100.pct
                     }
                 }
@@ -67,23 +72,34 @@ val RunStats = FC<RunStatsProps> { props ->
                 div {
                     css {
                         display = Display.flex
+                        justifyContent = JustifyContent.spaceBetween
                     }
+                    div {
+                        css {
+                            display = Display.flex
+                        }
 
-                    icon {
-                        sx { marginRight = theme.spacing(1) }
+                        icon {
+                            sx { marginRight = theme.spacing(1) }
+                        }
+
+                        Typography {
+                            sx {
+                                flexShrink = 0.unsafeCast<FlexShrink>()
+                            }
+                            variant = TypographyVariant.subtitle1
+                            +props.puzzle.title
+                        }
                     }
 
                     Typography {
-                        sx {
-                            flexShrink = 0.unsafeCast<FlexShrink>()
-                        }
-                        variant = TypographyVariant.subtitle1
-                        +props.puzzle.title
+                        +"${stats.size}/${props.runCount}"
                     }
                 }
-
                 Typography {
-                    +"${stats.size}/${props.runCount}"
+                    align = TypographyAlign.right
+                    variant = TypographyVariant.subtitle2
+                    +"Max : ${maxTime}ms - Mean: ${meanTime}ms"
                 }
             }
             AccordionDetails {
@@ -96,7 +112,7 @@ val RunStats = FC<RunStatsProps> { props ->
                     spacing = responsive(1)
                     stats.forEach { r ->
                         Alert {
-                            severity = if (r.executionTime > 1000) AlertColor.error else AlertColor.success
+                            severity = if (r.executionTime > props.timeout) AlertColor.error else AlertColor.success
                             +"${r.generationCount} générations in ${r.executionTime}ms"
                         }
                     }

@@ -22,6 +22,7 @@ val Benchmark = FC<Props> {
 
     var puzzles by useState(emptyList<Pair<Puzzle, Channel<List<RunStats>>>>())
     var runCount by useState(10)
+    var timeout = 1000
 
     useEffectOnce {
         mainScope.launch {
@@ -74,6 +75,7 @@ val Benchmark = FC<Props> {
                 this.puzzle = puzzle
                 this.channel = channel
                 this.runCount = runCount
+                this.timeout = timeout
             }
         }
     }
