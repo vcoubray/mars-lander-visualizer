@@ -103,17 +103,29 @@ val RunStats = FC<RunStatsProps> { props ->
                 }
             }
             AccordionDetails {
+                if(stats.isEmpty()) {
+                    Typography {
+                        sx {
+                            color = theme.palette.text.secondary
+                            fontStyle = FontStyle.italic
+                        }
+                        align = TypographyAlign.center
 
-                Stack {
-                    sx {
-                        maxHeight = 300.px
-                        overflowY = Overflow.scroll
+                        TypographyVariant.subtitle1
+                        +"Click play to launch runs"
                     }
-                    spacing = responsive(1)
-                    stats.forEach { r ->
-                        Alert {
-                            severity = if (r.executionTime > props.timeout) AlertColor.error else AlertColor.success
-                            +"${r.generationCount} générations in ${r.executionTime}ms"
+                } else {
+                    Stack {
+                        sx {
+                            maxHeight = 300.px
+                            overflowY = Overflow.scroll
+                        }
+                        spacing = responsive(1)
+                        stats.forEach { r ->
+                            Alert {
+                                severity = if (r.executionTime > props.timeout) AlertColor.error else AlertColor.success
+                                +"${r.generationCount} générations in ${r.executionTime}ms"
+                            }
                         }
                     }
                 }

@@ -8,6 +8,7 @@ import apis.algoNext
 import apis.getPuzzles
 import apis.resetAlgo
 import codingame.Chromosome
+import components.common.AlgoSettings
 import csstype.Display
 import csstype.FlexDirection
 import csstype.JustifyContent

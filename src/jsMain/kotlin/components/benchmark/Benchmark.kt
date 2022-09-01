@@ -7,10 +7,13 @@ import kotlinx.coroutines.*
 import Puzzle
 import RunStats
 import apis.algoPlay
+import components.common.AlgoSettings
 import kotlinx.coroutines.channels.Channel
 import mui.icons.material.PlayArrowSharp
+import mui.icons.material.StopSharp
 import mui.material.*
-import mui.system.sx
+import mui.material.Box
+import mui.system.*
 import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.onChange
@@ -22,7 +25,12 @@ val Benchmark = FC<Props> {
 
     var puzzles by useState(emptyList<Pair<Puzzle, Channel<List<RunStats>>>>())
     var runCount by useState(10)
-    var timeout = 1000
+    var algoSettings by useState(Config.defaultSettings.copy())
+    var timeout by useState(1000)
+
+    var runsJob : Job? by useState( null)
+    var isPlaying by useState(runsJob?.isActive == true)
+
 
     useEffectOnce {
         mainScope.launch {
@@ -30,52 +38,97 @@ val Benchmark = FC<Props> {
         }
     }
 
-    fun startRuns() = mainScope.launch {
+    fun startRuns() {
+        runsJob = mainScope.launch {
+            isPlaying = true
+            puzzles.forEach { (puzzle, channel) ->
+                var runs = emptyList<RunStats>()
+                channel.send(runs)
 
-        puzzles.forEach { (puzzle, channel) ->
-            var list = emptyList<RunStats>()
-            channel.send(list)
-
-            val settings = Config.defaultSettings.copy(puzzleId = puzzle.id)
-            repeat(runCount) {
-                list = list + algoPlay(settings)
-                channel.send(list)
+                val settings = algoSettings.copy(puzzleId = puzzle.id)
+                repeat(runCount) {
+                    runs = runs + algoPlay(settings)
+                    channel.send(runs)
+                }
             }
+            isPlaying = false
         }
     }
 
-
-    TextField {
-        label = Typography.create { +"Runs count" }
-        variant = FormControlVariant.outlined
-        size = Size.small
-        defaultValue = runCount
-
-        onChange = { event ->
-            runCount = event.target.unsafeCast<HTMLInputElement>().value.toInt()
-        }
+    fun stop () {
+        runsJob?.cancel()
+        isPlaying = false
     }
 
-
-    Button {
-        +"Play "
-        startIcon = PlayArrowSharp.create()
-        variant = ButtonVariant.contained
-        onClick = { startRuns() }
-    }
 
     Box {
         sx {
             display = Display.flex
-            flexWrap = FlexWrap.wrap
         }
 
-        puzzles.forEach { (puzzle, channel) ->
-            RunStats {
-                this.puzzle = puzzle
-                this.channel = channel
-                this.runCount = runCount
-                this.timeout = timeout
+
+        Stack {
+            spacing = responsive(2)
+
+            AlgoSettings {
+                this.algoSettings = algoSettings
+                this.onUpdateSettings = { settings -> algoSettings = settings }
+            }
+
+            Divider ()
+
+            TextField {
+                label = Typography.create { +"Runs count" }
+                variant = FormControlVariant.outlined
+                size = Size.small
+                defaultValue = runCount
+
+                onChange = { event ->
+                    runCount = event.target.unsafeCast<HTMLInputElement>().value.toInt()
+                }
+            }
+
+            TextField {
+                label = Typography.create { +"Timeout (ms)" }
+                variant = FormControlVariant.outlined
+                size = Size.small
+                defaultValue = timeout
+
+                onChange = { event ->
+                    timeout = event.target.unsafeCast<HTMLInputElement>().value.toInt()
+                }
+            }
+
+            if(isPlaying) {
+                Button {
+                    +"Stop "
+                    startIcon = StopSharp.create()
+                    variant = ButtonVariant.contained
+                    onClick = { stop() }
+                }
+
+            } else {
+                Button {
+                    +"Play "
+                    startIcon = PlayArrowSharp.create()
+                    variant = ButtonVariant.contained
+                    onClick = { startRuns() }
+                }
+            }
+        }
+        Box {
+            sx {
+                display = Display.flex
+                flexWrap = FlexWrap.wrap
+            }
+
+            puzzles.forEach { (puzzle, channel) ->
+                RunStats {
+                    this.puzzle = puzzle
+                    this.channel = channel
+                    this.runCount = runCount
+                    this.timeout = timeout
+                }
             }
         }
     }

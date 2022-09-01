@@ -31,7 +31,7 @@ class AlgoService {
 
     @Synchronized
     fun play(settings: AlgoSettings): RunStats {
-
+        println(settings)
         val generationCount: Int
         val elapsedTime = measureTimeMillis {
             val algo = settings.toAlgo()

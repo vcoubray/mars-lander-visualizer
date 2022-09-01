@@ -1,7 +1,6 @@
-package components.visualizer
+package components.common
 
 import AlgoSettings
-import Puzzle
 import mui.material.*
 import mui.system.responsive
 import org.w3c.dom.HTMLInputElement
