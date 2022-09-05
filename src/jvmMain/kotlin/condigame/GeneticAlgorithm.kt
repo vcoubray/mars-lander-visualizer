@@ -57,7 +57,7 @@ class GeneticAlgorithm(
             if (it.fitnessResult == null) {
                 workingState.loadFrom(initialState)
                 it.fitnessResult = workingState.play(it.actions, surface)
-                it.path = workingState.path
+                it.path = workingState.path.toMutableList()
                 it.state.loadFrom(workingState, true)
                 it.score = getScore(it.fitnessResult!!)
                 if (it.score > bestChromosome.score) {

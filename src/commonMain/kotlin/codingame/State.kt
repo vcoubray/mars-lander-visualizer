@@ -23,7 +23,7 @@ data class State(
         rotate = state.rotate
         power = state.power
         if (withPath) {
-            path = state.path.toMutableList()
+            path = state.path.map{it.copy()}.toMutableList()
         } else {
             path.clear()
             path.add(x to y)
