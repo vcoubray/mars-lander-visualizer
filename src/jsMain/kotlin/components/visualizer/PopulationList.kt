@@ -12,15 +12,15 @@ import react.Props
 
 external interface PopulationListProps : Props {
     var populationResult: GenerationResult?
-    var selectedChromosome: Chromosome?
-    var onSelect: (Chromosome?) -> Unit
+    var selectedChromosomeId: Int?
+    var onSelect: (Int?) -> Unit
     var maxScore: Double
 }
 
 
 val PopulationList = FC<PopulationListProps> { props ->
 
-    fun Chromosome.label() = "$id : ${score.asDynamic().toFixed(5)} - ${normalizedScore.asDynamic().toFixed(5)} - ${
+    fun Chromosome.label() = "${score.asDynamic().toFixed(5)} - ${normalizedScore.asDynamic().toFixed(5)} - ${
         cumulativeScore.asDynamic().toFixed(5)
     }"
 
@@ -35,32 +35,33 @@ val PopulationList = FC<PopulationListProps> { props ->
                 +"Population"
             }
 
-            props.populationResult?.let { result ->
-                for (chromosome in result.population.sortedByDescending { it.score }) {
-                    ListItemButton {
-                        sx {
-                            color = when {
-                                props.selectedChromosome == chromosome -> NamedColor.red
-                                chromosome.fitnessResult?.status == CrossingEnum.NOPE -> NamedColor.grey
-                                chromosome.fitnessResult?.status == CrossingEnum.CRASH -> NamedColor.orange
-                                chromosome.score < props.maxScore -> NamedColor.black
-                                else -> NamedColor.green
-                            }
+
+            props.populationResult?.population?.forEachIndexed { id, chromosome ->
+//                for (chromosome in result.population.sortedByDescending { it.score }) {
+                ListItemButton {
+                    sx {
+                        color = when {
+                            props.selectedChromosomeId == id -> NamedColor.red
+                            chromosome.fitnessResult?.status == CrossingEnum.NOPE -> NamedColor.grey
+                            chromosome.fitnessResult?.status == CrossingEnum.CRASH -> NamedColor.orange
+                            chromosome.score < props.maxScore -> NamedColor.black
+                            else -> NamedColor.green
                         }
+                    }
 
-                        selected = props.selectedChromosome == chromosome
-                        key = chromosome.id.toString()
-                        ListItemText { +chromosome.label() }
-                        onClick = {
-                            if (props.selectedChromosome?.id == chromosome.id) {
-                                props.onSelect(null)
-                            } else {
-                                props.onSelect(chromosome)
+                    selected = props.selectedChromosomeId == id
+                    key = id.toString()
+                    ListItemText { +chromosome.label() }
+                    onClick = {
+                        if (props.selectedChromosomeId == id) {
+                            props.onSelect(null)
+                        } else {
+                            props.onSelect(id)
 
-                            }
                         }
                     }
                 }
+
             }
         }
 

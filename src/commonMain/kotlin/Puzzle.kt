@@ -1,4 +1,6 @@
+import codingame.HEIGHT
 import codingame.State
+import codingame.WIDTH
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,3 +15,6 @@ data class Puzzle(
         val path = "/puzzles"
     }
 }
+
+
+

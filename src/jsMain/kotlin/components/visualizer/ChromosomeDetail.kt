@@ -19,7 +19,7 @@ val ChromosomeDetail = FC<ChromosomeDetailProps> { props ->
         }
 
         p {
-            +"id: ${props.chromosome.id} - score : ${props.chromosome.score.asDynamic().toFixed(5)}"
+            +"score : ${props.chromosome.score.asDynamic().toFixed(5)}"
         }
         props.chromosome.state?.let { state ->
             p {

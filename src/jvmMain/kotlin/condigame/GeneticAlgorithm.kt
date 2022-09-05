@@ -1,11 +1,9 @@
 package condigame
 
 import codingame.*
-import kotlin.jvm.Synchronized
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
-
 
 class GeneticAlgorithm(
     val surface: Surface,
@@ -13,49 +11,80 @@ class GeneticAlgorithm(
     val chromosomeSize: Int,
     val populationSize: Int,
     val mutationProbability: Double,
-    val elitismPercent: Double,
+    elitismPercent: Double,
     val speedMax: Double,
     val xSpeedWeight: Double,
     val ySpeedWeight: Double,
     val rotateWeight: Double,
     val distanceWeight: Double,
-    val crashSpeedWeight: Double
 ) {
 
-    var chromosomeIndex = 0
     var population = generateRandomPopulation()
+    private var children = List(populationSize) {
+        Chromosome(List(chromosomeSize) {
+            Action(0, 0)
+        }.toTypedArray())
+    }.toTypedArray()
+
+    private val workingState = initialState.copy()
+
+    private var eliteSize: Int
+    private val childrenSize: Int
+    private var bestChromosome : Chromosome
+    private var scoreSum = 0.0
 
     init {
+        eliteSize = (populationSize * elitismPercent).toInt()
+        if (eliteSize % 2 != 0) { eliteSize+=1 }
+        childrenSize = populationSize - eliteSize
+        bestChromosome = population.first()
         evaluation()
     }
 
-
-    fun generateChromosome(): Chromosome {
+    private fun generateChromosome(): Chromosome {
         return Chromosome(
-            chromosomeIndex++,
-            (0 until chromosomeSize).map {
-                Action.generate()
-            }.toTypedArray()
+            List(chromosomeSize) { Action(0, 0).apply(Action::randomize) }.toTypedArray()
         )
     }
 
-    fun generateRandomPopulation(): Array<Chromosome> {
+    private fun generateRandomPopulation(): Array<Chromosome> {
         return Array(populationSize) { generateChromosome() }
     }
 
-    fun evaluation() {
+    private fun evaluation() {
+        scoreSum = 0.0
         population.forEach {
-            val state = initialState.copy()
-            it.fitnessResult = state.play(it.actions, surface)
-            it.path = state.path
-            it.state = state
+            if (it.fitnessResult == null) {
+                workingState.loadFrom(initialState)
+                it.fitnessResult = workingState.play(it.actions, surface)
+                it.path = workingState.path
+                it.state.loadFrom(workingState, true)
+                it.score = getScore(it.fitnessResult!!)
+                if (it.score > bestChromosome.score) {
+                    bestChromosome = it
+                }
+            }
+            scoreSum += it.score
         }
 
-        population.forEach {
-            it.score = getScore(it.fitnessResult!!)
-        }
-        cumulativeScores()
+
     }
+
+    fun cumulativeScore() {
+
+        for (chromosome in population) {
+            chromosome.normalizedScore = chromosome.score / scoreSum
+        }
+        population.sortBy { it.normalizedScore }
+        var cumul = 0.0
+        for (chromosome in population) {
+
+            cumul += chromosome.normalizedScore
+            chromosome.cumulativeScore = cumul
+
+        }
+    }
+
 
     fun getScore(fitnessResult: FitnessResult): Double {
         val xSpeedMax = speedMax
@@ -68,95 +97,95 @@ class GeneticAlgorithm(
         val normalizedRotate = (rotateMax - fitnessResult.rotateOverflow) / rotateMax
         val normalizedDistance = (distanceMax - fitnessResult.distance) / distanceMax
 
-        if (fitnessResult.status != CrossingEnum.LANDING_ZONE) {
-            return normalizedDistance * distanceWeight + (normalizedYSpeed * ySpeedWeight + normalizedXSpeed * xSpeedWeight) * crashSpeedWeight
-        }
         return normalizedXSpeed * xSpeedWeight + normalizedYSpeed * ySpeedWeight + normalizedRotate * rotateWeight + normalizedDistance * distanceWeight
     }
 
-    fun normalizeScores() {
-        val sum = population.sumOf { it.score }
-        for (chromosome in population) {
-            chromosome.normalizedScore = chromosome.score / sum
-        }
-    }
 
-    fun cumulativeScores() {
-        normalizeScores()
-        population.sortBy { it.normalizedScore }
-        var cumul = 0.0
-        for (chromosome in population) {
-            cumul += chromosome.normalizedScore
-            chromosome.cumulativeScore = cumul
-        }
-    }
-
-
-    fun wheelSelection(): Chromosome {
+    fun wheelSelection(): Int {
+//        val rnd = Random.nextDouble(0.80) + 0.20
         val rnd = Random.nextDouble(1.0)
-        var i = 0
-        while (i < population.size && rnd > population[i].cumulativeScore) {
-            i++
+        var i = population.lastIndex
+        while (i >= 0 && rnd < population[i].cumulativeScore) {
+            i--
         }
+        return i + 1
+    }
 
-        return population[i]
+    fun randomSelection(): Int {
+        return Random.nextInt(populationSize/2)+populationSize/2
     }
 
 
-    fun crossOver(parent1: Chromosome, parent2: Chromosome): Pair<Chromosome, Chromosome> {
+    fun selection() : Int {
+//        return wheelSelection()
+        return randomSelection()
+    }
 
-        val child1Actions = mutableListOf<Action>()
-        val child2Actions = mutableListOf<Action>()
+    fun CrossoverAndMutate(parent1: Chromosome, parent2: Chromosome, children1: Chromosome, children2: Chromosome) {
 
         val weight = Random.nextDouble(0.8) + 0.1
+        val oppWeight = (1 - weight)
         for (i in 0 until chromosomeSize) {
 
-            val rotate1 = weight * parent1.actions[i].rotate + (1.0 - weight) * parent2.actions[i].rotate
-            val power1 = weight * parent1.actions[i].power + (1.0 - weight) * parent2.actions[i].power
-            val rotate2 = (1.0 - weight) * parent1.actions[i].rotate + weight * parent2.actions[i].rotate
-            val power2 = (1.0 - weight) * parent1.actions[i].power + weight * parent2.actions[i].power
-            child1Actions.add(Action(rotate1.roundToInt(), power1.roundToInt()))
-            child2Actions.add(Action(rotate2.roundToInt(), power2.roundToInt()))
+            children1.actions[i].rotate =
+                (weight * parent1.actions[i].rotate + oppWeight * parent2.actions[i].rotate).roundToInt()
+            children1.actions[i].power =
+                (weight * parent1.actions[i].power + oppWeight * parent2.actions[i].power).roundToInt()
+            children2.actions[i].rotate =
+                (oppWeight * parent1.actions[i].rotate + weight * parent2.actions[i].rotate).roundToInt()
+            children2.actions[i].power =
+                (oppWeight * parent1.actions[i].power + weight * parent2.actions[i].power).roundToInt()
         }
+        children1.fitnessResult = null
+        children2.fitnessResult = null
 
-        return Chromosome(chromosomeIndex++, child1Actions.toTypedArray()) to Chromosome(
-            chromosomeIndex++,
-            child2Actions.toTypedArray()
-        )
+        mutation(children1)
+        mutation(children2)
 
     }
 
     fun mutation(chromosome: Chromosome) {
-        for (i in chromosome.actions.indices) {
+        for (action in chromosome.actions) {
             if (Random.nextDouble(1.0) < mutationProbability) {
-                chromosome.actions[i] = Action.generate()
+                action.randomize()
             }
         }
     }
 
+
+
     fun nextGeneration() {
 
-        var eliteSize = (populationSize * elitismPercent).toInt()
-        if (eliteSize % 2 != 0) {
-            eliteSize++
+        for (i in 0 until childrenSize / 2) {
+
+            val parentId1 = selection()
+            var parentId2 = -1
+            while (parentId2 == -1 || parentId2 == parentId1) {
+                parentId2 = selection()
+            }
+            CrossoverAndMutate(
+                population[parentId1],
+                population[parentId2],
+                children[i * 2],
+                children[i * 2 + 1]
+            )
         }
 
-        val children = mutableListOf<Chromosome>()
-        while (children.size < populationSize - eliteSize) {
-            val parent1 = wheelSelection()
-            var parent2: Chromosome? = null
-            while (parent2 == null || parent2.id == parent1.id) {
-                parent2 = wheelSelection()
-            }
-            val (child1, child2) = crossOver(parent1, parent2).also { (a, b) -> mutation(a);mutation(b) }
-            children.add(child1)
-            children.add(child2)
+        for (i in childrenSize until populationSize) {
+            children[i] = population[i]
         }
-        population = population.takeLast(eliteSize).toTypedArray() + children.toTypedArray()
+
+
+        val temp = population
+        population = children
+        children = temp
+
     }
 
     @Synchronized
     fun next() {
+//        cumulativeScore()
+        population.sortBy { it.score }
         nextGeneration()
         evaluation()
     }
@@ -165,7 +194,7 @@ class GeneticAlgorithm(
     @Synchronized
     fun search(scoreMax: Double): Int {
         var generationCount = 0
-        while (population.maxOf { it.score } < scoreMax) {
+        while (bestChromosome.score < scoreMax) {
             next()
             generationCount++
         }

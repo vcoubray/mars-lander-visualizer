@@ -1,19 +1,22 @@
 package components.benchmark
 
-import apis.getPuzzles
-import csstype.Display
-import csstype.FlexWrap
-import kotlinx.coroutines.*
+import Config
 import Puzzle
 import RunStats
 import apis.algoPlay
+import apis.getPuzzles
 import components.common.AlgoSettings
+import csstype.Display
+import csstype.FlexWrap
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import mui.icons.material.PlayArrowSharp
 import mui.icons.material.StopSharp
 import mui.material.*
-import mui.material.Box
-import mui.system.*
+import mui.system.responsive
+import mui.system.sx
 import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.onChange
@@ -24,11 +27,11 @@ val mainScope = MainScope()
 val Benchmark = FC<Props> {
 
     var puzzles by useState(emptyList<Pair<Puzzle, Channel<List<RunStats>>>>())
-    var runCount by useState(10)
+    var runCount by useState(20)
     var algoSettings by useState(Config.defaultSettings.copy())
-    var timeout by useState(1000)
+    var timeout by useState(250)
 
-    var runsJob : Job? by useState( null)
+    var runsJob: Job? by useState(null)
     var isPlaying by useState(runsJob?.isActive == true)
 
 
@@ -55,11 +58,10 @@ val Benchmark = FC<Props> {
         }
     }
 
-    fun stop () {
+    fun stop() {
         runsJob?.cancel()
         isPlaying = false
     }
-
 
     Box {
         sx {
@@ -75,7 +77,7 @@ val Benchmark = FC<Props> {
                 this.onUpdateSettings = { settings -> algoSettings = settings }
             }
 
-            Divider ()
+            Divider()
 
             TextField {
                 label = Typography.create { +"Runs count" }
@@ -99,7 +101,7 @@ val Benchmark = FC<Props> {
                 }
             }
 
-            if(isPlaying) {
+            if (isPlaying) {
                 Button {
                     +"Stop "
                     startIcon = StopSharp.create()

@@ -24,7 +24,7 @@ val mainScope = MainScope()
 val Visualizer = FC<Props> {
 
     var populationResult: GenerationResult? by useState(null)
-    var selectedChromosome: Chromosome? by useState(null)
+    var selectedChromosomeId: Int? by useState(null)
     var autoStop: Boolean by useState(true)
     val algoSettings by useState(Config.defaultSettings.copy())
     var puzzles by useState(emptyList<Puzzle>())
@@ -51,7 +51,7 @@ val Visualizer = FC<Props> {
         stop()
         mainScope.launch {
             populationResult = resetAlgo(algoSettings)
-            selectedChromosome = null
+            selectedChromosomeId = null
         }
     }
 
@@ -70,7 +70,7 @@ val Visualizer = FC<Props> {
 
             this.puzzle = puzzles.getOrNull(algoSettings.puzzleId)
             this.populationResult = populationResult
-            this.selectedChromosome = selectedChromosome
+            this.selectedChromosome = selectedChromosomeId?.let { populationResult?.population?.get(it) }
             this.autoStop = autoStop
             this.maxScore = algoSettings.maxScore()
         }
@@ -125,14 +125,15 @@ val Visualizer = FC<Props> {
 
         PopulationList {
             this.populationResult = populationResult
-            this.selectedChromosome = selectedChromosome
-            this.onSelect = { chromosome -> selectedChromosome = chromosome }
+            this.selectedChromosomeId = selectedChromosomeId
+            this.onSelect = { chromosomeId -> selectedChromosomeId = chromosomeId }
             this.maxScore = algoSettings.maxScore()
         }
 
-        selectedChromosome?.let { chromosome ->
+        selectedChromosomeId?.let { id ->
+            console.log(selectedChromosomeId)
             ChromosomeDetail {
-                this.chromosome = chromosome
+                this.chromosome = populationResult?.population?.get(id)!!
             }
         }
     }

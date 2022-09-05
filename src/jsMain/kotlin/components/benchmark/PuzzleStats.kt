@@ -31,9 +31,9 @@ val RunStats = FC<RunStatsProps> { props ->
     var stats by useState(emptyList<RunStats>())
     val success = stats.none { it.executionTime > props.timeout }
 
-    val maxTime = stats.takeIf { it.isNotEmpty() }?.maxOf { it.executionTime } ?: 0
+    val maxRun = stats.takeIf { it.isNotEmpty() }?.maxByOrNull { it.executionTime }
     val meanTime = stats.takeIf { it.isNotEmpty() }?.map { it.executionTime }?.average()?.toInt() ?: 0
-
+    val meanGeneration = stats.takeIf { it.isNotEmpty() }?.map { it.generationCount }?.average()?.toInt() ?: 0
 
     useEffectOnce {
         mainScope.launch {
@@ -96,11 +96,22 @@ val RunStats = FC<RunStatsProps> { props ->
                         +"${stats.size}/${props.runCount}"
                     }
                 }
+
                 Typography {
                     align = TypographyAlign.right
                     variant = TypographyVariant.subtitle2
-                    +"Max : ${maxTime}ms - Mean: ${meanTime}ms"
+                    +"Mean : $meanGeneration in ${meanTime}ms"
                 }
+                maxRun ?.let {
+                    Typography {
+                        align = TypographyAlign.right
+                        variant = TypographyVariant.subtitle2
+                        +"Max : ${it.generationCount} in ${it.executionTime}ms"
+                    }
+                }
+
+
+
             }
             AccordionDetails {
                 if(stats.isEmpty()) {

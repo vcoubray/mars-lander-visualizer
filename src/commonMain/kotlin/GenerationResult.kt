@@ -3,7 +3,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class GenerationResult(
-    val population: Array<Chromosome>,
+    val population: List<Chromosome>,
     val generation: Int
 ) {
     val best = population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
