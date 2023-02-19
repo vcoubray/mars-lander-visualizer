@@ -5,4 +5,4 @@ This project is an IHM in Kotlin/JS to visualize a Genetic Algorithm for the cod
 
 ## Usage
 
-`./gradlew browserDevelopmentRun --continuous`
+`./gradlew run`
