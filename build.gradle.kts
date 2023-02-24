@@ -1,23 +1,26 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
-val kotlinVersion = "1.7.10"
+val kotlinVersion = "1.8.10"
 val serializationVersion = "1.3.3"
-val ktorVersion = "2.0.3"
+val ktorVersion = "2.2.3"
 val logbackVersion = "1.2.11"
 val kotlinWrappersVersion = "1.0.0-pre.369"
 
 
 plugins {
-    kotlin("multiplatform") version "1.7.10"
+    kotlin("multiplatform") version "1.8.10"
     application //to run JVM part
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 group = "fr.vco.codingame.mars.lander.visualizer"
-version = "1.0-SNAPSHOT"
+version = "2.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+}
+dependencies {
+    implementation("io.ktor:ktor-server-compression-jvm:2.2.3")
 }
 
 
@@ -26,15 +29,18 @@ kotlin {
         withJava()
     }
 
-//    js {
+//    js(IR) {
 //        browser {
 //            binaries.executable()
 //        }
 //    }
-    js {
+
+    js(IR) {
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled.set(true)
+                }
             }
             binaries.executable()
         }
@@ -52,8 +58,8 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
-                implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-server-cors:$ktorVersion")
                 implementation("io.ktor:ktor-server-compression:$ktorVersion")
                 implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
@@ -82,7 +88,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("ServerKt")
+mainClass.set("ApplicationKt")
 }
 
 // include JS artifacts in any JAR we generate
