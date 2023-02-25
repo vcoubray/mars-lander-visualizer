@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 val kotlinVersion = "1.8.10"
 val serializationVersion = "1.3.3"
 val ktorVersion = "2.2.3"
+val koinVersion = "3.3.0"
 val logbackVersion = "1.2.11"
 val kotlinWrappersVersion = "1.0.0-pre.369"
 
@@ -57,6 +58,8 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
+                implementation("io.insert-koin:koin-ktor:$koinVersion")
+                implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
@@ -88,7 +91,7 @@ kotlin {
 }
 
 application {
-mainClass.set("ApplicationKt")
+    mainClass.set("ApplicationKt")
 }
 
 // include JS artifacts in any JAR we generate
