@@ -26,8 +26,7 @@ fun Route.puzzleRouting() {
 
             val puzzle = PUZZLES.getOrNull(id)
             if (puzzle == null) {
-                call.response.status(HttpStatusCode.NotFound)
-                call.respondText("No puzzle with id [$id]")
+                call.respondText("No puzzle with id [$id]", status = HttpStatusCode.NotFound)
                 return@get
             }
 

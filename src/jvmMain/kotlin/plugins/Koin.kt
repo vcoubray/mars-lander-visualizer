@@ -6,8 +6,8 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
-
 import services.PuzzleService
+import services.SimulationService
 
 fun Application.configureKoin() {
 
@@ -17,6 +17,7 @@ fun Application.configureKoin() {
         modules (
             module {
                 singleOf(::PuzzleService)
+                singleOf(::SimulationService)
             }
         )
     }

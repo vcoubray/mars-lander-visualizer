@@ -1,0 +1,36 @@
+### Get all puzzles
+GET localhost:8080/puzzles
+
+### Get the specified puzzle
+GET localhost:8080/puzzles/0
+
+### Start a simulation
+POST localhost:8080/simulations
+Accept: text/plain
+Content-Type: application/json
+
+{
+    "chromosomeSize": 100,
+    "populationSize": 100,
+    "mutationProbability": 0.2,
+    "elitismPercent": 0.2,
+    "puzzleId": 1,
+    "speedMax": 100,
+    "xSpeedWeight": 50,
+    "ySpeedWeight": 50 ,
+    "rotateWeight": 10,
+    "distanceWeight": 250,
+    "crashSpeedWeight": 0.9
+}
+
+### Get all simulation summary
+GET localhost:8080/simulations
+
+### Get the specicified simulation summary
+GET localhost:8080/simulations/0
+
+### Get all generation for the specified simulation
+GET localhost:8080/simulations/0/generations
+
+### Get all generation for the specified simulation
+GET localhost:8080/simulations/0/generations/0
