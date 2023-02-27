@@ -3,6 +3,7 @@ package routes
 import AlgoSettings
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,64 +16,40 @@ fun Route.simulationRouting() {
     val simulationService by inject<SimulationService>()
 
     route("/simulations") {
-        get{
+        get {
             call.respond(simulationService.getSimulationSummaries())
         }
 
-        post{
+        post {
             val settings = call.receive<AlgoSettings>()
             val id = simulationService.start(settings)
             call.respondText("$id")
         }
 
-        route("/{id}") {
+        route("/{simulationId}") {
             get {
-                val id = call.parameters["id"]?.toIntOrNull()
-                if (id == null) {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@get
-                }
-                val result = simulationService.getSimulationSummary(id)
-                if (result == null) {
-                    call.respond(HttpStatusCode.NotFound)
-                    return@get
-                }
+                val simulationId = call.getIntParam("simulationId")
+                val result = simulationService.getSimulationSummary(simulationId)
+                    ?: throw NotFoundException("No simulation found with id [$simulationId]")
                 call.respond(result)
             }
             route("/generations") {
-
-
-                get{
-                    val id = call.parameters["id"]?.toIntOrNull()
-                    if (id == null) {
-                        call.respond(HttpStatusCode.BadRequest)
-                        return@get
-                    }
-                    val result = simulationService.getGenerationSummaries(id)
-                    if (result == null) {
-                        call.respond(HttpStatusCode.NotFound)
-                        return@get
-                    }
+                get {
+                    val simulationId = call.getIntParam("simulationId")
+                    val result = simulationService.getGenerationSummaries(simulationId)
+                        ?: throw NotFoundException("No simulation found with id [$simulationId]")
                     call.respond(result)
                 }
 
                 get("/{generationId}") {
-                    val id = call.parameters["id"]?.toIntOrNull()
-                    val generationId = call.parameters["generationId"]?.toIntOrNull()
-                    if (id == null || generationId == null) {
-                        call.respond(HttpStatusCode.BadRequest)
-                        return@get
-                    }
-                    val result = simulationService.getGenerationSummary(id, generationId)
-                    if (result == null) {
-                        call.respond(HttpStatusCode.NotFound)
-                        return@get
-                    }
+                    val simulationId = call.getIntParam("simulationId")
+                    val generationId = call.getIntParam("generationId")
+
+                    val result = simulationService.getGenerationSummary(simulationId, generationId)
+                        ?: throw NotFoundException("No Generation found for simulation [$simulationId] and generation [$generationId]")
                     call.respond(result)
                 }
             }
         }
-
-
     }
 }

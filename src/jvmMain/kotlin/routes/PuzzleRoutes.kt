@@ -1,8 +1,7 @@
 package routes
 
-import PUZZLES
-import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -17,19 +16,10 @@ fun Route.puzzleRouting() {
             call.respond(puzzleService.puzzles)
         }
 
-        get("/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-            if (id == null) {
-                call.response.status(HttpStatusCode.BadRequest)
-                return@get
-            }
-
-            val puzzle = PUZZLES.getOrNull(id)
-            if (puzzle == null) {
-                call.respondText("No puzzle with id [$id]", status = HttpStatusCode.NotFound)
-                return@get
-            }
-
+        get("/{puzzleId}") {
+            val id = call.getIntParam("puzzleId")
+            val puzzle = puzzleService.getPuzzle(id)
+                ?: throw NotFoundException("No Puzzle found with id [$id]")
             call.respond(puzzle)
 
         }

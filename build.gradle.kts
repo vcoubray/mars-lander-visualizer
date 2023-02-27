@@ -22,6 +22,9 @@ repositories {
 }
 dependencies {
     implementation("io.ktor:ktor-server-compression-jvm:2.2.3")
+    implementation("io.ktor:ktor-server-core-jvm:2.2.3")
+    implementation("io.ktor:ktor-server-host-common-jvm:2.2.3")
+    implementation("io.ktor:ktor-server-status-pages-jvm:2.2.3")
 }
 
 
@@ -63,10 +66,11 @@ kotlin {
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-server-cors:$ktorVersion")
                 implementation("io.ktor:ktor-server-compression:$ktorVersion")
                 implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+                implementation("io.ktor:ktor-server-cors:$ktorVersion")
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
+                implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
             }
         }

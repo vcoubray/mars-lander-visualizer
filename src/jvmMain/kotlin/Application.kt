@@ -9,5 +9,6 @@ fun Application.module() {
     configureContentNegotiation()
     configureCORS()
     configureCompression()
+    configureStatusPages()
     configureRouting()
 }
