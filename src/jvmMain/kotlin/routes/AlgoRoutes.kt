@@ -25,5 +25,9 @@ fun Route.algoRouting() {
             val settings = call.receive<AlgoSettings>()
             call.respond(algoService.play(settings))
         }
+
+        get("/test"){
+            call.respondText ("TEST OK ")
+        }
     }
 }

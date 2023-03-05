@@ -20,12 +20,7 @@ version = "2.0-SNAPSHOT"
 repositories {
     mavenCentral()
 }
-dependencies {
-    implementation("io.ktor:ktor-server-compression-jvm:2.2.3")
-    implementation("io.ktor:ktor-server-core-jvm:2.2.3")
-    implementation("io.ktor:ktor-server-host-common-jvm:2.2.3")
-    implementation("io.ktor:ktor-server-status-pages-jvm:2.2.3")
-}
+
 
 
 kotlin {
@@ -115,7 +110,7 @@ tasks.getByName<Jar>("jvmJar") {
 tasks {
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
 }
