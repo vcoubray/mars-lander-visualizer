@@ -28,16 +28,14 @@ kotlin {
         withJava()
     }
 
-//    js(IR) {
-//        browser {
-//            binaries.executable()
-//        }
-//    }
 
     js(IR) {
         browser {
             commonWebpackConfig {
                 cssSupport {
+                    enabled.set(true)
+                }
+                scssSupport {
                     enabled.set(true)
                 }
             }

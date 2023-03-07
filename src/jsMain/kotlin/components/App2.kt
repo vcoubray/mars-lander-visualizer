@@ -1,28 +1,29 @@
 package components
 
 
+import Theme.ThemeColor
+import Theme.changeThemeColor
+import Theme.toggleDarkMode
 import csstype.ClassName
-import modules.*
 import react.FC
 import react.Props
+import react.dom.html.InputType
+import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.progress
-import react.useContext
 
 
 val AppPicoCss = FC<Props> {
-    PicoThemeModule {
-        Components()
-    }
+    Components()
 }
 val Components = FC<Props> { _ ->
-    var themeContext by useContext(PicoThemeContext)
 
-    div {
+    ReactHTML.main {
 
-        className = ClassName("container")
-        +"Hello"
+        className = ClassName("container-fluid")
+        +"Hello world"
 
         button {
             +"play"
@@ -34,15 +35,26 @@ val Components = FC<Props> { _ ->
         }
 
         button {
-            +"Change theme"
-            onClick = {
-                themeContext = if (themeContext == PicoTheme.LIGHT) {
-                    PicoTheme.DARK
-                } else {
-                    PicoTheme.LIGHT
-                }
+            +"Dark Mode"
+            onClick = { toggleDarkMode() }
+        }
 
+        div {
+            className = ClassName("grid")
+
+            ThemeColor.values().forEach {color ->
+                button{
+                    +color.value
+                    onClick= { changeThemeColor(color) }
+                }
             }
+        }
+
+        input {
+            type = InputType.range
+            min = 0
+            max = 100
+
         }
 
     }
