@@ -21,20 +21,14 @@ repositories {
     mavenCentral()
 }
 
-
-
 kotlin {
     jvm {
         withJava()
     }
 
-
     js(IR) {
         browser {
             commonWebpackConfig {
-                cssSupport {
-                    enabled.set(true)
-                }
                 scssSupport {
                     enabled.set(true)
                 }
