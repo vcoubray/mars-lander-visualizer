@@ -1,4 +1,4 @@
-package Theme
+package theme
 
 enum class ThemeMode(val value: String) {
     LIGHT("light"),

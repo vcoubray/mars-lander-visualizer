@@ -1,8 +1,9 @@
+
 import components.AppPicoCss
 import kotlinx.browser.document
 import react.create
 import react.dom.client.createRoot
-
+import theme.ThemeService
 
 
 fun main() {
@@ -11,4 +12,6 @@ fun main() {
         .also(document.body!!::appendChild)
 //    createRoot(container).render(App.create())
     createRoot(container).render(AppPicoCss.create())
+
+    ThemeService.init()
 }
