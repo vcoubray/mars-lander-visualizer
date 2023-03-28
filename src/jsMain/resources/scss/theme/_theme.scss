@@ -1,0 +1,11 @@
+@import "colors/red";
+@import "colors/pink";
+@import "colors/blue";
+@import "colors/green";
+@import "colors/yellow";
+@import "colors/orange";
+
+:root {
+  --nav-border-color: var(--muted-border-color);
+  --nav-border-width: var(--border-width);
+}

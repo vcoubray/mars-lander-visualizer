@@ -2,19 +2,19 @@
 /* Can be forced with data-theme="light" */
 [data-theme="light"][data-color="red"],
 :root[data-color="red"]:not([data-theme="dark"]) {
-  --primary: #d81b60;
-  --primary-hover: #c2185b;
-  --primary-focus: rgba(216, 27, 96, 0.125);
+  --primary: #e53935;
+  --primary-hover: #f44336;
+  --primary-focus: rgba(229, 57, 53, 0.25);
   --primary-inverse: #FFF;
 }
 
 /* Red Dark scheme (Auto) */
 /* Automatically enabled if user has Dark mode enabled */
 @media only screen and (prefers-color-scheme: dark) {
- :root[data-color="red"]:not([data-theme]) {
-    --primary: #d81b60;
-    --primary-hover: #e91e63;
-    --primary-focus: rgba(216, 27, 96, 0.25);
+  :root[data-color="red"]:not([data-theme]) {
+    --primary: #e53935;
+    --primary-hover: #f44336;
+    --primary-focus: rgba(229, 57, 53, 0.25);
     --primary-inverse: #FFF;
   }
 }
@@ -22,8 +22,8 @@
 /* Red Dark scheme (Forced) */
 /* Enabled if forced with data-theme="dark" */
 [data-theme="dark"][data-color="red"] {
-  --primary: #d81b60;
-  --primary-hover: #e91e63;
-  --primary-focus: rgba(216, 27, 96, 0.25);
+  --primary: #e53935;
+  --primary-hover: #f44336;
+  --primary-focus: rgba(229, 57, 53, 0.25);
   --primary-inverse: #FFF;
 }

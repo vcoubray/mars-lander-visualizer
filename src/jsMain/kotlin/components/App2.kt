@@ -3,6 +3,7 @@ package components
 
 import Config
 import components.common.AlgoSettingsForm
+import components.common.ThemeMenu
 import components.player.progressReaderBar
 import csstype.ClassName
 import mui.icons.material.Settings
@@ -25,7 +26,19 @@ import theme.*
 
 val AppPicoCss = FC<Props> {
     nav {
-        +"Mars Lander Visualizer"
+        className = ClassName("container-fluid")
+        ul {
+            li {
+                +"Mars Lander Visualizer"
+            }
+        }
+
+        ul {
+            li {
+                ThemeMenu()
+            }
+        }
+
     }
     main {
         className = ClassName("container-fluid")
@@ -40,6 +53,9 @@ val Components = FC<Props> { _ ->
 
     +"Hello world"
 
+
+
+
     button {
         +"play"
     }
@@ -47,22 +63,6 @@ val Components = FC<Props> { _ ->
     progress {
         max = 100.0
         value = 5
-    }
-
-    button {
-        +"Dark Mode"
-        onClick = { ThemeService.toggleMode() }
-    }
-
-    div {
-        className = ClassName("grid")
-
-        ThemeColor.values().forEach { color ->
-            button {
-                +color.value
-                onClick = { ThemeService.changeColor(color) }
-            }
-        }
     }
 
     input {

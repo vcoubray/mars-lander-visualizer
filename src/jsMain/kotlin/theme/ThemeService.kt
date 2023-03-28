@@ -15,7 +15,7 @@ object ThemeService {
         get() = if (window.matchMedia("(prefers-color-scheme: dark)").matches) ThemeMode.DARK
         else null
 
-    private var schemeMode: ThemeMode
+    var schemeMode: ThemeMode
         get() = document.documentElement?.theme
             ?: window.localStorage.theme
             ?: this.prefersSchemeMode
@@ -25,7 +25,7 @@ object ThemeService {
             window.localStorage.theme = schemeMode
         }
 
-    private var schemeColor: ThemeColor
+    var schemeColor: ThemeColor
         get() = document.documentElement?.colorScheme
             ?: window.localStorage.colorScheme
             ?: ThemeColor.BLUE

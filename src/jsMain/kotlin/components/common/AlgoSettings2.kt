@@ -33,9 +33,9 @@ val AlgoSettingsForm = FC<AlgoSettingsProps> { props ->
                 FormField( "Speed Max" , InputType.number, props.algoSettings.populationSize.toString()),
                 FormField( "X Speed weight" , InputType.number, props.algoSettings.chromosomeSize.toString()),
                 FormField( "Y Speed weight" , InputType.number, props.algoSettings.mutationProbability.toString()),
-                FormField( "Rotate weight" , InputType.number, props.algoSettings.elitismPercent.toString()),
-                FormField( "Distance weight" , InputType.number, props.algoSettings.elitismPercent.toString()),
-                FormField( "Speed weight (Crashing)" , InputType.number, props.algoSettings.elitismPercent.toString()),
+                FormField( "Rotate weight" , InputType.number, props.algoSettings.rotateWeight.toString()),
+                FormField( "Distance weight" , InputType.number, props.algoSettings.distanceWeight.toString()),
+                FormField( "Speed weight (Crashing)" , InputType.number, props.algoSettings.crashSpeedWeight.toString()),
             )
             onChange = { println(fields) }
         }

@@ -1,0 +1,29 @@
+/* Green Light scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme="light"][data-color="yellow"],
+:root[data-color="yellow"]:not([data-theme="dark"]) {
+  --primary: #fdd835;
+  --primary-hover: #fbc02d;
+  --primary-focus: rgba(253, 216, 53, 0.125);
+  --primary-inverse: rgba(0, 0, 0, 0.75);
+}
+
+/* Green Dark scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+  :root[data-color="yellow"]:not([data-theme]) {
+    --primary: #fdd835;
+    --primary-hover: #ffeb3b;
+    --primary-focus: rgba(253, 216, 53, 0.25);
+    --primary-inverse: rgba(0, 0, 0, 0.75);
+  }
+}
+
+/* Green Dark scheme (Forced) */
+/* Enabled if forced with data-theme="dark" */
+[data-theme="dark"][data-color="yellow"] {
+  --primary: #fdd835;
+  --primary-hover: #ffeb3b;
+  --primary-focus: rgba(253, 216, 53, 0.25);
+  --primary-inverse: rgba(0, 0, 0, 0.75);
+}

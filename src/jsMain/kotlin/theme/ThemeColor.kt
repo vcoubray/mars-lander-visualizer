@@ -1,9 +1,12 @@
 package theme
 
 enum class ThemeColor(val value: String) {
-    BLUE("blue"),
     RED("red"),
-    GREEN("green");
+    PINK("pink"),
+    BLUE("blue"),
+    GREEN("green"),
+    YELLOW("yellow"),
+    ORANGE("orange");
 
     companion object {
         fun fromValue(value: String) =
