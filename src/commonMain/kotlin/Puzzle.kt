@@ -1,6 +1,4 @@
-import codingame.HEIGHT
 import codingame.State
-import codingame.WIDTH
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,7 +10,7 @@ data class Puzzle(
 ) {
 
     companion object {
-        val path = "/puzzles"
+        const val path = "/puzzles"
     }
 }
 

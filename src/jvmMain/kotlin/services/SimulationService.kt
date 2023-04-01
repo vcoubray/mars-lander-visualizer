@@ -1,6 +1,10 @@
 package services
 
 import AlgoSettings
+import Generation
+import GenerationSummary
+import SimulationResult
+import SimulationSummary
 import algorithm.*
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
@@ -17,7 +21,7 @@ class SimulationService(
     fun start(settings: AlgoSettings): Int {
         val id = simulations.size
 
-        simulations.add(SimulationResult())
+        simulations.add(SimulationResult(id))
 
         thread {
             val algo = settings.toAlgo()
@@ -63,6 +67,7 @@ class SimulationService(
     )
 
     private fun SimulationResult.toSummary() = SimulationSummary(
+        id = this.id,
         status = this.status,
         duration = this.duration,
         bestScore = this.bestScore,

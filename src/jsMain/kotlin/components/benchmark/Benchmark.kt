@@ -4,7 +4,7 @@ import Config
 import Puzzle
 import RunStats
 import apis.algoPlay
-import apis.getPuzzles
+import apis.fetchPuzzles
 import components.common.AlgoSettings
 import csstype.Display
 import csstype.FlexWrap
@@ -37,7 +37,7 @@ val Benchmark = FC<Props> {
 
     useEffectOnce {
         mainScope.launch {
-            puzzles = getPuzzles().map { it to Channel(1) }
+            puzzles = fetchPuzzles().map { it to Channel(1) }
         }
     }
 

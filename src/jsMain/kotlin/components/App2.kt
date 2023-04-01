@@ -2,7 +2,9 @@ package components
 
 
 import Config
+import SimulationSummary
 import components.common.AlgoSettingsForm
+import components.common.SimulationSummaryComponent
 import components.common.ThemeMenu
 import components.player.progressReaderBar
 import csstype.ClassName
@@ -94,6 +96,11 @@ val Components = FC<Props> { _ ->
     AlgoSettingsForm {
         this.algoSettings = algoSettings
     }
+
+    SimulationSummaryComponent{
+        summary = SimulationSummary(0,SimulationStatus.COMPLETE, 320, 100.0, 150 )
+    }
+
 
 
 }

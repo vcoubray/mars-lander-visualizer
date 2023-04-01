@@ -11,7 +11,7 @@ fun Route.puzzleRouting() {
 
     val puzzleService by inject<PuzzleService>()
 
-    route("/puzzles") {
+    route(Puzzle.path) {
         get {
             call.respond(puzzleService.puzzles)
         }
