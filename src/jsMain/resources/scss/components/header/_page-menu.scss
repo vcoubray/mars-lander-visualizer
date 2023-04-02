@@ -1,0 +1,21 @@
+details.page-menu {
+  summary {
+    &::after {
+      display: none;
+    }
+  }
+
+  ul {
+    li {
+      a {
+        &.active {
+          color: var(--primary)
+        }
+
+        svg {
+          margin-right: 1rem;
+        }
+      }
+    }
+  }
+}

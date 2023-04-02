@@ -1,11 +1,7 @@
-package components.common
+package components.layout.header
 
 import csstype.ClassName
-import csstype.ColorScheme
-import csstype.Transform
-import emotion.react.css
 import mui.icons.material.Check
-import mui.icons.material.Contrast
 import mui.icons.material.Palette
 import react.FC
 import react.Props

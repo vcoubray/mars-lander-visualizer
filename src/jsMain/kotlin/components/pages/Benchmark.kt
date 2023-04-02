@@ -1,10 +1,11 @@
-package components.benchmark
+package components.pages
 
 import Config
 import Puzzle
 import RunStats
 import apis.algoPlay
 import apis.fetchPuzzles
+import components.benchmark.RunStats
 import components.common.AlgoSettings
 import csstype.Display
 import csstype.FlexWrap

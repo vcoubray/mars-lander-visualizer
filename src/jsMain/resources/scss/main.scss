@@ -1,5 +1,6 @@
 @import 'theme/theme';
 
-@import 'components/nav';
-@import 'components/theme-menu';
+@import 'components/header/nav';
+@import 'components/header/theme-menu';
+@import 'components/header/page-menu';
 @import 'components/progress-reader-bar';
