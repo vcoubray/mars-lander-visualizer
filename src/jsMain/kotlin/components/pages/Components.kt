@@ -17,10 +17,10 @@ import react.dom.html.ReactHTML.progress
 import react.useState
 
 val Components = FC<Props> { _ ->
-    var algoSettings by useState(Config.defaultSettings.copy())
+    val algoSettings by useState(Config.defaultSettings.copy())
     var progressValue by useState(0)
 
-    +"Hello world"
+    +"Components"
 
     button {
         +"play"

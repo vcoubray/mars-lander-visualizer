@@ -1,14 +1,12 @@
 package routes
 
 import AlgoSettings
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-
 import services.SimulationService
 
 fun Route.simulationRouting() {
@@ -25,6 +23,7 @@ fun Route.simulationRouting() {
             val id = simulationService.start(settings)
             call.respondText("$id")
         }
+
 
         route("/{simulationId}") {
             get {

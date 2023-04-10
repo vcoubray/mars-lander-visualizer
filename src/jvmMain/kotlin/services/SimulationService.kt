@@ -15,7 +15,7 @@ class SimulationService(
 ) {
 
 
-    val simulations: MutableList<SimulationResult> = mutableListOf()
+    private val simulations: MutableList<SimulationResult> = mutableListOf()
 
 
     fun start(settings: AlgoSettings): Int {
