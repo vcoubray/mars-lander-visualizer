@@ -8,7 +8,8 @@ data class Page(
     val url: String,
     val label: String,
     val icon: SvgIconComponent,
-    val component: FC<Props>
+    val component: FC<Props>,
+    val visible: Boolean = true,
 )
 
 

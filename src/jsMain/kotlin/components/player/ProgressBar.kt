@@ -15,7 +15,7 @@ external interface ProgressReaderBarProps : Props {
     var onChange: (Int) -> Unit
 }
 
-val progressReaderBar = FC<ProgressReaderBarProps> { props ->
+val ProgressReaderBar = FC<ProgressReaderBarProps> { props ->
 
     div {
         className = ClassName("progress-reader-bar")

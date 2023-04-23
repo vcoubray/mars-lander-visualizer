@@ -2,6 +2,7 @@ package components
 
 
 import components.layout.header.Header
+import components.pages.SimulationVisualizer
 import csstype.ClassName
 import hooks.usePages
 import react.FC
@@ -17,7 +18,6 @@ val App = FC<Props> {
     val pages = usePages()
 
     BrowserRouter {
-
         Header ()
         main {
             className = ClassName("container-fluid")

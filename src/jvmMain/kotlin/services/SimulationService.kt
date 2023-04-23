@@ -15,7 +15,7 @@ class SimulationService(
 ) {
 
 
-    private val simulations: MutableList<SimulationResult> = mutableListOf()
+    val simulations: MutableList<SimulationResult> = mutableListOf()
 
 
     fun start(settings: AlgoSettings): Int {
@@ -27,7 +27,7 @@ class SimulationService(
             val algo = settings.toAlgo()
             val generations: List<Generation>
             val duration = measureTimeMillis {
-                generations = algo.runUntilTime(5000)
+                generations = algo.runUntilTime(1000)
             }
             simulations[id].apply {
                 this.bestScore = generations.last().best
@@ -48,7 +48,7 @@ class SimulationService(
     fun getGenerationSummaries(simulationId: Int) =
         simulations.getOrNull(simulationId)?.generations?.map { it.toSummary() }
 
-    fun getGenerationSummary(simulationId: Int, generationId: Int) =
+    fun getGeneration(simulationId: Int, generationId: Int) =
         simulations.getOrNull(simulationId)?.generations?.getOrNull(generationId)
 
 
@@ -79,5 +79,7 @@ class SimulationService(
         best = this.best,
         mean = this.mean
     )
+
+
 
 }

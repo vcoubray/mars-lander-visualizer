@@ -47,9 +47,9 @@ data class GenerationSummary(
 class ChromosomeResult(
     val actions: List<Action>,
     val path: List<Pair<Double, Double>>,
+    val state: State,
     val score: Double = 0.0,
     val normalizedScore: Double = 0.0,
-    val cumulativeScore: Double,
-    val state: State,
-    val fitnessResult: FitnessResult?,
+    val cumulativeScore: Double = 0.0,
+    val fitnessResult: FitnessResult? = null,
 )

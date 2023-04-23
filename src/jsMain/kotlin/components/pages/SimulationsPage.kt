@@ -5,7 +5,7 @@ import apis.fetchSimulation
 import apis.fetchSimulations
 import apis.startSimulations
 import components.common.AlgoSettingsForm
-import components.common.SimulationSummaryComponent
+import components.simulation.SimulationList
 import csstype.ClassName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,8 +15,6 @@ import react.Props
 import react.dom.aria.ariaBusy
 import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.li
-import react.dom.html.ReactHTML.ul
 import react.useEffectOnce
 import react.useState
 
@@ -48,17 +46,11 @@ val SimulationsPage = FC<Props> {
         }
     }
 
-    +"Generations"
+    +"Simulations"
     div {
         className = ClassName("grid")
-        ul {
-            simulations.forEach { simulation ->
-                li {
-                    SimulationSummaryComponent {
-                        summary = simulation
-                    }
-                }
-            }
+        SimulationList{
+            this.simulations = simulations
         }
         div {
             AlgoSettingsForm {
@@ -70,7 +62,9 @@ val SimulationsPage = FC<Props> {
             button {
                 ariaBusy = simulationPending
 
-                RocketLaunch()
+                if( !simulationPending ) {
+                    RocketLaunch()
+                }
                 +"Launch"
 
                 onClick = {

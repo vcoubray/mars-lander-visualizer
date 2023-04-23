@@ -24,7 +24,6 @@ fun Route.simulationRouting() {
             call.respondText("$id")
         }
 
-
         route("/{simulationId}") {
             get {
                 val simulationId = call.getIntParam("simulationId")
@@ -44,7 +43,7 @@ fun Route.simulationRouting() {
                     val simulationId = call.getIntParam("simulationId")
                     val generationId = call.getIntParam("generationId")
 
-                    val result = simulationService.getGenerationSummary(simulationId, generationId)
+                    val result = simulationService.getGeneration(simulationId, generationId)
                         ?: throw NotFoundException("No Generation found for simulation [$simulationId] and generation [$generationId]")
                     call.respond(result)
                 }

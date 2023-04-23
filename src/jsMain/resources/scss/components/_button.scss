@@ -1,0 +1,6 @@
+button {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing,1rem) * .5);
+  align-items: center;
+}

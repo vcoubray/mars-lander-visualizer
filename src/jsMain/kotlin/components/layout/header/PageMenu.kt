@@ -33,7 +33,7 @@ val PageMenu = FC<Props> {
             role = AriaRole.listbox
             dir = "ltr"
 
-            for (page in pages) {
+            pages.filter { it.visible }.forEach { page ->
                 li {
                     NavLink {
                         to = page.url
