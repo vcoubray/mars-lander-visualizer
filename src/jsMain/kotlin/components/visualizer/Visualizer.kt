@@ -12,13 +12,14 @@ import csstype.Display
 import csstype.FlexDirection
 import csstype.JustifyContent
 import emotion.react.css
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import mainScope
 import modules.ThemeContext
 import mui.material.Box
 import mui.system.sx
 import react.*
-
-val mainScope = MainScope()
 
 val Visualizer = FC<Props> {
 

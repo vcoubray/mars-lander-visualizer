@@ -1,5 +1,7 @@
 package components.pages
 
+import Config
+import SimulationStatus
 import SimulationSummary
 import apis.fetchSimulation
 import apis.fetchSimulations
@@ -9,6 +11,7 @@ import components.simulation.SimulationList
 import csstype.ClassName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import mainScope
 import mui.icons.material.RocketLaunch
 import react.FC
 import react.Props
@@ -30,7 +33,7 @@ val SimulationsPage = FC<Props> {
         }
     }
 
-    fun startSimulation(){
+    fun startSimulation() {
         mainScope.launch {
             simulationPending = true
             val simuId = startSimulations(algoSettings)
@@ -49,7 +52,7 @@ val SimulationsPage = FC<Props> {
     +"Simulations"
     div {
         className = ClassName("grid")
-        SimulationList{
+        SimulationList {
             this.simulations = simulations
         }
         div {
@@ -62,7 +65,7 @@ val SimulationsPage = FC<Props> {
             button {
                 ariaBusy = simulationPending
 
-                if( !simulationPending ) {
+                if (!simulationPending) {
                     RocketLaunch()
                 }
                 +"Launch"

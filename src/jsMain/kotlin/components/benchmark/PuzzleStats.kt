@@ -2,11 +2,11 @@ package components.benchmark
 
 import Puzzle
 import RunStats
-import components.pages.mainScope
 import csstype.*
 import emotion.react.css
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import mainScope
 import modules.ThemeContext
 import mui.icons.material.ErrorOutline
 import mui.icons.material.InfoOutlined

@@ -4,10 +4,9 @@ import Form
 import FormField
 import Puzzle
 import apis.fetchPuzzles
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import mainScope
 import react.FC
-import react.State
 import react.dom.html.InputType
 import react.dom.html.ReactHTML.details
 import react.dom.html.ReactHTML.option
@@ -15,8 +14,6 @@ import react.dom.html.ReactHTML.select
 import react.dom.html.ReactHTML.summary
 import react.useEffectOnce
 import react.useState
-
-val mainScope = MainScope()
 
 val AlgoSettingsForm = FC<AlgoSettingsProps> { props ->
 

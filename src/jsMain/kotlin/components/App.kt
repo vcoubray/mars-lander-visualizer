@@ -2,7 +2,6 @@ package components
 
 
 import components.layout.header.Header
-import components.pages.SimulationVisualizer
 import csstype.ClassName
 import hooks.usePages
 import react.FC
@@ -12,7 +11,6 @@ import react.dom.html.ReactHTML.main
 import react.router.Route
 import react.router.Routes
 import react.router.dom.BrowserRouter
-
 
 val App = FC<Props> {
     val pages = usePages()

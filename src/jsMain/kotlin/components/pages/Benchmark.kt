@@ -10,9 +10,9 @@ import components.common.AlgoSettings
 import csstype.Display
 import csstype.FlexWrap
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import mainScope
 import mui.icons.material.PlayArrowSharp
 import mui.icons.material.StopSharp
 import mui.material.*
@@ -22,8 +22,6 @@ import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.onChange
 
-
-val mainScope = MainScope()
 
 val Benchmark = FC<Props> {
 

@@ -10,6 +10,7 @@ import components.player.ProgressReaderBar
 import components.simulation.GenerationComponent
 import kotlinx.coroutines.launch
 import kotlinx.js.get
+import mainScope
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML.div
