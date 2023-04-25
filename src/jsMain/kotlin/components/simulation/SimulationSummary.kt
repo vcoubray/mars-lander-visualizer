@@ -18,13 +18,13 @@ val SimulationSummaryComponent = FC<SimulationSummaryProps> { props ->
 
     article {
         +"Simulation ${props.summary.id}"
-        span { +"Best score : ${props.summary.bestScore}" }
+        span { +"Best score : ${props.summary.bestScore.asDynamic().toFixed(5)}" }
         span { +"Duration : ${props.summary.duration}ms" }
         span { +"Generations : ${props.summary.generationCount}" }
         when (props.summary.status) {
             SimulationStatus.PENDING -> ariaBusy = true
             SimulationStatus.COMPLETE -> NavLink {
-                to = "simulations/${props.summary.id}"
+                to = "/simulations/${props.summary.id}"
                 VisibilitySharp()
             }
         }

@@ -6,7 +6,7 @@ import SimulationSummary
 import apis.fetchGeneration
 import apis.fetchGenerations
 import apis.fetchSimulation
-import components.player.ProgressReaderBar
+import components.player.PlayerControls
 import components.simulation.GenerationComponent
 import kotlinx.coroutines.launch
 import kotlinx.js.get
@@ -19,14 +19,13 @@ import react.router.useParams
 import react.useEffectOnce
 import react.useState
 
-val SimulationVisualizer = FC<Props> {
+val GenerationPage = FC<Props> {
 
     val simulationId = useParams()["simulationId"]!!.toInt()
     var simulation by useState<SimulationSummary?>(null)
     var generations by useState<List<GenerationSummary>>(emptyList())
     var selectedGenerationId by useState(0)
-
-    var generation by useState<Generation?>(null)
+    var selectedGeneration by useState<Generation?>(null)
 
     useEffectOnce {
         mainScope.launch {
@@ -38,12 +37,9 @@ val SimulationVisualizer = FC<Props> {
     fun changeGeneration(generationId: Int) {
         selectedGenerationId = generationId
         mainScope.launch {
-            generation = fetchGeneration(simulationId, generationId)
+            selectedGeneration = fetchGeneration(simulationId, generationId)
         }
-
     }
-
-
 
     if (simulation == null) {
         div {
@@ -55,16 +51,16 @@ val SimulationVisualizer = FC<Props> {
         }
 
         +"$selectedGenerationId / ${generations.size}"
-        ProgressReaderBar {
+        PlayerControls {
             max = generations.size
-            value = selectedGenerationId
+            defaultValue = selectedGenerationId
             onChange = { changeGeneration(it) }
         }
 
-
-        generation?.let {
+        selectedGeneration?.let {
             GenerationComponent {
                 this.generation = it
+                this.generationId = selectedGenerationId
             }
         }
 

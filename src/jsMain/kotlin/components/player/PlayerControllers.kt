@@ -15,13 +15,13 @@ import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.span
 
-external interface PlayerControllersProps : Props {
+external interface PlayerControlsProps : Props {
     var max: Int
     var defaultValue: Int
     var onChange: (Int) -> Unit
 }
 
-val PlayerControllers = FC<PlayerControllersProps> { props ->
+val PlayerControls = FC<PlayerControlsProps> { props ->
 
     var value by useState(0)
     val playJobRef = useRef<Job>(null)

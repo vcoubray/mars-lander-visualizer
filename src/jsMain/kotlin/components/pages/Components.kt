@@ -7,7 +7,7 @@ import SimulationStatus
 import SimulationSummary
 import codingame.State
 import components.common.AlgoSettingsForm
-import components.player.PlayerControllers
+import components.player.PlayerControls
 import components.simulation.SimulationSummaryComponent
 import components.simulation.GenerationComponent
 import react.FC
@@ -22,7 +22,7 @@ val Components = FC<Props> { _ ->
     +"Components"
 
 
-    PlayerControllers {
+    PlayerControls {
         max = 250
         defaultValue = 0
         onChange = { value -> println(value) }
