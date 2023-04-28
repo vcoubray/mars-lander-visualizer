@@ -1,11 +1,10 @@
 package algorithm
 
-import ChromosomeResult
+import IndividualResult
 import Generation
 import codingame.*
 import condigame.Surface
 import condigame.play
-import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -14,7 +13,7 @@ import kotlin.random.Random
 
 
 
-fun Chromosome.toResult() = ChromosomeResult(
+fun Chromosome.toResult() = IndividualResult(
     actions = this.actions.map { it.copy() },
     path = this.path.map { it.copy() },
     score = score,

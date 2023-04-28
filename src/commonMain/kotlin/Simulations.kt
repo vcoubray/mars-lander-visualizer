@@ -30,7 +30,7 @@ data class SimulationSummary(
 
 @Serializable
 data class Generation(
-    val population: List<ChromosomeResult>,
+    val population: List<IndividualResult>,
 ) {
     val best = population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
     val mean = population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
@@ -44,7 +44,7 @@ data class GenerationSummary(
 )
 
 @Serializable
-class ChromosomeResult(
+class IndividualResult(
     val actions: List<Action>,
     val path: List<Pair<Double, Double>>,
     val state: State,

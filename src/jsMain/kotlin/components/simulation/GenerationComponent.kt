@@ -13,6 +13,7 @@ import react.dom.html.ReactHTML.ul
 external interface GenerationProps : Props {
     var generation: Generation
     var generationId: Int
+    var onSelectIndividual : (Int) -> Unit
 }
 
 val GenerationComponent = FC<GenerationProps> { props ->
@@ -24,12 +25,16 @@ val GenerationComponent = FC<GenerationProps> { props ->
         }
 
         ul {
-            props.generation.population.forEach { individual ->
+            props.generation.population.forEachIndexed{ i, individual ->
                 li {
                     +"Score : ${individual.score} - ${individual.state}"
+                    onClick = { props.onSelectIndividual(i)}
                 }
             }
         }
-
     }
+
+
+
+
 }

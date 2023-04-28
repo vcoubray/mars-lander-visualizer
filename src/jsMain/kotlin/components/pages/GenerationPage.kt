@@ -8,6 +8,8 @@ import apis.fetchGenerations
 import apis.fetchSimulation
 import components.player.PlayerControls
 import components.simulation.GenerationComponent
+import components.simulation.IndividualComponent
+import csstype.ClassName
 import kotlinx.coroutines.launch
 import kotlinx.js.get
 import mainScope
@@ -26,6 +28,7 @@ val GenerationPage = FC<Props> {
     var generations by useState<List<GenerationSummary>>(emptyList())
     var selectedGenerationId by useState(0)
     var selectedGeneration by useState<Generation?>(null)
+    var selectedIndividualId by useState<Int?>(null)
 
     useEffectOnce {
         mainScope.launch {
@@ -57,11 +60,25 @@ val GenerationPage = FC<Props> {
             onChange = { changeGeneration(it) }
         }
 
-        selectedGeneration?.let {
-            GenerationComponent {
-                this.generation = it
-                this.generationId = selectedGenerationId
+
+
+        selectedGeneration?.let { generation ->
+            div {
+                className = ClassName("grid")
+                GenerationComponent {
+                    this.generation = generation
+                    this.generationId = selectedGenerationId
+                    this.onSelectIndividual = {id -> selectedIndividualId = id}
+                }
+
+                selectedIndividualId?.let { individualId ->
+                    IndividualComponent {
+                        individual = generation.population[individualId]
+                    }
+                }
             }
+
+
         }
 
 
