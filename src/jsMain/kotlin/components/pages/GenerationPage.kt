@@ -6,10 +6,12 @@ import SimulationSummary
 import apis.fetchGeneration
 import apis.fetchGenerations
 import apis.fetchSimulation
+import components.player.PlayerCanvas
 import components.player.PlayerControls
 import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent
 import csstype.ClassName
+import drawers.MarsGenerationDrawer
 import kotlinx.coroutines.launch
 import kotlinx.js.get
 import mainScope
@@ -29,6 +31,8 @@ val GenerationPage = FC<Props> {
     var selectedGenerationId by useState(0)
     var selectedGeneration by useState<Generation?>(null)
     var selectedIndividualId by useState<Int?>(null)
+
+    val marsGenerationDrawer = MarsGenerationDrawer(selectedGeneration)
 
     useEffectOnce {
         mainScope.launch {
@@ -53,14 +57,15 @@ val GenerationPage = FC<Props> {
             +"Simulation $simulationId"
         }
 
-        +"$selectedGenerationId / ${generations.size}"
+        PlayerCanvas{
+            drawer = marsGenerationDrawer
+        }
+
         PlayerControls {
             max = generations.size
             defaultValue = selectedGenerationId
             onChange = { changeGeneration(it) }
         }
-
-
 
         selectedGeneration?.let { generation ->
             div {
@@ -77,12 +82,6 @@ val GenerationPage = FC<Props> {
                     }
                 }
             }
-
-
         }
-
-
     }
-
-
 }
