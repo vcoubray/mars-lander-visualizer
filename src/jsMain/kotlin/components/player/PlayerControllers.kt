@@ -56,7 +56,7 @@ val PlayerControls = FC<PlayerControlsProps> { props ->
     div {
         className = ClassName("player-controller")
 
-        ProgressReaderBar {
+        PlayerProgressBar {
             this.max = props.max
             this.value = value
             this.onChange = { it ->

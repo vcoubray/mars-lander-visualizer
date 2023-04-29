@@ -2,10 +2,9 @@ package components.pages
 
 import Generation
 import GenerationSummary
+import Puzzle
 import SimulationSummary
-import apis.fetchGeneration
-import apis.fetchGenerations
-import apis.fetchSimulation
+import apis.*
 import components.player.PlayerCanvas
 import components.player.PlayerControls
 import components.simulation.GenerationComponent
@@ -15,29 +14,37 @@ import drawers.MarsGenerationDrawer
 import kotlinx.coroutines.launch
 import kotlinx.js.get
 import mainScope
-import react.FC
-import react.Props
+import react.*
 import react.dom.html.ReactHTML.div
 
 import react.router.useParams
-import react.useEffectOnce
-import react.useState
 
 val GenerationPage = FC<Props> {
 
     val simulationId = useParams()["simulationId"]!!.toInt()
     var simulation by useState<SimulationSummary?>(null)
+    var puzzle by useState<Puzzle?>(null)
     var generations by useState<List<GenerationSummary>>(emptyList())
     var selectedGenerationId by useState(0)
     var selectedGeneration by useState<Generation?>(null)
     var selectedIndividualId by useState<Int?>(null)
 
-    val marsGenerationDrawer = MarsGenerationDrawer(selectedGeneration)
+    val marsGenerationDrawer = MarsGenerationDrawer(selectedGeneration, puzzle)
 
     useEffectOnce {
         mainScope.launch {
             simulation = fetchSimulation(simulationId)
+        }
+        mainScope.launch {
             generations = fetchGenerations(simulationId)
+        }
+    }
+
+    useEffect(simulation) {
+        mainScope.launch {
+            if (simulation != null) {
+                puzzle = getPuzzle(simulation!!.settings.puzzleId)
+            }
         }
     }
 
@@ -54,10 +61,10 @@ val GenerationPage = FC<Props> {
         }
     } else {
         div {
-            +"Simulation $simulationId"
+            +"Simulation $simulationId ${puzzle?.let { " - ${it.title}" } ?: ""}"
         }
 
-        PlayerCanvas{
+        PlayerCanvas {
             drawer = marsGenerationDrawer
         }
 
@@ -73,7 +80,7 @@ val GenerationPage = FC<Props> {
                 GenerationComponent {
                     this.generation = generation
                     this.generationId = selectedGenerationId
-                    this.onSelectIndividual = {id -> selectedIndividualId = id}
+                    this.onSelectIndividual = { id -> selectedIndividualId = id }
                 }
 
                 selectedIndividualId?.let { individualId ->

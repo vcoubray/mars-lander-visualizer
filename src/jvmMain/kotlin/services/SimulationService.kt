@@ -21,7 +21,7 @@ class SimulationService(
     fun start(settings: AlgoSettings): Int {
         val id = simulations.size
 
-        simulations.add(SimulationResult(id))
+        simulations.add(SimulationResult(id, settings))
 
         thread {
             val algo = settings.toAlgo()
@@ -68,6 +68,7 @@ class SimulationService(
 
     private fun SimulationResult.toSummary() = SimulationSummary(
         id = this.id,
+        settings = this.settings,
         status = this.status,
         duration = this.duration,
         bestScore = this.bestScore,
@@ -79,7 +80,6 @@ class SimulationService(
         best = this.best,
         mean = this.mean
     )
-
 
 
 }

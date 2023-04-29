@@ -36,7 +36,7 @@ val Components = FC<Props> { _ ->
     }
 
     SimulationSummaryComponent {
-        summary = SimulationSummary(0, SimulationStatus.COMPLETE, 320, 100.0, 150)
+        summary = SimulationSummary(0, algoSettings.copy(), SimulationStatus.COMPLETE, 320, 100.0, 150)
     }
 
     GenerationComponent {

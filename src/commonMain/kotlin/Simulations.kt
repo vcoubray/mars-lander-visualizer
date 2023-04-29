@@ -12,6 +12,7 @@ enum class SimulationStatus {
 @Serializable
 data class SimulationResult(
     var id: Int,
+    var settings: AlgoSettings,
     var status: SimulationStatus = SimulationStatus.PENDING,
     var duration: Long = 0,
     var bestScore: Double = 0.0,
@@ -21,6 +22,7 @@ data class SimulationResult(
 @Serializable
 data class SimulationSummary(
     var id: Int,
+    var settings: AlgoSettings,
     var status: SimulationStatus = SimulationStatus.PENDING,
     var duration: Long = 0,
     var bestScore: Double = 0.0,

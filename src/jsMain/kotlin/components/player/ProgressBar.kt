@@ -9,16 +9,16 @@ import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.progress
 
-external interface ProgressReaderBarProps : Props {
+external interface PlayerProgressBarProps : Props {
     var max: Int
     var value: Int
     var onChange: (Int) -> Unit
 }
 
-val ProgressReaderBar = FC<ProgressReaderBarProps> { props ->
+val PlayerProgressBar = FC<PlayerProgressBarProps> { props ->
 
     div {
-        className = ClassName("progress-reader-bar")
+        className = ClassName("player-progress-bar")
 
         progress {
             max = props.max.toDouble()
