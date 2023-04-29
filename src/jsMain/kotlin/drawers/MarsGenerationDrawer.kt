@@ -5,7 +5,7 @@ import components.visualizer.ZOOM_FACTOR
 import csstype.NamedColor
 import org.w3c.dom.CanvasRenderingContext2D
 
-class MarsGenerationDrawer(val generation: Generation?) : Drawer(ZOOM_FACTOR) {
+class MarsGenerationDrawer(private val generation: Generation?) : Drawer(7000,3000) {
 
     override fun draw(context: CanvasRenderingContext2D) {
         context.init()
