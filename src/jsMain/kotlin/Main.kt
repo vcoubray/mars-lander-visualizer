@@ -9,7 +9,7 @@ import theme.ThemeService
 val mainScope = MainScope()
 
 fun main() {
-    kotlinext.js.require("./scss/main.scss")
+    wrappers.require("./scss/main.scss")
     ThemeService.init()
 
     val container = document.createElement("div")
