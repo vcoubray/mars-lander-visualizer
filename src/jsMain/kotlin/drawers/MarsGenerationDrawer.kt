@@ -5,8 +5,6 @@ import Generation
 import IndividualResult
 import Puzzle
 import codingame.CrossingEnum
-import components.visualizer.ZOOM_FACTOR
-import components.visualizer.drawPath
 import csstype.NamedColor
 import org.w3c.dom.CanvasRenderingContext2D
 
