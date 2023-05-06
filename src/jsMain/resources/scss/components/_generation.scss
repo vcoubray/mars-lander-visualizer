@@ -1,0 +1,17 @@
+details.generation{
+  li.crash {
+    color: orange;
+  }
+  li.nope {
+    color: gray;
+  }
+  li.landing {
+    color: green;
+  }
+  li.landing_crash {
+    color: yellow;
+  }
+  li.selected {
+    color: var(--primary);
+  }
+}

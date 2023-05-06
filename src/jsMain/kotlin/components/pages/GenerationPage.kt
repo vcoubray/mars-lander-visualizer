@@ -29,7 +29,8 @@ val GenerationPage = FC<Props> {
     var selectedGeneration by useState<Generation?>(null)
     var selectedIndividualId by useState<Int?>(null)
 
-    val marsGenerationDrawer = MarsGenerationDrawer(selectedGeneration, puzzle)
+    val marsGenerationDrawer =
+        MarsGenerationDrawer(selectedGeneration, puzzle, simulation?.settings, selectedIndividualId)
 
     useEffectOnce {
         mainScope.launch {
@@ -50,6 +51,7 @@ val GenerationPage = FC<Props> {
 
     fun changeGeneration(generationId: Int) {
         selectedGenerationId = generationId
+        selectedIndividualId = null
         mainScope.launch {
             selectedGeneration = fetchGeneration(simulationId, generationId)
         }
@@ -80,6 +82,7 @@ val GenerationPage = FC<Props> {
                 GenerationComponent {
                     this.generation = generation
                     this.generationId = selectedGenerationId
+                    this.selectedIndividualId = selectedIndividualId
                     this.onSelectIndividual = { id -> selectedIndividualId = id }
                 }
 

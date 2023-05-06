@@ -13,7 +13,8 @@ import kotlin.random.Random
 
 
 
-fun Chromosome.toResult() = IndividualResult(
+fun Chromosome.toResult(id: Int) = IndividualResult(
+    id = id,
     actions = this.actions.map { it.copy() },
     path = this.path.map { it.copy() },
     score = score,
@@ -44,6 +45,7 @@ class GeneticAlgorithmImpl(
     val distanceWeight: Double,
 ) : GeneticAlgorithm {
 
+    var validScore = xSpeedWeight + ySpeedWeight + rotateWeight + distanceWeight
     var population = generateRandomPopulation()
     private var children = List(populationSize) {
         Chromosome(List(chromosomeSize) {
@@ -87,14 +89,15 @@ class GeneticAlgorithmImpl(
                 it.path = workingState.path.toMutableList()
                 it.state.loadFrom(workingState, true)
                 it.score = getScore(it.fitnessResult!!)
+                if(it.score >= validScore) {
+                    it.fitnessResult?.status = CrossingEnum.SUCCESS
+                }
                 if (it.score > bestChromosome.score) {
                     bestChromosome = it
                 }
             }
             scoreSum += it.score
         }
-
-
     }
 
     fun cumulativeScore() {
@@ -210,24 +213,28 @@ class GeneticAlgorithmImpl(
 
     override fun runUntilScore(score: Double): List<Generation> {
 
-        val generations = mutableListOf(Generation(population.map { it.toResult() }))
+
+        val generations = mutableListOf(population.toGeneration())
         while (bestChromosome.score < score) {
             next()
-            generations.add(Generation(population.map { it.toResult() }))
+            generations.add(population.toGeneration())
         }
         return generations
     }
 
     override fun runUntilTime(duration: Long): List<Generation> {
-        val generations = mutableListOf(Generation(population.map { it.toResult() }))
+        val generations = mutableListOf(population.toGeneration())
         val start = System.currentTimeMillis()
         while (System.currentTimeMillis() - start < duration) {
             next()
-            generations.add(Generation(population.map { it.toResult() }))
+            generations.add(population.toGeneration())
         }
         return generations
 
     }
+
+    private fun Array<Chromosome>.toGeneration() =
+       Generation(this.mapIndexed {i, chrom-> chrom.toResult(i) })
 
     @Synchronized
     fun next() {

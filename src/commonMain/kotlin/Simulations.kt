@@ -34,7 +34,7 @@ data class SimulationSummary(
 data class Generation(
     val population: List<IndividualResult>,
 ) {
-    val best = population.takeIf { it.isNotEmpty() }?.map { it.score }?.maxOrNull() ?: 0.0
+    val best = population.takeIf { it.isNotEmpty() }?.maxOfOrNull { it.score } ?: 0.0
     val mean = population.takeIf { it.isNotEmpty() }?.map { it.score }?.average() ?: 0.0
 }
 
@@ -47,6 +47,7 @@ data class GenerationSummary(
 
 @Serializable
 class IndividualResult(
+    val id: Int,
     val actions: List<Action>,
     val path: List<Pair<Double, Double>>,
     val state: State,

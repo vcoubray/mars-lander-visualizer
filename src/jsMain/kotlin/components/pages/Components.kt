@@ -41,12 +41,12 @@ val Components = FC<Props> { _ ->
 
     GenerationComponent {
         generation = Generation(
-            population = List(80) { IndividualResult(emptyList(), emptyList(), State(), Random.nextDouble(100.0)) }
+            population = List(80) { IndividualResult(it, emptyList(), emptyList(), State(), Random.nextDouble(100.0)) }
         )
     }
 
     IndividualComponent {
-        individual = IndividualResult(
+        individual = IndividualResult(0,
             List(50) { Action((-15..15).random(), (0..4).random()) },
             List(Random.nextInt(50)) { 0.0 to 0.0 },
             State(),
