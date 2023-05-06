@@ -1,11 +1,8 @@
-import org.w3c.dom.HTMLInputElement
 import react.FC
 import react.Props
 import react.dom.html.InputType
-import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.label
-import react.dom.html.ReactHTML.select
 
 data class FormField(
     val label: String,

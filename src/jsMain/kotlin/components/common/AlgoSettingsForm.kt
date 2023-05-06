@@ -1,5 +1,6 @@
 package components.common
 
+import AlgoSettings
 import Form
 import FormField
 import Puzzle
@@ -7,6 +8,7 @@ import apis.fetchPuzzles
 import kotlinx.coroutines.launch
 import mainScope
 import react.FC
+import react.Props
 import react.dom.html.InputType
 import react.dom.html.ReactHTML.details
 import react.dom.html.ReactHTML.option
@@ -14,6 +16,12 @@ import react.dom.html.ReactHTML.select
 import react.dom.html.ReactHTML.summary
 import react.useEffectOnce
 import react.useState
+
+external interface AlgoSettingsProps : Props {
+    var algoSettings: AlgoSettings
+    var onUpdateSettings: (AlgoSettings) -> Unit
+}
+
 
 val AlgoSettingsForm = FC<AlgoSettingsProps> { props ->
 
