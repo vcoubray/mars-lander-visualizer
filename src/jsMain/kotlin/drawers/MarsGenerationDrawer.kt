@@ -5,7 +5,7 @@ import Generation
 import IndividualResult
 import Puzzle
 import codingame.CrossingEnum
-import csstype.NamedColor
+import web.cssom.NamedColor
 import org.w3c.dom.CanvasRenderingContext2D
 
 class MarsGenerationDrawer(

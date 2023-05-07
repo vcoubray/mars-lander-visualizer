@@ -1,7 +1,7 @@
 package components.simulation
 
 import SimulationSummary
-import csstype.ClassName
+import web.cssom.ClassName
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML.div

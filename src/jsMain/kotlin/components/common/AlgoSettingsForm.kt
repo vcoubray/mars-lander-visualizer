@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import mainScope
 import react.FC
 import react.Props
-import react.dom.html.InputType
+import web.html.InputType
 import react.dom.html.ReactHTML.details
 import react.dom.html.ReactHTML.option
 import react.dom.html.ReactHTML.select

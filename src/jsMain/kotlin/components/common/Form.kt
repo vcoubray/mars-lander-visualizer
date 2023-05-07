@@ -1,6 +1,6 @@
 import react.FC
 import react.Props
-import react.dom.html.InputType
+import web.html.InputType
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.label
 
@@ -9,7 +9,6 @@ data class FormField(
     val type: InputType,
     var value: String,
 )
-
 
 
 external interface FormProps : Props {

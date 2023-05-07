@@ -1,11 +1,9 @@
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
-
 val kotlinVersion = "1.8.20"
 val serializationVersion = "1.3.3"
 val ktorVersion = "2.2.3"
 val koinVersion = "3.3.0"
 val logbackVersion = "1.2.11"
-val kotlinWrappersVersion = "1.0.0-pre.369"
+val kotlinWrappersVersion = "1.0.0-pre.547"
 
 
 plugins {

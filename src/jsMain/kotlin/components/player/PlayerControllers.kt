@@ -1,6 +1,6 @@
 package components.player
 
-import csstype.ClassName
+import web.cssom.ClassName
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

@@ -1,6 +1,6 @@
 package drawers
 
-import csstype.NamedColor
+import web.cssom.NamedColor
 import org.w3c.dom.CanvasRenderingContext2D
 import kotlin.math.min
 

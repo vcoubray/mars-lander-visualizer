@@ -1,6 +1,6 @@
 package components.layout.header
 
-import csstype.ClassName
+import web.cssom.ClassName
 import hooks.usePages
 import mui.icons.material.Menu
 import react.FC

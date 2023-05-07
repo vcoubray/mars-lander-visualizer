@@ -1,10 +1,10 @@
 package components.player
 
-import csstype.ClassName
+import web.cssom.ClassName
 import org.w3c.dom.HTMLInputElement
 import react.FC
 import react.Props
-import react.dom.html.InputType
+import web.html.InputType
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.progress

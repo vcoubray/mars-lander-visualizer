@@ -4,20 +4,22 @@ import Generation
 import GenerationSummary
 import Puzzle
 import SimulationSummary
-import apis.*
+import apis.fetchGeneration
+import apis.fetchGenerations
+import apis.fetchSimulation
+import apis.getPuzzle
+import components.layout.MainLayout
 import components.player.PlayerCanvas
 import components.player.PlayerControls
 import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent
-import csstype.ClassName
 import drawers.MarsGenerationDrawer
 import kotlinx.coroutines.launch
-import kotlinx.js.get
 import mainScope
 import react.*
 import react.dom.html.ReactHTML.div
-
 import react.router.useParams
+import web.cssom.ClassName
 
 val GenerationPage = FC<Props> {
 
@@ -57,38 +59,40 @@ val GenerationPage = FC<Props> {
         }
     }
 
-    if (simulation == null) {
-        div {
-            +"No simulation found with id [$simulationId]"
-        }
-    } else {
-        div {
-            +"Simulation $simulationId ${puzzle?.let { " - ${it.title}" } ?: ""}"
-        }
-
-        PlayerCanvas {
-            drawer = marsGenerationDrawer
-        }
-
-        PlayerControls {
-            max = generations.size
-            defaultValue = selectedGenerationId
-            onChange = { changeGeneration(it) }
-        }
-
-        selectedGeneration?.let { generation ->
+    MainLayout {
+        if (simulation == null) {
             div {
-                className = ClassName("grid")
-                GenerationComponent {
-                    this.generation = generation
-                    this.generationId = selectedGenerationId
-                    this.selectedIndividualId = selectedIndividualId
-                    this.onSelectIndividual = { id -> selectedIndividualId = id }
-                }
+                +"No simulation found with id [$simulationId]"
+            }
+        } else {
+            div {
+                +"Simulation $simulationId ${puzzle?.let { " - ${it.title}" } ?: ""}"
+            }
 
-                selectedIndividualId?.let { individualId ->
-                    IndividualComponent {
-                        individual = generation.population[individualId]
+            PlayerCanvas {
+                drawer = marsGenerationDrawer
+            }
+
+            PlayerControls {
+                max = generations.size
+                defaultValue = selectedGenerationId
+                onChange = { changeGeneration(it) }
+            }
+
+            selectedGeneration?.let { generation ->
+                div {
+                    className = ClassName("grid")
+                    GenerationComponent {
+                        this.generation = generation
+                        this.generationId = selectedGenerationId
+                        this.selectedIndividualId = selectedIndividualId
+                        this.onSelectIndividual = { id -> selectedIndividualId = id }
+                    }
+
+                    selectedIndividualId?.let { individualId ->
+                        IndividualComponent {
+                            individual = generation.population[individualId]
+                        }
                     }
                 }
             }

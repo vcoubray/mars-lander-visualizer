@@ -7,8 +7,8 @@ import apis.fetchSimulation
 import apis.fetchSimulations
 import apis.startSimulations
 import components.common.AlgoSettingsForm
+import components.layout.MainLayout
 import components.simulation.SimulationList
-import csstype.ClassName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mainScope
@@ -20,6 +20,7 @@ import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.div
 import react.useEffectOnce
 import react.useState
+import web.cssom.ClassName
 
 val SimulationsPage = FC<Props> {
 
@@ -49,32 +50,35 @@ val SimulationsPage = FC<Props> {
         }
     }
 
-    +"Simulations"
-    div {
-        className = ClassName("grid")
-        SimulationList {
-            this.simulations = simulations
-        }
+
+    MainLayout {
+        +"Simulations"
         div {
-            AlgoSettingsForm {
-                this.algoSettings = algoSettings
-                this.onUpdateSettings = {
-                    println(algoSettings)
+            className = ClassName("grid")
+            SimulationList {
+                this.simulations = simulations
+            }
+            div {
+                AlgoSettingsForm {
+                    this.algoSettings = algoSettings
+                    this.onUpdateSettings = {
+                        println(algoSettings)
+                    }
+                }
+                button {
+                    ariaBusy = simulationPending
+
+                    if (!simulationPending) {
+                        RocketLaunch()
+                    }
+                    +"Launch"
+
+                    onClick = {
+                        startSimulation()
+                    }
                 }
             }
-            button {
-                ariaBusy = simulationPending
 
-                if (!simulationPending) {
-                    RocketLaunch()
-                }
-                +"Launch"
-
-                onClick = {
-                    startSimulation()
-                }
-            }
         }
-
     }
 }

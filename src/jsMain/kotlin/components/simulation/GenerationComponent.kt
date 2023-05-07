@@ -2,8 +2,6 @@ package components.simulation
 
 import Generation
 import codingame.CrossingEnum
-import csstype.ClassName
-import csstype.NamedColor
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML.details
@@ -11,6 +9,7 @@ import react.dom.html.ReactHTML.li
 import react.dom.html.ReactHTML.span
 import react.dom.html.ReactHTML.summary
 import react.dom.html.ReactHTML.ul
+import web.cssom.ClassName
 
 
 external interface GenerationProps : Props {

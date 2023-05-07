@@ -1,6 +1,6 @@
 package components.layout.header
 
-import csstype.ClassName
+import web.cssom.ClassName
 import mui.icons.material.Check
 import mui.icons.material.Palette
 import react.FC
