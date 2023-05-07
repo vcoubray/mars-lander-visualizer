@@ -50,6 +50,13 @@ val SimulationsPage = FC<Props> {
         }
     }
 
+    fun deleteSimulation(simulationId: Int) {
+        mainScope.launch{
+            apis.deleteSimulation(simulationId)
+            simulations = fetchSimulations()
+        }
+    }
+
 
     MainLayout {
         +"Simulations"
@@ -57,6 +64,7 @@ val SimulationsPage = FC<Props> {
             className = ClassName("grid")
             SimulationList {
                 this.simulations = simulations
+                this.onDelete = { simulationId -> deleteSimulation(simulationId)}
             }
             div {
                 AlgoSettingsForm {

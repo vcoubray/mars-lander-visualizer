@@ -1,6 +1,7 @@
 package routes
 
 import AlgoSettings
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
@@ -31,6 +32,13 @@ fun Route.simulationRouting() {
                     ?: throw NotFoundException("No simulation found with id [$simulationId]")
                 call.respond(result)
             }
+            delete {
+                val simulationId = call.getIntParam("simulationId")
+                simulationService.deleteSimulation(simulationId)
+                    ?: throw NotFoundException("No simulation found with id [$simulationId]")
+                call.respond(status = HttpStatusCode.NoContent, message = "")
+            }
+
             route("/generations") {
                 get {
                     val simulationId = call.getIntParam("simulationId")

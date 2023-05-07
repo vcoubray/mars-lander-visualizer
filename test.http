@@ -27,7 +27,12 @@ Content-Type: application/json
 GET localhost:8080/simulations
 
 ### Get the specicified simulation summary
-GET localhost:8080/simulations/10
+GET localhost:8080/simulations/0
+
+### Delete the spectified simulation
+DELETE localhost:8080/simulations/0
+
+
 
 ### Get all generation for the specified simulation
 GET localhost:8080/simulations/0/generations

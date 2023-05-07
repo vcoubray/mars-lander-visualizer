@@ -25,6 +25,10 @@ suspend fun startSimulations(settings: AlgoSettings): Int {
     }.bodyAsText().toInt()
 }
 
+suspend fun deleteSimulation(simulationId: Int) : Unit {
+    return httpJsonClient.delete("${endpoint}/simulations/${simulationId}").body()
+}
+
 suspend fun fetchGenerations(simulationId: Int) : List<GenerationSummary> {
     return httpJsonClient.get("${endpoint}/simulations/${simulationId}/generations").body()
 }

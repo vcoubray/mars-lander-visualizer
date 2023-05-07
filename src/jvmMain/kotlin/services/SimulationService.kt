@@ -21,13 +21,13 @@ class SimulationService(
 ) {
 
 
-    val simulations: MutableList<SimulationResult> = mutableListOf()
-
+    val simulations: MutableMap<Int,SimulationResult> = mutableMapOf()
+    var lastId = 0
 
     fun start(settings: AlgoSettings): Int {
-        val id = simulations.size
+        val id = lastId++
 
-        simulations.add(SimulationResult(id, settings))
+        simulations[id] = SimulationResult(id, settings)
 
         thread {
             val algo = settings.toAlgo()
@@ -35,7 +35,7 @@ class SimulationService(
             val duration = measureTimeMillis {
                 generations = algo.runUntilTime(1000)
             }
-            simulations[id].apply {
+            simulations[id]?.apply {
                 this.bestScore = generations.last().best
                 this.duration = duration
                 this.generations = generations
@@ -47,15 +47,17 @@ class SimulationService(
         return id
     }
 
-    fun getSimulationSummary(id: Int) = simulations.getOrNull(id)?.toSummary()
+    fun getSimulationSummary(id: Int) = simulations[id]?.toSummary()
 
-    fun getSimulationSummaries() = simulations.map { it.toSummary() }
+    fun getSimulationSummaries() = simulations.values.map { it.toSummary() }
 
     fun getGenerationSummaries(simulationId: Int) =
-        simulations.getOrNull(simulationId)?.generations?.map { it.toSummary() }
+        simulations[simulationId]?.generations?.map { it.toSummary() }
 
     fun getGeneration(simulationId: Int, generationId: Int) =
-        simulations.getOrNull(simulationId)?.generations?.getOrNull(generationId)
+        simulations[simulationId]?.generations?.getOrNull(generationId)
+
+    fun deleteSimulation(id: Int) = simulations.remove(id)
 
 
     private fun AlgoSettings.toAlgo() = GeneticAlgorithmImpl(

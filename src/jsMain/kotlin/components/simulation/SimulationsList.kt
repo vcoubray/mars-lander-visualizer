@@ -8,6 +8,7 @@ import react.dom.html.ReactHTML.div
 
 external interface SimulationListProps : Props {
     var simulations: List<SimulationSummary>
+    var onDelete: (simulationId: Int) -> Unit
 }
 
 val SimulationList = FC<SimulationListProps> { props ->
@@ -17,6 +18,7 @@ val SimulationList = FC<SimulationListProps> { props ->
         props.simulations.forEach { simulation ->
             SimulationSummaryComponent {
                 summary = simulation
+                onDelete = { props.onDelete(simulation.id) }
             }
         }
     }
