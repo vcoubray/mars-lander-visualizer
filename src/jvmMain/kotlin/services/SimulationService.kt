@@ -3,9 +3,15 @@ package services
 import AlgoSettings
 import Generation
 import GenerationSummary
+import Puzzle
 import SimulationResult
 import SimulationSummary
 import algorithm.*
+import codingame.HEIGHT
+import codingame.WIDTH
+import condigame.Point
+import condigame.Segment
+import condigame.Surface
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
@@ -80,6 +86,15 @@ class SimulationService(
         best = this.best,
         mean = this.mean
     )
-
-
 }
+fun Puzzle.toSurface() = Surface(
+    HEIGHT, WIDTH,
+    surface.split(" ")
+        .asSequence()
+        .map { it.toDouble() }
+        .chunked(2)
+        .map { (x, y) -> Point(x, y) }
+        .windowed(2)
+        .map { (a, b) -> Segment(a, b) }
+        .toList()
+)

@@ -10,13 +10,5 @@ data class Action(var rotate: Int, var power: Int) {
         power = POWER_RANGE.random()
     }
 
-//    companion object {
-//        fun generate() = Action(
-//            (-15..15).random(),
-//            (-1..1).random()
-//        )
-//    }
-
     override fun toString() = "$rotate $power"
-
 }
