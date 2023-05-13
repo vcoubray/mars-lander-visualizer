@@ -234,7 +234,7 @@ class GeneticAlgorithmImpl(
     }
 
     private fun Array<Chromosome>.toGeneration() =
-       Generation(this.mapIndexed {i, chrom-> chrom.toResult(i) })
+        Generation(this.mapIndexed { i, chrom -> chrom.toResult(i) })
 
     @Synchronized
     fun next() {
