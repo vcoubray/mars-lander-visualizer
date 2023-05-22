@@ -1,7 +1,7 @@
 package apis
 
 import AlgoSettings
-import Generation
+import GenerationResult
 import GenerationSummary
 import SimulationSummary
 import io.ktor.client.call.*
@@ -25,7 +25,7 @@ suspend fun startSimulations(settings: AlgoSettings): Int {
     }.bodyAsText().toInt()
 }
 
-suspend fun deleteSimulation(simulationId: Int) : Unit {
+suspend fun deleteSimulation(simulationId: Int) {
     return httpJsonClient.delete("${endpoint}/simulations/${simulationId}").body()
 }
 
@@ -33,6 +33,6 @@ suspend fun fetchGenerations(simulationId: Int) : List<GenerationSummary> {
     return httpJsonClient.get("${endpoint}/simulations/${simulationId}/generations").body()
 }
 
-suspend fun fetchGeneration(simulationId: Int, generationId: Int) : Generation {
+suspend fun fetchGeneration(simulationId: Int, generationId: Int) : GenerationResult {
     return httpJsonClient.get("${endpoint}/simulations/${simulationId}/generations/${generationId}").body()
 }

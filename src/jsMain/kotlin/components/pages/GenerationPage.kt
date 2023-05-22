@@ -1,7 +1,8 @@
 package components.pages
 
-import Generation
+import GenerationResult
 import GenerationSummary
+import MarsChromosomeResult
 import Puzzle
 import SimulationSummary
 import apis.fetchGeneration
@@ -28,7 +29,7 @@ val GenerationPage = FC<Props> {
     var puzzle by useState<Puzzle?>(null)
     var generations by useState<List<GenerationSummary>>(emptyList())
     var selectedGenerationId by useState(0)
-    var selectedGeneration by useState<Generation?>(null)
+    var selectedGeneration by useState<GenerationResult?>(null)
     var selectedIndividualId by useState<Int?>(null)
 
     val marsGenerationDrawer =

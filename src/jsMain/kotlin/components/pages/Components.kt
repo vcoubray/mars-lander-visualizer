@@ -1,8 +1,8 @@
 package components.pages
 
-import IndividualResult
 import Config
-import Generation
+import GenerationResult
+import MarsChromosomeResult
 import SimulationStatus
 import SimulationSummary
 import codingame.Action
@@ -32,7 +32,6 @@ val Components = FC<Props> { _ ->
             onChange = { value -> println(value) }
         }
 
-
         AlgoSettingsForm {
             this.algoSettings = algoSettings
         }
@@ -42,9 +41,9 @@ val Components = FC<Props> { _ ->
         }
 
         GenerationComponent {
-            generation = Generation(
+            generation = GenerationResult(
                 population = List(80) {
-                    IndividualResult(
+                    MarsChromosomeResult(
                         it,
                         emptyList(),
                         emptyList(),
@@ -56,7 +55,7 @@ val Components = FC<Props> { _ ->
         }
 
         IndividualComponent {
-            individual = IndividualResult(
+            individual = MarsChromosomeResult(
                 0,
                 List(50) { Action((-15..15).random(), (0..4).random()) },
                 List(Random.nextInt(50)) { 0.0 to 0.0 },

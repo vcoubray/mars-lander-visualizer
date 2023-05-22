@@ -1,9 +1,8 @@
 package components.simulation
 
-import IndividualResult
+import MarsChromosomeResult
 import react.FC
 import react.Props
-import react.dom.html.ReactHTML
 import react.dom.html.ReactHTML.article
 import react.dom.html.ReactHTML.header
 import react.dom.html.ReactHTML.li
@@ -12,7 +11,7 @@ import react.dom.html.ReactHTML.ul
 
 
 external interface IndividualComponentProps : Props {
-    var individual: IndividualResult
+    var individual: MarsChromosomeResult
 }
 
 val IndividualComponent = FC<IndividualComponentProps> { props ->

@@ -1,6 +1,8 @@
 package components.simulation
 
-import Generation
+
+import GenerationResult
+import MarsChromosomeResult
 import codingame.CrossingEnum
 import react.FC
 import react.Props
@@ -13,7 +15,7 @@ import web.cssom.ClassName
 
 
 external interface GenerationProps : Props {
-    var generation: Generation
+    var generation: GenerationResult
     var generationId: Int
     var selectedIndividualId: Int?
     var onSelectIndividual: (Int?) -> Unit

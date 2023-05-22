@@ -1,15 +1,15 @@
 package drawers
 
 import AlgoSettings
-import Generation
-import IndividualResult
+import GenerationResult
+import MarsChromosomeResult
 import Puzzle
 import codingame.CrossingEnum
-import web.cssom.NamedColor
 import org.w3c.dom.CanvasRenderingContext2D
+import web.cssom.NamedColor
 
 class MarsGenerationDrawer(
-    private val generation: Generation?,
+    private val generation: GenerationResult?,
     private val puzzle: Puzzle?,
     private val settings: AlgoSettings?,
     private val selectedIndividualId: Int?,
@@ -33,7 +33,7 @@ class MarsGenerationDrawer(
         drawPath(points, NamedColor.red)
     }
 
-    private fun CanvasRenderingContext2D.drawPopulation(population: List<IndividualResult>, maxScore: Double) {
+    private fun CanvasRenderingContext2D.drawPopulation(population: List<MarsChromosomeResult>, maxScore: Double) {
         population.sortedBy { it.score }.forEach { individual ->
             val color = when {
                 individual.fitnessResult?.status == CrossingEnum.NOPE -> NamedColor.grey

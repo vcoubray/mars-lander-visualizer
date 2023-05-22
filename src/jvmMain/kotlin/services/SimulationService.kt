@@ -1,17 +1,15 @@
 package services
 
 import AlgoSettings
-import Generation
-import GenerationSummary
+import GenerationResult
 import Puzzle
 import SimulationResult
-import SimulationSummary
-import algorithm.*
+import SimulationStatus
+import algorithm.GeneticAlgorithmImpl
 import codingame.HEIGHT
 import codingame.WIDTH
-import condigame.Point
-import condigame.Segment
-import condigame.Surface
+import condigame.*
+import toSummary
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
@@ -20,9 +18,8 @@ class SimulationService(
     private val puzzleService: PuzzleService,
 ) {
 
-
-    val simulations: MutableMap<Int,SimulationResult> = mutableMapOf()
-    var lastId = 0
+    private val simulations: MutableMap<Int, SimulationResult> = mutableMapOf()
+    private var lastId = 0
 
     fun start(settings: AlgoSettings): Int {
         val id = lastId++
@@ -30,10 +27,16 @@ class SimulationService(
         simulations[id] = SimulationResult(id, settings)
 
         thread {
-            val algo = settings.toAlgo()
-            val generations: List<Generation>
+            val algo = settings.toNewAlgo()
+            val generations = mutableListOf<GenerationResult>()
             val duration = measureTimeMillis {
-                generations = algo.runUntilTime(1000)
+                algo.runUntilTime(1000) { generation ->
+                    generations.add(
+                        GenerationResult(
+                            generation.mapIndexed { i, it -> it.toResult(i) }
+                        )
+                    )
+                }
             }
             simulations[id]?.apply {
                 this.bestScore = generations.last().best
@@ -59,36 +62,25 @@ class SimulationService(
 
     fun deleteSimulation(id: Int) = simulations.remove(id)
 
-
-    private fun AlgoSettings.toAlgo() = GeneticAlgorithmImpl(
-        puzzleService.getPuzzle(puzzleId)!!.toSurface(),
-        puzzleService.getPuzzle(puzzleId)!!.initialState,
+    private fun AlgoSettings.toNewAlgo() = GeneticAlgorithmImpl(
+        MarsEngine(
+            puzzleService.getPuzzle(puzzleId)!!.toSurface(),
+            puzzleService.getPuzzle(puzzleId)!!.initialState,
+            speedMax,
+            xSpeedWeight,
+            ySpeedWeight,
+            rotateWeight,
+            distanceWeight
+        ),
         chromosomeSize,
         populationSize,
         mutationProbability,
-        elitismPercent,
-        speedMax,
-        xSpeedWeight,
-        ySpeedWeight,
-        rotateWeight,
-        distanceWeight
+        elitismPercent
     )
 
-    private fun SimulationResult.toSummary() = SimulationSummary(
-        id = this.id,
-        settings = this.settings,
-        status = this.status,
-        duration = this.duration,
-        bestScore = this.bestScore,
-        generationCount = this.generations.size
-    )
 
-    private fun Generation.toSummary() = GenerationSummary(
-        populationSize = this.population.size,
-        best = this.best,
-        mean = this.mean
-    )
 }
+
 fun Puzzle.toSurface() = Surface(
     HEIGHT, WIDTH,
     surface.split(" ")
