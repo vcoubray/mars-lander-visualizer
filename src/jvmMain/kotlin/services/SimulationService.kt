@@ -2,32 +2,25 @@ package services
 
 import AlgoSettings
 import GenerationResult
-import Puzzle
 import SimulationResult
 import SimulationStatus
-import algorithm.GeneticAlgorithmImpl
-import codingame.HEIGHT
-import codingame.WIDTH
 import condigame.*
 import toSummary
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
-
 class SimulationService(
-    private val puzzleService: PuzzleService,
+    private val algorithmFactory: AlgorithmFactory
 ) {
-
     private val simulations: MutableMap<Int, SimulationResult> = mutableMapOf()
     private var lastId = 0
 
     fun start(settings: AlgoSettings): Int {
         val id = lastId++
-
         simulations[id] = SimulationResult(id, settings)
 
         thread {
-            val algo = settings.toNewAlgo()
+            val algo = algorithmFactory.fromSettings(settings)
             val generations = mutableListOf<GenerationResult>()
             val duration = measureTimeMillis {
                 algo.runUntilTime(1000) { generation ->
@@ -44,9 +37,8 @@ class SimulationService(
                 this.generations = generations
                 this.status = SimulationStatus.COMPLETE
             }
-            println("Simulation complete")
+            println("Simulation '$id' complete")
         }
-
         return id
     }
 
@@ -61,34 +53,4 @@ class SimulationService(
         simulations[simulationId]?.generations?.getOrNull(generationId)
 
     fun deleteSimulation(id: Int) = simulations.remove(id)
-
-    private fun AlgoSettings.toNewAlgo() = GeneticAlgorithmImpl(
-        MarsEngine(
-            puzzleService.getPuzzle(puzzleId)!!.toSurface(),
-            puzzleService.getPuzzle(puzzleId)!!.initialState,
-            speedMax,
-            xSpeedWeight,
-            ySpeedWeight,
-            rotateWeight,
-            distanceWeight
-        ),
-        chromosomeSize,
-        populationSize,
-        mutationProbability,
-        elitismPercent
-    )
-
-
 }
-
-fun Puzzle.toSurface() = Surface(
-    HEIGHT, WIDTH,
-    surface.split(" ")
-        .asSequence()
-        .map { it.toDouble() }
-        .chunked(2)
-        .map { (x, y) -> Point(x, y) }
-        .windowed(2)
-        .map { (a, b) -> Segment(a, b) }
-        .toList()
-)

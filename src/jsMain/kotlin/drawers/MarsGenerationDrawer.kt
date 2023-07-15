@@ -18,7 +18,7 @@ class MarsGenerationDrawer(
     override fun draw(context: CanvasRenderingContext2D) {
         context.init()
         puzzle?.let { context.drawSurface(it.surface) }
-        generation?.let { context.drawPopulation(it.population, settings?.maxScore() ?: .0) }
+        generation?.let { context.drawPopulation(it.population, settings?.engineSettings?.maxScore() ?: .0) }
     }
 
     private fun CanvasRenderingContext2D.init() {

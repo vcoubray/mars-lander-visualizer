@@ -14,13 +14,15 @@ Content-Type: application/json
     "populationSize": 100,
     "mutationProbability": 0.2,
     "elitismPercent": 0.2,
-    "puzzleId": 1,
-    "speedMax": 100,
-    "xSpeedWeight": 50,
-    "ySpeedWeight": 50 ,
-    "rotateWeight": 10,
-    "distanceWeight": 250,
-    "crashSpeedWeight": 0.9
+    "engineSettings": {
+      "puzzleId": 1,
+      "speedMax": 100,
+      "xSpeedWeight": 50,
+      "ySpeedWeight": 50,
+      "rotateWeight": 10,
+      "distanceWeight": 250,
+      "crashSpeedWeight": 0.9
+    }
 }
 
 ### Get all simulation summary

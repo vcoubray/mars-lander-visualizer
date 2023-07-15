@@ -5,6 +5,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import services.AlgorithmFactory
 
 import services.PuzzleService
 import services.SimulationService
@@ -18,6 +19,7 @@ fun Application.configureKoin() {
             module {
                 singleOf(::PuzzleService)
                 singleOf(::SimulationService)
+                singleOf(::AlgorithmFactory)
             }
         )
     }

@@ -3,6 +3,7 @@ package components.common
 import AlgoSettings
 import Form
 import FormField
+import MarsSettings
 import Puzzle
 import apis.fetchPuzzles
 import kotlinx.coroutines.launch
@@ -11,8 +12,6 @@ import react.FC
 import react.Props
 import web.html.InputType
 import react.dom.html.ReactHTML.details
-import react.dom.html.ReactHTML.option
-import react.dom.html.ReactHTML.select
 import react.dom.html.ReactHTML.summary
 import react.useEffectOnce
 import react.useState
@@ -49,37 +48,13 @@ val AlgoSettingsForm = FC<AlgoSettingsProps> { props ->
                 ),
                 FormField("Elitism (0 to 1)", InputType.number, props.algoSettings.elitismPercent.toString())
             )
-            onChange = { println(fields) }
+            onChange = { props.onUpdateSettings(props.algoSettings) }
         }
     }
-    details {
-        summary {
-            +"Mars Landing"
-        }
 
-        select {
-            defaultValue = props.algoSettings.puzzleId
-            puzzles.forEach { puzzle ->
-                option{
-                    value = puzzle.id
-                    label = puzzle.title
-                }
-            }
-            onChange = { event ->
-                props.algoSettings.puzzleId = event.target.value.toInt()
-            }
-        }
-
-        Form {
-            fields = listOf(
-                FormField("Speed Max", InputType.number, props.algoSettings.populationSize.toString()),
-                FormField("X Speed weight", InputType.number, props.algoSettings.chromosomeSize.toString()),
-                FormField("Y Speed weight", InputType.number, props.algoSettings.mutationProbability.toString()),
-                FormField("Rotate weight", InputType.number, props.algoSettings.rotateWeight.toString()),
-                FormField("Distance weight", InputType.number, props.algoSettings.distanceWeight.toString()),
-                FormField("Speed weight (Crashing)", InputType.number, props.algoSettings.crashSpeedWeight.toString()),
-            )
-            onChange = { println(fields) }
-        }
+    MarsSettingsForm {
+        marsSettings = props.algoSettings as MarsSettings
+        onUpdateSettings = { props.onUpdateSettings(props.algoSettings) }
     }
+
 }
