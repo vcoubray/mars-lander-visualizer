@@ -33,7 +33,7 @@ val Components = FC<Props> { _ ->
         }
 
         AlgoSettingsForm {
-            this.algoSettings = algoSettings
+            this.simulationsSettings = algoSettings
         }
 
         SimulationSummaryComponent {

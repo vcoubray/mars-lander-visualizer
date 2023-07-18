@@ -2,8 +2,7 @@ package components.pages
 
 import GenerationResult
 import GenerationSummary
-import MarsChromosomeResult
-import MarsSettings
+import MarsEngineSettings
 import Puzzle
 import SimulationSummary
 import apis.fetchGeneration
@@ -33,8 +32,9 @@ val GenerationPage = FC<Props> {
     var selectedGeneration by useState<GenerationResult?>(null)
     var selectedIndividualId by useState<Int?>(null)
 
+
     val marsGenerationDrawer =
-        MarsGenerationDrawer(selectedGeneration, puzzle, simulation?.settings, selectedIndividualId)
+        MarsGenerationDrawer(selectedGeneration, puzzle, simulation?.simulationSettings?.engineSettings, selectedIndividualId)
 
     useEffectOnce {
         mainScope.launch {
@@ -46,9 +46,10 @@ val GenerationPage = FC<Props> {
     }
 
     useEffect(simulation) {
+        println(simulation)
         mainScope.launch {
             if (simulation != null) {
-                val engine = simulation!!.settings.engineSettings as MarsSettings
+                val engine = simulation!!.simulationSettings.engineSettings as MarsEngineSettings
                 puzzle = getPuzzle(engine.puzzleId)
             }
         }

@@ -2,6 +2,7 @@ package components.common
 
 import Form
 import FormField
+import MarsEngineSettings
 import MarsSettings
 import Puzzle
 import react.FC
@@ -11,13 +12,13 @@ import react.useState
 import web.html.InputType
 
 external interface MarsSettingsProps: Props {
-    var marsSettings: MarsSettings
+    var marsSettings: MarsEngineSettings
     var onUpdateSettings: (MarsSettings) -> Unit
 }
 
 val MarsSettingsForm = FC<MarsSettingsProps> { props ->
 
-    var puzzles by useState(emptyList<Puzzle>())
+    val puzzles by useState(emptyList<Puzzle>())
 
 
     ReactHTML.details {

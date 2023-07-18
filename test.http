@@ -10,19 +10,19 @@ Accept: text/plain
 Content-Type: application/json
 
 {
-    "chromosomeSize": 100,
-    "populationSize": 100,
-    "mutationProbability": 0.2,
-    "elitismPercent": 0.2,
-    "engineSettings": {
-      "puzzleId": 1,
-      "speedMax": 100,
-      "xSpeedWeight": 50,
-      "ySpeedWeight": 50,
-      "rotateWeight": 10,
-      "distanceWeight": 250,
-      "crashSpeedWeight": 0.9
-    }
+  "chromosomeSize": 100,
+  "populationSize": 100,
+  "mutationProbability": 0.2,
+  "elitismPercent": 0.2,
+  "engineSettings": {
+    "puzzleId": 1,
+    "speedMax": 100,
+    "xSpeedWeight": 50,
+    "ySpeedWeight": 50,
+    "rotateWeight": 10,
+    "distanceWeight": 250,
+    "crashSpeedWeight": 0.9
+  }
 }
 
 ### Get all simulation summary

@@ -1,8 +1,10 @@
 package drawers
 
-import AlgoSettings
+
+import EngineSettings
 import GenerationResult
 import MarsChromosomeResult
+import MarsEngineSettings
 import Puzzle
 import codingame.CrossingEnum
 import org.w3c.dom.CanvasRenderingContext2D
@@ -11,14 +13,14 @@ import web.cssom.NamedColor
 class MarsGenerationDrawer(
     private val generation: GenerationResult?,
     private val puzzle: Puzzle?,
-    private val settings: AlgoSettings?,
+    private val engineSettings: EngineSettings?,
     private val selectedIndividualId: Int?,
 ) : Drawer(7000, 3000) {
 
     override fun draw(context: CanvasRenderingContext2D) {
         context.init()
         puzzle?.let { context.drawSurface(it.surface) }
-        generation?.let { context.drawPopulation(it.population, settings?.engineSettings?.maxScore() ?: .0) }
+        generation?.let { context.drawPopulation(it.population, engineSettings?.maxScore() ?: .0) }
     }
 
     private fun CanvasRenderingContext2D.init() {

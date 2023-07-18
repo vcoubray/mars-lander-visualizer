@@ -1,7 +1,7 @@
 
 fun SimulationResult.toSummary() = SimulationSummary(
     id = this.id,
-    settings = this.settings,
+    simulationSettings = this.simulationSettings,
     status = this.status,
     duration = this.duration,
     bestScore = this.bestScore,

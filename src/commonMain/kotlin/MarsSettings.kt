@@ -1,20 +1,7 @@
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AlgoSettings(
-    var chromosomeSize: Int,
-    var populationSize: Int,
-    var mutationProbability: Double,
-    var elitismPercent: Double,
-    val engineSettings: EngineSettings,
-)
-
-sealed interface EngineSettings {
-    fun maxScore(): Double
-}
-
-@Serializable
-data class MarsSettings(
+data class MarsEngineSettings(
     var puzzleId: Int,
     var speedMax: Double,
     var xSpeedWeight: Double,

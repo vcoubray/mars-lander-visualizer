@@ -14,8 +14,6 @@ fun Route.resourceRouting() {
                 ContentType.Text.Html
             )
         }
-        static("/") {
-            resources("")
-        }
+        staticResources("/", "")
     }
 }

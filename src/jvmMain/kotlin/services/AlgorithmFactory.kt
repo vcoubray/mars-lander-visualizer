@@ -1,35 +1,34 @@
 package services
 
-import AlgoSettings
-import MarsSettings
+import MarsEngineSettings
+import SimulationSettings
 import algorithm.Engine
 import algorithm.GeneticAlgorithm
 import algorithm.GeneticAlgorithmImpl
 import condigame.MarsEngine
 import condigame.toSurface
-import java.lang.IllegalArgumentException
 
 
 class AlgorithmFactory(
     private val puzzleService: PuzzleService,
 ) {
 
-    fun fromSettings(settings: AlgoSettings): GeneticAlgorithm<*> {
-        val engine: Engine<*> = when (settings.engineSettings) {
-            is MarsSettings -> settings.engineSettings.toEngine()
+    fun  fromSettings(simulationSettings: SimulationSettings<*>): GeneticAlgorithm<*> {
+        val engine: Engine<*> = when (simulationSettings.engineSettings) {
+            is MarsEngineSettings -> simulationSettings.engineSettings.toEngine()
             else -> throw IllegalArgumentException("Unknown engine settings type")
         }
 
         return GeneticAlgorithmImpl(
             engine = engine,
-            chromosomeSize = settings.chromosomeSize,
-            populationSize = settings.populationSize,
-            mutationProbability = settings.mutationProbability,
-            elitismPercent = settings.elitismPercent
+            chromosomeSize = simulationSettings.chromosomeSize,
+            populationSize = simulationSettings.populationSize,
+            mutationProbability = simulationSettings.mutationProbability,
+            elitismPercent = simulationSettings.elitismPercent
         )
     }
 
-    private fun MarsSettings.toEngine() = MarsEngine(
+    private fun MarsEngineSettings.toEngine() = MarsEngine(
         puzzleService.getPuzzle(puzzleId)!!.toSurface(),
         puzzleService.getPuzzle(puzzleId)!!.initialState,
         speedMax,

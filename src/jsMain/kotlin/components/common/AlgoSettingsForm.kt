@@ -1,10 +1,11 @@
 package components.common
 
-import AlgoSettings
+
 import Form
 import FormField
-import MarsSettings
+import MarsEngineSettings
 import Puzzle
+import SimulationSettings
 import apis.fetchPuzzles
 import kotlinx.coroutines.launch
 import mainScope
@@ -17,8 +18,8 @@ import react.useEffectOnce
 import react.useState
 
 external interface AlgoSettingsProps : Props {
-    var algoSettings: AlgoSettings
-    var onUpdateSettings: (AlgoSettings) -> Unit
+    var simulationsSettings: SimulationSettings<MarsEngineSettings>
+    var onUpdateSettings: (SimulationSettings<MarsEngineSettings>) -> Unit
 }
 
 
@@ -39,22 +40,22 @@ val AlgoSettingsForm = FC<AlgoSettingsProps> { props ->
         }
         Form {
             fields = listOf(
-                FormField("Population Size", InputType.number, props.algoSettings.populationSize.toString()),
-                FormField("Chromosome Size", InputType.number, props.algoSettings.chromosomeSize.toString()),
+                FormField("Population Size", InputType.number, props.simulationsSettings.populationSize.toString()),
+                FormField("Chromosome Size", InputType.number, props.simulationsSettings.chromosomeSize.toString()),
                 FormField(
                     "Mutation probability (0 to 1)",
                     InputType.number,
-                    props.algoSettings.mutationProbability.toString()
+                    props.simulationsSettings.mutationProbability.toString()
                 ),
-                FormField("Elitism (0 to 1)", InputType.number, props.algoSettings.elitismPercent.toString())
+                FormField("Elitism (0 to 1)", InputType.number, props.simulationsSettings.elitismPercent.toString())
             )
-            onChange = { props.onUpdateSettings(props.algoSettings) }
+            onChange = { props.onUpdateSettings(props.simulationsSettings) }
         }
     }
 
     MarsSettingsForm {
-        marsSettings = props.algoSettings as MarsSettings
-        onUpdateSettings = { props.onUpdateSettings(props.algoSettings) }
+        marsSettings = props.simulationsSettings.engineSettings
+        onUpdateSettings = { props.onUpdateSettings(props.simulationsSettings) }
     }
 
 }

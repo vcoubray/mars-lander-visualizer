@@ -1,8 +1,8 @@
 package apis
 
-import AlgoSettings
 import GenerationResult
 import GenerationSummary
+import MarsSettings
 import SimulationSummary
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -17,7 +17,7 @@ suspend fun fetchSimulation(simulationId: Int) : SimulationSummary {
     return httpJsonClient.get("${endpoint}/simulations/$simulationId").body()
 }
 
-suspend fun startSimulations(settings: AlgoSettings): Int {
+suspend fun startSimulations(settings: MarsSettings): Int {
     return httpJsonClient.post("${endpoint}/simulations") {
         contentType(ContentType.Application.Json)
         accept(ContentType.Text.Plain)

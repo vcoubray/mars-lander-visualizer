@@ -26,7 +26,7 @@ val SimulationsPage = FC<Props> {
 
     var simulations by useState<List<SimulationSummary>>(emptyList())
     var simulationPending by useState(false)
-    val algoSettings = Config.defaultSettings.copy()
+    val simulationSettings = Config.defaultSettings.copy()
 
     useEffectOnce {
         mainScope.launch {
@@ -37,7 +37,7 @@ val SimulationsPage = FC<Props> {
     fun startSimulation() {
         mainScope.launch {
             simulationPending = true
-            val simuId = startSimulations(algoSettings)
+            val simuId = startSimulations(simulationSettings)
             simulations = fetchSimulations()
             var lastSimulation = fetchSimulation(simuId)
 
@@ -68,9 +68,9 @@ val SimulationsPage = FC<Props> {
             }
             div {
                 AlgoSettingsForm {
-                    this.algoSettings = algoSettings
+                    this.simulationsSettings = simulationSettings
                     this.onUpdateSettings = {
-                        println(algoSettings)
+                        println(simulationSettings)
                     }
                 }
                 button {

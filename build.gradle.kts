@@ -1,15 +1,15 @@
-val kotlinVersion = "1.8.20"
+val kotlinVersion = "1.9.0"
 val serializationVersion = "1.3.3"
-val ktorVersion = "2.2.3"
-val koinVersion = "3.3.0"
-val logbackVersion = "1.2.11"
-val kotlinWrappersVersion = "1.0.0-pre.547"
+val ktorVersion = "2.3.2"
+val koinVersion = "3.4.1"
+val logbackVersion = "1.2.12"
+val kotlinWrappersVersion = "1.0.0-pre.597"
 
 
 plugins {
-    kotlin("multiplatform") version "1.8.20"
+    kotlin("multiplatform") version "1.9.0"
     application //to run JVM part
-    kotlin("plugin.serialization") version "1.8.20"
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 group = "fr.vco.codingame.mars.lander.visualizer"

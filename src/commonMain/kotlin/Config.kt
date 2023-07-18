@@ -1,11 +1,11 @@
 object Config {
 
-    val defaultSettings = AlgoSettings(
+    val defaultSettings = MarsSettings(
         chromosomeSize = 200,
         populationSize = 80,
         mutationProbability = 0.02,
         elitismPercent = 0.2,
-        engineSettings = MarsSettings(
+        engineSettings = MarsEngineSettings(
             puzzleId = 0,
             100.0,
             50.0,

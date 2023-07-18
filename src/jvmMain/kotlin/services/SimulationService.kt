@@ -1,8 +1,8 @@
 package services
 
-import AlgoSettings
 import GenerationResult
 import SimulationResult
+import SimulationSettings
 import SimulationStatus
 import condigame.*
 import toSummary
@@ -15,12 +15,12 @@ class SimulationService(
     private val simulations: MutableMap<Int, SimulationResult> = mutableMapOf()
     private var lastId = 0
 
-    fun start(settings: AlgoSettings): Int {
+    fun start(simulationSettings : SimulationSettings<*>): Int {
         val id = lastId++
-        simulations[id] = SimulationResult(id, settings)
+        simulations[id] = SimulationResult(id, simulationSettings)
 
         thread {
-            val algo = algorithmFactory.fromSettings(settings)
+            val algo = algorithmFactory.fromSettings(simulationSettings)
             val generations = mutableListOf<GenerationResult>()
             val duration = measureTimeMillis {
                 algo.runUntilTime(1000) { generation ->

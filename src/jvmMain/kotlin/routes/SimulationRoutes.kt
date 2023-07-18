@@ -1,6 +1,6 @@
 package routes
 
-import AlgoSettings
+import MarsSettings
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
@@ -20,7 +20,7 @@ fun Route.simulationRouting() {
         }
 
         post {
-            val settings = call.receive<AlgoSettings>()
+            val settings = call.receive<MarsSettings>()
             val id = simulationService.start(settings)
             call.respondText("$id")
         }
