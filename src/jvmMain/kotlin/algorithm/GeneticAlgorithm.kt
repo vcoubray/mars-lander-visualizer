@@ -1,10 +1,14 @@
 package algorithm
 
+import kotlin.math.min
 import kotlin.random.Random
 
+const val MAX_TIME_LIMIT = 2000
+
+
 interface GeneticAlgorithm<T : Chromosome> {
-    fun runUntilTime(duration: Long, onNewGeneration: (Array<T>) -> Unit)
-    fun runUntilScore(score: Double, onNewGeneration: (Array<T>) -> Unit)
+    fun runUntilTime(duration: Int, onNewGeneration: (Array<T>) -> Unit)
+    fun runUntilScore(score: Int, onNewGeneration: (Array<T>) -> Unit)
 }
 
 class GeneticAlgorithmImpl<T : Chromosome>(
@@ -94,20 +98,24 @@ class GeneticAlgorithmImpl<T : Chromosome>(
     }
 
     @Synchronized
-    override fun runUntilScore(score: Double, onNewGeneration: (Array<T>) -> Unit) {
+    override fun runUntilScore(score: Int, onNewGeneration: (Array<T>) -> Unit) {
+        val timeout = MAX_TIME_LIMIT
 
         onNewGeneration(population)
-        while (bestChromosome.score < score) {
+        val start = System.currentTimeMillis()
+        while (bestChromosome.score <= score && System.currentTimeMillis() - start < timeout) {
             next()
             onNewGeneration(population)
         }
     }
 
     @Synchronized
-    override fun runUntilTime(duration: Long, onNewGeneration: (Array<T>) -> Unit) {
+    override fun runUntilTime(duration: Int, onNewGeneration: (Array<T>) -> Unit) {
+        val timeout = min(duration, MAX_TIME_LIMIT )
+
         onNewGeneration(population)
         val start = System.currentTimeMillis()
-        while (System.currentTimeMillis() - start < duration) {
+        while (System.currentTimeMillis() - start < timeout) {
             next()
             onNewGeneration(population)
         }

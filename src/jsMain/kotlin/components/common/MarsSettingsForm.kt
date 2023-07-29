@@ -8,6 +8,10 @@ import Puzzle
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML
+import react.dom.html.ReactHTML.details
+import react.dom.html.ReactHTML.option
+import react.dom.html.ReactHTML.select
+import react.dom.html.ReactHTML.summary
 import react.useState
 import web.html.InputType
 
@@ -21,15 +25,15 @@ val MarsSettingsForm = FC<MarsSettingsProps> { props ->
     val puzzles by useState(emptyList<Puzzle>())
 
 
-    ReactHTML.details {
-        ReactHTML.summary {
+    details {
+        summary {
             +"Mars Landing"
         }
 
-        ReactHTML.select {
+        select {
             defaultValue = props.marsSettings.puzzleId
             puzzles.forEach { puzzle ->
-                ReactHTML.option {
+                option {
                     value = puzzle.id
                     label = puzzle.title
                 }

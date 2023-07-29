@@ -8,6 +8,7 @@ data class FormField(
     val label: String,
     val type: InputType,
     var value: String,
+    val onChange: (value: String) -> Unit
 )
 
 
@@ -27,7 +28,7 @@ val Form = FC<FormProps> { props ->
                 defaultValue = field.value
                 onChange = { event ->
                     field.value = event.target.value //unsafeCast<HTMLInputElement>().value
-                    props.onChange(props.fields)
+                    field.onChange(event.target.value)
                 }
             }
         }

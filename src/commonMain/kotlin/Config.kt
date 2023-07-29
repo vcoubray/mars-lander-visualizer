@@ -1,6 +1,8 @@
 object Config {
 
     val defaultSettings = MarsSettings(
+        limitType = LimitType.TIME,
+        limitValue = 500,
         chromosomeSize = 200,
         populationSize = 80,
         mutationProbability = 0.02,
