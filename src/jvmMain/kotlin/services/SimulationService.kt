@@ -29,12 +29,12 @@ class SimulationService(
         thread {
             val algo = algorithmFactory.fromSettings(simulationSettings)
             val generations = mutableListOf<GenerationResult>()
-            val runFunction = when (simulationSettings.limitType) {
+            val runFunction = when (simulationSettings.globalSettings.limitType) {
                 LimitType.TIME -> algo::runUntilTime
                 LimitType.SCORE -> algo::runUntilScore
             }
             val duration = measureTimeMillis {
-                runFunction(simulationSettings.limitValue) { generation ->
+                runFunction(simulationSettings.globalSettings.limitValue) { generation ->
                     generations.add(
                         GenerationResult(
                             generation.mapIndexed { i, it -> it.toResult(i) }

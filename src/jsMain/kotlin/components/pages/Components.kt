@@ -7,7 +7,8 @@ import SimulationStatus
 import SimulationSummary
 import codingame.Action
 import codingame.State
-import components.common.AlgoSettingsForm
+import components.form.MarsSimulationForm
+import components.form.MarsSimulationFormControl
 import components.layout.MainLayout
 import components.player.PlayerControls
 import components.simulation.SimulationSummaryComponent
@@ -15,11 +16,12 @@ import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent
 import react.FC
 import react.Props
+
 import react.useState
 import kotlin.random.Random
 
 val Components = FC<Props> { _ ->
-    val algoSettings by useState(Config.defaultSettings.copy())
+    val simulationSettings by useState(Config.defaultSettings.copy())
 
 
     MainLayout {
@@ -32,12 +34,12 @@ val Components = FC<Props> { _ ->
             onChange = { value -> println(value) }
         }
 
-        AlgoSettingsForm {
-            this.simulationsSettings = algoSettings
+        MarsSimulationForm {
+            this.formGroupControl = MarsSimulationFormControl(Config.defaultSettings)
         }
 
         SimulationSummaryComponent {
-            summary = SimulationSummary(0, algoSettings.copy(), SimulationStatus.COMPLETE, 320, 100.0, 150)
+            summary = SimulationSummary(0, simulationSettings.copy(), SimulationStatus.COMPLETE, 320, 100.0, 150)
         }
 
         GenerationComponent {

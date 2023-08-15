@@ -21,10 +21,10 @@ class AlgorithmFactory(
 
         return GeneticAlgorithmImpl(
             engine = engine,
-            chromosomeSize = simulationSettings.chromosomeSize,
-            populationSize = simulationSettings.populationSize,
-            mutationProbability = simulationSettings.mutationProbability,
-            elitismPercent = simulationSettings.elitismPercent
+            chromosomeSize = simulationSettings.globalSettings.chromosomeSize,
+            populationSize = simulationSettings.globalSettings.populationSize,
+            mutationProbability = simulationSettings.globalSettings.mutationProbability,
+            elitismPercent = simulationSettings.globalSettings.elitismPercent
         )
     }
 

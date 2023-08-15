@@ -6,13 +6,19 @@ enum class LimitType(val label: String) {
 
 @Serializable
 data class SimulationSettings<T : EngineSettings>(
+    val globalSettings: GlobalSettings,
+    val engineSettings: T,
+)
+
+
+@Serializable
+data class GlobalSettings (
     var limitType: LimitType,
     var limitValue: Int,
     var chromosomeSize: Int,
     var populationSize: Int,
     var mutationProbability: Double,
-    var elitismPercent: Double,
-    val engineSettings: T,
+    var elitismPercent: Double
 )
 
 @Serializable

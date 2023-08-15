@@ -6,7 +6,8 @@ import SimulationSummary
 import apis.fetchSimulation
 import apis.fetchSimulations
 import apis.startSimulations
-import components.common.AlgoSettingsForm
+import components.form.MarsSimulationForm
+import components.form.MarsSimulationFormControl
 import components.layout.MainLayout
 import components.simulation.SimulationList
 import kotlinx.coroutines.delay
@@ -26,7 +27,8 @@ val SimulationsPage = FC<Props> {
 
     var simulations by useState<List<SimulationSummary>>(emptyList())
     var simulationPending by useState(false)
-    val simulationSettings = Config.defaultSettings.copy()
+
+    val simulationFormControl = MarsSimulationFormControl(Config.defaultSettings)
 
     useEffectOnce {
         mainScope.launch {
@@ -37,7 +39,7 @@ val SimulationsPage = FC<Props> {
     fun startSimulation() {
         mainScope.launch {
             simulationPending = true
-            val simuId = startSimulations(simulationSettings)
+            val simuId = startSimulations(simulationFormControl.getSettings())
             simulations = fetchSimulations()
             var lastSimulation = fetchSimulation(simuId)
 
@@ -67,11 +69,8 @@ val SimulationsPage = FC<Props> {
                 this.onDelete = { simulationId -> deleteSimulation(simulationId)}
             }
             div {
-                AlgoSettingsForm {
-                    this.simulationsSettings = simulationSettings
-                    this.onUpdateSettings = {
-                        println(simulationSettings)
-                    }
+                MarsSimulationForm{
+                    this.formGroupControl = simulationFormControl
                 }
                 button {
                     ariaBusy = simulationPending
