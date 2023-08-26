@@ -11,7 +11,7 @@ import components.form.MarsSimulationForm
 import components.form.MarsSimulationFormControl
 import components.layout.MainLayout
 import components.player.PlayerControls
-import components.simulation.SimulationSummaryComponent
+import components.simulation.SimulationCard
 import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent
 import react.FC
@@ -38,7 +38,7 @@ val Components = FC<Props> { _ ->
             this.formGroupControl = MarsSimulationFormControl(Config.defaultSettings)
         }
 
-        SimulationSummaryComponent {
+        SimulationCard {
             summary = SimulationSummary(0, simulationSettings.copy(), SimulationStatus.COMPLETE, 320, 100.0, 150)
         }
 

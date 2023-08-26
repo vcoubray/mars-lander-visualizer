@@ -16,7 +16,7 @@ val SimulationList = FC<SimulationListProps> { props ->
     div {
         className = ClassName("simulation-list")
         props.simulations.forEach { simulation ->
-            SimulationSummaryComponent {
+            SimulationCard {
                 summary = simulation
                 onDelete = { props.onDelete(simulation.id) }
             }

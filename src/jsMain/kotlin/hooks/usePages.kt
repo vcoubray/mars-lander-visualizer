@@ -5,6 +5,7 @@ import components.pages.GenerationPage
 import components.pages.SimulationsPage
 import models.Page
 import mui.icons.material.Extension
+import mui.icons.material.Home
 import mui.icons.material.Rocket
 import mui.icons.material.VisibilitySharp
 import react.useMemo
@@ -12,7 +13,8 @@ import react.useMemo
 fun usePages(): Set<Page>{
     return useMemo {
         setOf(
-            Page("/", "Simulations", Rocket , SimulationsPage),
+            Page("/", "Home", Home, Components, visible = true),
+            Page("/simulations", "Simulations", Rocket , SimulationsPage),
             Page("/simulations/:simulationId", "Simulations", VisibilitySharp, GenerationPage, visible = false),
             Page("/components", "Components", Extension , Components)
         )
