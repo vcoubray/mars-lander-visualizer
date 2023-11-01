@@ -2,6 +2,7 @@ package components.pages
 
 import Config
 import GenerationResult
+
 import MarsChromosomeResult
 import SimulationStatus
 import SimulationSummary
@@ -11,6 +12,7 @@ import components.form.MarsSimulationForm
 import components.form.MarsSimulationFormControl
 import components.layout.MainLayout
 import components.player.PlayerControls
+import components.react.*
 import components.simulation.SimulationCard
 import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent
@@ -67,3 +69,5 @@ val Components = FC<Props> { _ ->
         }
     }
 }
+
+

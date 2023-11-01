@@ -4,6 +4,8 @@ import MarsEngineSettings
 import SimulationStatus
 import SimulationSummary
 import components.form.mappers.toLabelMapValues
+import components.react.a11yDark
+import components.react.ReactSyntaxHighlighter
 import mui.icons.material.DeleteSharp
 import mui.icons.material.VisibilitySharp
 import react.FC
@@ -27,6 +29,11 @@ external interface SimulationCardProps : Props {
 val SimulationCard = FC<SimulationCardProps> { props ->
     var close by useState(true)
 
+
+    fun replacer(key: String, value: Any?): Any? {
+        return if (value is Enum<*>) value.name
+        else value
+    }
 
     article {
         className = ClassName("simulation-card ${if (close) "close" else ""}")
@@ -65,13 +72,22 @@ val SimulationCard = FC<SimulationCardProps> { props ->
         }
         div {
             className = ClassName("body")
-            ReadOnlyForm{
-                settings = props.summary.simulationSettings.globalSettings.toLabelMapValues()
+
+
+            ReactSyntaxHighlighter {
+                language = "javascript"
+                style = a11yDark
+                +JSON.stringify(props.summary.simulationSettings.globalSettings, ::replacer, 4).replace("_1", "")
+
             }
-            ReadOnlyForm{
-                settings = (props.summary.simulationSettings.engineSettings as MarsEngineSettings).toLabelMapValues()
+            ReactSyntaxHighlighter {
+                language = "javascript"
+                style = a11yDark
+                +JSON.stringify(props.summary.simulationSettings.engineSettings, ::replacer, 4).replace("_1", "")
+
             }
         }
     }
 }
+
 
