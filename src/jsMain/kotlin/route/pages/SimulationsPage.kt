@@ -1,11 +1,11 @@
-package components.pages
+package route.pages
 
 import Config
 import SimulationStatus
 import SimulationSummary
-import apis.fetchSimulation
-import apis.fetchSimulations
-import apis.startSimulations
+import libs.apis.fetchSimulation
+import libs.apis.fetchSimulations
+import libs.apis.startSimulations
 import components.form.MarsSimulationForm
 import components.form.MarsSimulationFormControl
 import components.layout.MainLayout
@@ -54,7 +54,7 @@ val SimulationsPage = FC<Props> {
 
     fun deleteSimulation(simulationId: Int) {
         mainScope.launch{
-            apis.deleteSimulation(simulationId)
+            libs.apis.deleteSimulation(simulationId)
             simulations = fetchSimulations()
         }
     }

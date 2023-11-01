@@ -1,4 +1,4 @@
-package theme
+package libs.theme
 
 enum class ThemeColor(val value: String) {
     RED("red"),
@@ -10,6 +10,6 @@ enum class ThemeColor(val value: String) {
 
     companion object {
         fun fromValue(value: String) =
-            values().firstOrNull { it.value == value } ?: error("No Color found for [$value]")
+            entries.firstOrNull { it.value == value } ?: error("No Color found for [$value]")
     }
 }

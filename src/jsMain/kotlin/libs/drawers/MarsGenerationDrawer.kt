@@ -1,10 +1,9 @@
-package drawers
+package libs.drawers
 
 
 import EngineSettings
 import GenerationResult
 import MarsChromosomeResult
-import MarsEngineSettings
 import Puzzle
 import codingame.CrossingEnum
 import org.w3c.dom.CanvasRenderingContext2D

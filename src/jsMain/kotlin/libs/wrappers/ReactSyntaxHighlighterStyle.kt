@@ -1,4 +1,4 @@
-package components.react
+package libs.wrappers
 
 val a11yDark = JSON.parse<Any>(
     """

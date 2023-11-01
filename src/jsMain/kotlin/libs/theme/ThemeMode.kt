@@ -1,4 +1,4 @@
-package theme
+package libs.theme
 
 enum class ThemeMode(val value: String) {
     LIGHT("light"),
@@ -6,6 +6,6 @@ enum class ThemeMode(val value: String) {
 
     companion object {
         fun fromValue(value: String) =
-            values().firstOrNull { it.value == value } ?: error("No Theme found for [$value]")
+            entries.firstOrNull { it.value == value } ?: error("No Theme found for [$value]")
     }
 }

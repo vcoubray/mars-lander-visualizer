@@ -1,20 +1,20 @@
-package components.pages
+package route.pages
 
 import GenerationResult
 import GenerationSummary
 import MarsEngineSettings
 import Puzzle
 import SimulationSummary
-import apis.fetchGeneration
-import apis.fetchGenerations
-import apis.fetchSimulation
-import apis.getPuzzle
+import libs.apis.fetchGeneration
+import libs.apis.fetchGenerations
+import libs.apis.fetchSimulation
+import libs.apis.getPuzzle
 import components.layout.MainLayout
 import components.player.PlayerCanvas
 import components.player.PlayerControls
 import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent
-import drawers.MarsGenerationDrawer
+import libs.drawers.MarsGenerationDrawer
 import kotlinx.coroutines.launch
 import mainScope
 import react.*

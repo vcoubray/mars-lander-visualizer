@@ -16,7 +16,7 @@ import react.dom.html.ReactHTML.li
 import react.dom.html.ReactHTML.summary
 import react.dom.html.ReactHTML.ul
 import react.useState
-import theme.*
+import libs.theme.*
 
 var ThemeMenu = FC<Props> {
 

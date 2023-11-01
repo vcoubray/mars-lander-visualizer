@@ -1,6 +1,6 @@
 package components.player
 
-import drawers.Drawer
+import libs.drawers.Drawer
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.CanvasRenderingContext2D

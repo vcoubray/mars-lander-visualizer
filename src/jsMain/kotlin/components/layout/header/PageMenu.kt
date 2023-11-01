@@ -1,7 +1,7 @@
 package components.layout.header
 
 import web.cssom.ClassName
-import hooks.usePages
+import route.usePages
 import mui.icons.material.Menu
 import react.FC
 import react.Props

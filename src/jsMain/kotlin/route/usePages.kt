@@ -1,9 +1,9 @@
-package hooks
+package route
 
-import components.pages.Components
-import components.pages.GenerationPage
-import components.pages.SimulationsPage
-import models.Page
+import route.pages.Components
+import route.pages.GenerationPage
+import route.pages.SimulationsPage
+import libs.models.Page
 import mui.icons.material.Extension
 import mui.icons.material.Home
 import mui.icons.material.Rocket

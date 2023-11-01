@@ -1,4 +1,4 @@
-package models
+package libs.models
 
 import mui.icons.material.SvgIconComponent
 import react.FC

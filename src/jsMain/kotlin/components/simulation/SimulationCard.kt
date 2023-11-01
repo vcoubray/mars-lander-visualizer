@@ -1,11 +1,9 @@
 package components.simulation
 
-import MarsEngineSettings
 import SimulationStatus
 import SimulationSummary
-import components.form.mappers.toLabelMapValues
-import components.react.a11yDark
-import components.react.ReactSyntaxHighlighter
+import libs.wrappers.a11yDark
+import libs.wrappers.ReactSyntaxHighlighter
 import mui.icons.material.DeleteSharp
 import mui.icons.material.VisibilitySharp
 import react.FC
@@ -68,11 +66,9 @@ val SimulationCard = FC<SimulationCardProps> { props ->
                 }
             }
             onClick = { close = !close }
-
         }
         div {
             className = ClassName("body")
-
 
             ReactSyntaxHighlighter {
                 language = "javascript"

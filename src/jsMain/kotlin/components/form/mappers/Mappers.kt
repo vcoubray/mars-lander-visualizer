@@ -14,17 +14,6 @@ fun MarsEngineSettings.toMapValues() = mutableMapOf(
     "crashSpeedWeight" to this.crashSpeedWeight.toString(),
 )
 
-fun MarsEngineSettings.toLabelMapValues() = mutableMapOf(
-    "Puzzle" to this.puzzleId.toString(),
-    "Speed Max" to this.speedMax.toString(),
-    "X Speed Weight" to this.xSpeedWeight.toString(),
-    "Y Speed Weight" to this.ySpeedWeight.toString(),
-    "Rotate Weight" to this.rotateWeight.toString(),
-    "Distance Weight" to this.distanceWeight.toString(),
-    "Crash Speed Weight" to this.crashSpeedWeight.toString(),
-)
-
-
 fun Map<String, String>.toMarsEngineSettings() = MarsEngineSettings(
     puzzleId = get("puzzleId")!!.toInt(),
     speedMax = get("speedMax")!!.toDouble(),
@@ -43,16 +32,6 @@ fun GlobalSettings.toMapValues() = mutableMapOf(
     "mutationProbability" to this.mutationProbability.toString(),
     "elitismPercent" to this.elitismPercent.toString(),
 )
-
-fun GlobalSettings.toLabelMapValues() =mapOf(
-    "Limit Type" to this.limitType.toString(),
-    "Limit Value" to this.limitValue.toString(),
-    "Population Size" to this.populationSize.toString(),
-    "Chromosome Size" to this.chromosomeSize.toString(),
-    "Mutation Probability" to this.mutationProbability.toString(),
-    "Elitism Percent" to this.elitismPercent.toString(),
-)
-
 
 fun Map<String, String>.toGlobalSettings() = GlobalSettings(
     limitType = LimitType.valueOf(get("limitType")!!),

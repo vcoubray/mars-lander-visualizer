@@ -3,6 +3,7 @@ val serializationVersion = "1.3.3"
 val ktorVersion = "2.3.2"
 val koinVersion = "3.4.1"
 val logbackVersion = "1.2.12"
+val reactSyntaxHighlighterVersion = "15.5.0"
 val kotlinWrappersVersion = "1.0.0-pre.597"
 
 
@@ -73,7 +74,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation(npm("react-syntax-highlighter","15.5.0"))
+                implementation(npm("react-syntax-highlighter", reactSyntaxHighlighterVersion))
             }
         }
     }

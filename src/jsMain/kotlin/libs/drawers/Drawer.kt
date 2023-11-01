@@ -1,4 +1,4 @@
-package drawers
+package libs.drawers
 
 import web.cssom.NamedColor
 import org.w3c.dom.CanvasRenderingContext2D

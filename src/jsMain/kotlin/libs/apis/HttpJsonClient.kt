@@ -1,4 +1,4 @@
-package apis
+package libs.apis
 
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*

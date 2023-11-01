@@ -1,4 +1,4 @@
-package apis
+package libs.apis
 
 import Puzzle
 import io.ktor.client.call.*

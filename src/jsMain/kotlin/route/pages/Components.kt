@@ -1,4 +1,4 @@
-package components.pages
+package route.pages
 
 import Config
 import GenerationResult
@@ -12,7 +12,6 @@ import components.form.MarsSimulationForm
 import components.form.MarsSimulationFormControl
 import components.layout.MainLayout
 import components.player.PlayerControls
-import components.react.*
 import components.simulation.SimulationCard
 import components.simulation.GenerationComponent
 import components.simulation.IndividualComponent

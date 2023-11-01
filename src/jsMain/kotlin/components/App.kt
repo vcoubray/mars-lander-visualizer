@@ -3,7 +3,7 @@ package components
 import react.FC
 import react.Props
 import react.router.RouterProvider
-import useRouter
+import route.useRouter
 
 val App = FC<Props> {
 

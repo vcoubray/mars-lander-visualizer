@@ -1,4 +1,5 @@
-import hooks.usePages
+package route
+
 import js.core.jso
 import react.create
 import react.router.RouteObject

@@ -1,7 +1,7 @@
 package components.form
 
 import Puzzle
-import apis.fetchPuzzles
+import libs.apis.fetchPuzzles
 import components.form.models.FormField
 import components.form.models.SettingsFormProps
 import kotlinx.coroutines.launch

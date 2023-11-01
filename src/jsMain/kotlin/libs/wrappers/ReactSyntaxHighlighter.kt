@@ -1,6 +1,6 @@
 @file:JsModule("react-syntax-highlighter")
 @file:JsNonModule
-package components.react
+package libs.wrappers
 
 import react.*
 
