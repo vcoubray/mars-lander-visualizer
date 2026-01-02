@@ -2,6 +2,7 @@ package components.form
 
 
 import LimitType
+import SelectionType
 import components.form.models.FormField
 import components.form.models.SettingsFormProps
 import react.FC
@@ -44,6 +45,21 @@ val GlobalSettingsForm = FC<SettingsFormProps> { props ->
                 FormField("elitismPercent", "Elitism (0 to 1)", InputType.number),
             )
             values = props.settingsValues
+        }
+
+        label {
+            +"Seletion Type"
+            select {
+                SelectionType.entries.forEach {
+                    option {
+                        label = it.label
+                        value = it
+                    }
+                }
+                onChange = { event ->
+                    props.settingsValues["selectionType"] = event.target.value
+                }
+            }
         }
     }
 }

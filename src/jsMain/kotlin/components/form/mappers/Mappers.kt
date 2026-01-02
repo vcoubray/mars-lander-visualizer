@@ -31,6 +31,7 @@ fun GlobalSettings.toMapValues() = mutableMapOf(
     "chromosomeSize" to this.chromosomeSize.toString(),
     "mutationProbability" to this.mutationProbability.toString(),
     "elitismPercent" to this.elitismPercent.toString(),
+    "selectionType" to this.selectionType.toString()
 )
 
 fun Map<String, String>.toGlobalSettings() = GlobalSettings(
@@ -40,5 +41,6 @@ fun Map<String, String>.toGlobalSettings() = GlobalSettings(
     chromosomeSize = get("chromosomeSize")!!.toInt(),
     mutationProbability = get("mutationProbability")!!.toDouble(),
     elitismPercent = get("elitismPercent")!!.toDouble(),
+    selectionType = SelectionType.valueOf(get("selectionType")!!)
 )
 

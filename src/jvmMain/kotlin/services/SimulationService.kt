@@ -7,20 +7,18 @@ import SimulationStatus
 import condigame.*
 import exceptions.AlreadyRunningException
 import toSummary
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
 class SimulationService(
-    private val algorithmFactory: AlgorithmFactory
+    private val algorithmFactory: AlgorithmFactory,
+    private val statusService: ServerStatusService
 ) {
     private val simulations: MutableMap<Int, SimulationResult> = mutableMapOf()
     private var lastId = 0
 
-    private val isRunning = AtomicBoolean(false)
-
     fun start(simulationSettings : SimulationSettings<*>): Int {
-        if (!isRunning.compareAndSet(false,true)) {
+        if (!statusService.isRunning.compareAndSet(false,true)) {
             throw AlreadyRunningException()
         }
         val id = lastId++
@@ -49,7 +47,7 @@ class SimulationService(
                 this.status = SimulationStatus.COMPLETE
             }
             println("Simulation '$id' complete")
-            isRunning.set(false)
+            statusService.isRunning.set(false)
         }
         return id
 

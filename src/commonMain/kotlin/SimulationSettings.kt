@@ -1,7 +1,17 @@
 import kotlinx.serialization.Serializable
 
-enum class LimitType(val label: String) {
-    TIME("Time (ms)"), SCORE("Score")
+interface LabeledEnum {
+    val label: String
+}
+
+
+enum class LimitType(override val label: String): LabeledEnum {
+    TIME("Time (ms)"), SCORE("Score");
+
+}
+
+enum class SelectionType(override val label: String): LabeledEnum {
+    RANDOM("Random")
 }
 
 @Serializable
@@ -18,7 +28,8 @@ data class GlobalSettings (
     var chromosomeSize: Int,
     var populationSize: Int,
     var mutationProbability: Double,
-    var elitismPercent: Double
+    var elitismPercent: Double,
+    var selectionType: SelectionType
 )
 
 @Serializable

@@ -7,7 +7,8 @@ object Config {
             chromosomeSize = 200,
             populationSize = 80,
             mutationProbability = 0.02,
-            elitismPercent = 0.2
+            elitismPercent = 0.2,
+            selectionType = SelectionType.RANDOM
         ),
         engineSettings = MarsEngineSettings(
             puzzleId = 0,

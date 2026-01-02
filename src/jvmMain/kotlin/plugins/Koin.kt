@@ -9,6 +9,7 @@ import services.AlgorithmFactory
 
 import services.PuzzleService
 import services.SimulationService
+import services.ServerStatusService
 
 fun Application.configureKoin() {
 
@@ -17,6 +18,7 @@ fun Application.configureKoin() {
 
         modules (
             module {
+                singleOf(::ServerStatusService)
                 singleOf(::PuzzleService)
                 singleOf(::SimulationService)
                 singleOf(::AlgorithmFactory)
