@@ -1,0 +1,19 @@
+package fr.vco.genetic.algorithm.visualizer
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Puzzle(
+    val id: Int,
+    val title: String,
+    val surface: String,
+    val initialState: State
+) {
+
+    companion object {
+        const val path = "/puzzles"
+    }
+}
+
+
+

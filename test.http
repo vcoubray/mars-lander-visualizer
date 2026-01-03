@@ -1,5 +1,6 @@
 ### Get all puzzles
 GET localhost:8080/puzzles
+Accept: application/json
 
 ### Get the specified puzzle
 GET localhost:8080/puzzles/18

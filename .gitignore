@@ -1,5 +1,5 @@
 # Project exclude paths
 /.gradle/
-/build/
-/build/js/packages/mars-lander-visualizer/kotlin/
+**/build/
 /.idea/
+/.kotlin

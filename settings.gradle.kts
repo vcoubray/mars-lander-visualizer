@@ -1,8 +1,18 @@
+rootProject.name = "genetic-algorithm-visualizer"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         mavenCentral()
-        maven { setUrl("https://plugins.gradle.org/m2/") }
+        gradlePluginPortal()
     }
 }
-rootProject.name = "mars-lander-visualizer"
 
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+
+include(":server")
+include(":shared")
