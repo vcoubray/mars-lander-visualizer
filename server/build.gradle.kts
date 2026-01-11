@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.ktor)
-    application
     alias(libs.plugins.serialization)
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.kotest)
+    application
 }
 
 group = "fr.vco.genetic.algorithm.visualizer"
@@ -28,5 +29,12 @@ dependencies {
     implementation(libs.koin.ktor)
     implementation(libs.koin.loggerSlf4j)
     testImplementation(libs.ktor.serverTestHost)
-    testImplementation(libs.kotlin.testJunit)
+    testImplementation(libs.kotest.framework.engine)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotest.assertions.ktor)
+
+}
+
+tasks.named("buildOpenApi") {
+    enabled = false
 }

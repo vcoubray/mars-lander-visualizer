@@ -1,11 +1,11 @@
 package fr.vco.genetic.algorithm.visualizer
 
-import fr.vco.genetic.algorithm.visualizer.plugins.configureCORS
-import fr.vco.genetic.algorithm.visualizer.plugins.configureCompression
-import fr.vco.genetic.algorithm.visualizer.plugins.configureContentNegotiation
-import fr.vco.genetic.algorithm.visualizer.plugins.configureKoin
-import fr.vco.genetic.algorithm.visualizer.plugins.configureRouting
-import fr.vco.genetic.algorithm.visualizer.plugins.configureStatusPages
+import fr.vco.genetic.algorithm.visualizer.server.plugins.configureCORS
+import fr.vco.genetic.algorithm.visualizer.server.plugins.configureCompression
+import fr.vco.genetic.algorithm.visualizer.server.plugins.configureContentNegotiation
+import fr.vco.genetic.algorithm.visualizer.server.plugins.configureKoin
+import fr.vco.genetic.algorithm.visualizer.server.plugins.configureRouting
+import fr.vco.genetic.algorithm.visualizer.server.plugins.configureStatusPages
 import io.ktor.server.application.*
 import io.ktor.server.netty.*
 

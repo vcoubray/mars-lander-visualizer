@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.kotest)
 }
 
 kotlin {
@@ -17,7 +18,8 @@ kotlin {
             implementation(libs.ktor.serializationKotlinxJson)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
+           implementation(libs.kotest.framework.engine)
+           implementation(libs.kotest.assertions.core)
         }
     }
 }
