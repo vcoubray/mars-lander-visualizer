@@ -11,7 +11,7 @@ import kotlin.random.Random
 
 class MarsEngine(
     private val surface: Surface,
-    private val initialState: State,
+    initialState: State,
     val speedMax: Double,
     val xSpeedWeight: Double,
     val ySpeedWeight: Double,
@@ -21,12 +21,17 @@ class MarsEngine(
 
     var validScore = xSpeedWeight + ySpeedWeight + rotateWeight + distanceWeight
 
+    private val initialMarsState = MarsState().apply { loadFrom(initialState) }
+    private val result = MarsSimulationResult()
+
     override fun simulate(chromosome: MarsChromosome) {
-        chromosome.state.play(chromosome.actions, surface)
+        MarsSimulator.play(initialMarsState, chromosome.actions, surface, result)
+        chromosome.state.loadFrom(result.finalState)
+        chromosome.path = result.path.toList()
     }
 
-    override fun generateInitialPopulation(populationSize : Int, chromosomeSize : Int): Array<MarsChromosome> {
-        return  Array(populationSize) { generateChromosome(chromosomeSize) }
+    override fun generateInitialPopulation(populationSize: Int, chromosomeSize: Int): Array<MarsChromosome> {
+        return Array(populationSize) { generateChromosome(chromosomeSize) }
     }
 
     override fun generateChildrenPopulation(populationSize: Int, chromosomeSize: Int): Array<MarsChromosome> {
@@ -68,14 +73,12 @@ class MarsEngine(
         children2.fitnessResult = null
     }
 
-    private val workingState = initialState.copy()
-
     override fun evaluate(chromosome: MarsChromosome) {
         if (chromosome.fitnessResult == null) {
-            workingState.loadFrom(initialState)
-            chromosome.fitnessResult = workingState.play(chromosome.actions, surface)
-            chromosome.path = workingState.path.toMutableList()
-            chromosome.state.loadFrom(workingState, true)
+            MarsSimulator.play(initialMarsState, chromosome.actions, surface, result)
+            chromosome.fitnessResult = result.fitness
+            chromosome.path = result.path.toList()
+            chromosome.state.loadFrom(result.finalState)
             chromosome.score = computeScore(chromosome.fitnessResult!!)
             if (chromosome.score >= validScore) {
                 chromosome.fitnessResult?.status = CrossingEnum.SUCCESS
@@ -98,7 +101,7 @@ class MarsEngine(
     }
 
 
-    private fun generateChromosome(chromosomeSize : Int): MarsChromosome {
+    private fun generateChromosome(chromosomeSize: Int): MarsChromosome {
         return MarsChromosome(
             List(chromosomeSize) { Action(0, 0).apply(Action::randomize) }.toTypedArray()
         )
