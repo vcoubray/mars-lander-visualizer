@@ -1,31 +1,11 @@
 package fr.vco.genetic.algorithm.visualizer.marslanding
 
 
-import fr.vco.genetic.algorithm.visualizer.MarsChromosomeResult
 import fr.vco.genetic.algorithm.visualizer.Puzzle
 import fr.vco.genetic.algorithm.visualizer.State
 import fr.vco.genetic.algorithm.visualizer.codingame.HEIGHT
 import fr.vco.genetic.algorithm.visualizer.codingame.WIDTH
-import fr.vco.genetic.algorithm.visualizer.core.Chromosome
 
-
-fun Chromosome.toResult(id: Int) =
-    when (this) {
-        is MarsChromosome -> toResult(id)
-        else -> throw IllegalArgumentException("Unknown Chromosome type")
-    }
-
-
-fun MarsChromosome.toResult(id: Int) = MarsChromosomeResult(
-    id,
-    actions = actions.toList(),
-    path = path,
-    state = state.toState(),
-    score = score,
-    normalizedScore = normalizedScore,
-    cumulativeScore = cumulativeScore,
-    fitnessResult = fitnessResult
-)
 
 fun MarsState.toState() = State(
     x = x,

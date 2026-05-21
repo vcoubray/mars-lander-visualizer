@@ -48,7 +48,7 @@ data class MarsSimulationResult(
 
 // The shared `workingState` buffer is fine for the current single-threaded GA execution.
 // If we ever run multiple GAs concurrently (e.g. parallel benchmarks), promote MarsSimulator
-// to a class instantiated per MarsEngine.
+// to a class instantiated per MarsPuzzleModule.
 object MarsSimulator {
     private val workingState = MarsState()
 

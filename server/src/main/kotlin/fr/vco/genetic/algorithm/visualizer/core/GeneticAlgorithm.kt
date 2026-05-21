@@ -1,10 +1,14 @@
 package fr.vco.genetic.algorithm.visualizer.core
 
+import fr.vco.genetic.algorithm.visualizer.core.strategies.SelectionStrategy
 import kotlin.math.min
-import kotlin.random.Random
 
-const val MAX_TIME_LIMIT = 2000
-
+@Suppress("UNCHECKED_CAST")
+private fun <T> makeArray(size: Int, init: (Int) -> T): Array<T> {
+    val arr = arrayOfNulls<Any>(size)
+    for (i in arr.indices) arr[i] = init(i)
+    return arr as Array<T>
+}
 
 interface GeneticAlgorithm<T : Chromosome> {
     fun runUntilTime(duration: Int, onNewGeneration: (Array<T>) -> Unit)
@@ -12,26 +16,30 @@ interface GeneticAlgorithm<T : Chromosome> {
 }
 
 class GeneticAlgorithmImpl<T : Chromosome>(
-    val engine: Engine<T>,
+    val timeLimit: Int,
     val chromosomeSize: Int,
     val populationSize: Int,
-    val mutationProbability: Double,
+    private val mutationProbability: Double,
     elitismPercent: Double,
+    private val selectionStrategy: SelectionStrategy<T>,
+    private val crossoverFn: (T, T, T, T) -> Unit,
+    private val mutationFn: (T, Double) -> Unit,
+    private val initFn: (Int) -> T,
+    private val evaluateFn: (T) -> Unit,
 ) : GeneticAlgorithm<T> {
 
-    var population = engine.generateInitialPopulation(populationSize, chromosomeSize)
-    private var children = engine.generateChildrenPopulation(populationSize, chromosomeSize)
+    var population = makeArray(populationSize, initFn)
+    private var children = makeArray(populationSize, initFn)
 
-    private var eliteSize: Int
+    private val eliteSize: Int
     private val childrenSize: Int
     private var bestChromosome: T
     private var scoreSum = 0.0
 
     init {
-        eliteSize = (populationSize * elitismPercent).toInt()
-        if (eliteSize % 2 != 0) {
-            eliteSize += 1
-        }
+        var elite = (populationSize * elitismPercent).toInt()
+        if (elite % 2 != 0) elite += 1
+        eliteSize = elite
         childrenSize = populationSize - eliteSize
         bestChromosome = population.first()
         evaluation()
@@ -40,40 +48,22 @@ class GeneticAlgorithmImpl<T : Chromosome>(
     private fun evaluation() {
         scoreSum = 0.0
         population.forEach {
-            engine.evaluate(it)
-
-            if (it.score > bestChromosome.score) {
-                bestChromosome = it
-            }
+            evaluateFn(it)
+            if (it.score > bestChromosome.score) bestChromosome = it
             scoreSum += it.score
         }
     }
 
-    fun randomSelection(): Int {
-        return Random.nextInt(populationSize / 2) + populationSize / 2
+    private fun selection(): Int = selectionStrategy.selectIndex(population)
+
+    private fun crossoverAndMutate(parent1: T, parent2: T, children1: T, children2: T) {
+        crossoverFn(parent1, parent2, children1, children2)
+        mutationFn(children1, mutationProbability)
+        mutationFn(children2, mutationProbability)
     }
 
-
-    fun selection(): Int {
-//        return wheelSelection()
-        return randomSelection()
-    }
-
-    fun crossoverAndMutate(parent1: T, parent2: T, children1: T, children2: T) {
-        engine.crossOver(parent1, parent2, children1, children2)
-        mutation(children1)
-        mutation(children2)
-    }
-
-    fun mutation(chromosome: T) {
-        engine.mutate(chromosome, mutationProbability)
-    }
-
-
-    fun nextGeneration() {
-
+    private fun nextGeneration() {
         for (i in 0 until childrenSize / 2) {
-
             val parentId1 = selection()
             var parentId2 = -1
             while (parentId2 == -1 || parentId2 == parentId1) {
@@ -83,27 +73,28 @@ class GeneticAlgorithmImpl<T : Chromosome>(
                 population[parentId1],
                 population[parentId2],
                 children[i * 2],
-                children[i * 2 + 1]
+                children[i * 2 + 1],
             )
         }
-
         for (i in childrenSize until populationSize) {
             children[i] = population[i]
         }
-
         val temp = population
         population = children
         children = temp
+    }
 
+    private fun next() {
+        population.sortBy { it.score }
+        nextGeneration()
+        evaluation()
     }
 
     @Synchronized
     override fun runUntilScore(score: Int, onNewGeneration: (Array<T>) -> Unit) {
-        val timeout = MAX_TIME_LIMIT
-
         onNewGeneration(population)
         val start = System.currentTimeMillis()
-        while (bestChromosome.score <= score && System.currentTimeMillis() - start < timeout) {
+        while (bestChromosome.score <= score && System.currentTimeMillis() - start < timeLimit) {
             next()
             onNewGeneration(population)
         }
@@ -111,20 +102,12 @@ class GeneticAlgorithmImpl<T : Chromosome>(
 
     @Synchronized
     override fun runUntilTime(duration: Int, onNewGeneration: (Array<T>) -> Unit) {
-        val timeout = min(duration, MAX_TIME_LIMIT )
-
+        val timeout = min(duration, timeLimit)
         onNewGeneration(population)
         val start = System.currentTimeMillis()
         while (System.currentTimeMillis() - start < timeout) {
             next()
             onNewGeneration(population)
         }
-    }
-
-    fun next() {
-//        cumulativeScore()
-        population.sortBy { it.score }
-        nextGeneration()
-        evaluation()
     }
 }

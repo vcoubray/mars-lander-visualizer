@@ -6,8 +6,7 @@ import fr.vco.genetic.algorithm.visualizer.server.exceptions.AlreadyRunningExcep
 import kotlin.concurrent.thread
 
 class BenchmarkService(
-    private val algorithmFactory : AlgorithmFactory,
-    private val statusService: ServerStatusService
+    private val statusService: ServerStatusService,
 ){
 
     private val benchmarks: MutableMap<Int, BenchmarkResult> = mutableMapOf()

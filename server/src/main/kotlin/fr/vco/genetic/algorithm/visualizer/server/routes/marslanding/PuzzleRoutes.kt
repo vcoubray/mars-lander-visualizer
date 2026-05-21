@@ -8,7 +8,7 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import fr.vco.genetic.algorithm.visualizer.server.services.PuzzleService
 
-fun Route.marsPuzzleRouting() {
+fun Route.puzzleScenariosRouting() {
 
     val puzzleService by inject<PuzzleService>()
 

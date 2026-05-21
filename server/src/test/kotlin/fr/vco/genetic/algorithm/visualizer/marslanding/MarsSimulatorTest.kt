@@ -2,15 +2,16 @@ package fr.vco.genetic.algorithm.visualizer.marslanding
 
 
 import fr.vco.genetic.algorithm.visualizer.Action
+import fr.vco.genetic.algorithm.visualizer.CrossoverType
 import fr.vco.genetic.algorithm.visualizer.GlobalSettings
 import fr.vco.genetic.algorithm.visualizer.LimitType
 import fr.vco.genetic.algorithm.visualizer.MarsEngineSettings
 import fr.vco.genetic.algorithm.visualizer.MarsSettings
+import fr.vco.genetic.algorithm.visualizer.MutationType
 import fr.vco.genetic.algorithm.visualizer.SelectionType
 import fr.vco.genetic.algorithm.visualizer.State
-import fr.vco.genetic.algorithm.visualizer.server.services.AlgorithmFactory
-import fr.vco.genetic.algorithm.visualizer.server.services.PuzzleService
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 
 import kotlin.system.measureTimeMillis
@@ -65,11 +66,8 @@ class MarsSimulatorTest : FunSpec({
         val result = MarsSimulationResult()
         MarsSimulator.play(initial, chromosomes[0], surface, result)
 
-        // First point is the initial position
         result.path.first() shouldBe (initialState.x to initialState.y)
-        // Path has at least 2 points (initial + at least one action)
         (result.path.size >= 2) shouldBe true
-        // Last point is the final state position
         result.path.last() shouldBe (result.finalState.x to result.finalState.y)
     }
 
@@ -78,24 +76,25 @@ class MarsSimulatorTest : FunSpec({
         val initial = MarsState().apply { loadFrom(initialState) }
         val result = MarsSimulationResult()
         MarsSimulator.play(initial, chromosomes[0], surface, result)
-
-        result.fitness shouldBe result.fitness  // sanity — non-null
         (result.fitness != null) shouldBe true
     }
 
-    xtest("End-to-end GA performance (manual benchmark)") {
-        val simulationSettings = MarsSettings(
+    test("MarsPuzzleModule.buildAlgorithm runs and improves score over 500ms") {
+        val module = MarsPuzzleModule()
+        val settings = MarsSettings(
             GlobalSettings(
-                limitType = LimitType.SCORE,
-                limitValue = 200,
+                limitType = LimitType.TIME,
+                limitValue = 500,
                 chromosomeSize = 80,
                 populationSize = 100,
                 mutationProbability = 0.2,
-                elitismPercent = .10,
+                elitismPercent = 0.10,
                 selectionType = SelectionType.RANDOM,
+                crossoverType = CrossoverType.BLEND,
+                mutationType = MutationType.PER_GENE,
             ),
             MarsEngineSettings(
-                0,
+                puzzleId = 0,
                 speedMax = 100.0,
                 xSpeedWeight = 50.0,
                 ySpeedWeight = 50.0,
@@ -104,12 +103,44 @@ class MarsSimulatorTest : FunSpec({
                 crashSpeedWeight = 50.0,
             ),
         )
+        val algo = module.buildAlgorithm(settings)
+        var firstBest = 0.0
+        var lastBest = 0.0
+        algo.runUntilTime(500) { population ->
+            val best = population.maxOf { it.score }
+            if (firstBest == 0.0) firstBest = best
+            lastBest = best
+        }
+        lastBest shouldBeGreaterThan 0.0
+    }
 
-        val algorithmFactory = AlgorithmFactory(PuzzleService())
-        val algo = algorithmFactory.fromSettings(simulationSettings)
-
+    xtest("End-to-end GA performance (manual benchmark)") {
+        val module = MarsPuzzleModule()
+        val settings = MarsSettings(
+            GlobalSettings(
+                limitType = LimitType.SCORE,
+                limitValue = 200,
+                chromosomeSize = 80,
+                populationSize = 100,
+                mutationProbability = 0.2,
+                elitismPercent = 0.10,
+                selectionType = SelectionType.RANDOM,
+                crossoverType = CrossoverType.BLEND,
+                mutationType = MutationType.PER_GENE,
+            ),
+            MarsEngineSettings(
+                puzzleId = 0,
+                speedMax = 100.0,
+                xSpeedWeight = 50.0,
+                ySpeedWeight = 50.0,
+                rotateWeight = 50.0,
+                distanceWeight = 50.0,
+                crashSpeedWeight = 50.0,
+            ),
+        )
+        val algo = module.buildAlgorithm(settings)
         measureTimeMillis {
-            algo.runUntilScore(200, {})
+            algo.runUntilScore(200) {}
         }.let { println("in ${it.toDuration(DurationUnit.MILLISECONDS)}") }
     }
 

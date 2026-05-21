@@ -1,16 +1,15 @@
 package fr.vco.genetic.algorithm.visualizer.server.routes.marslanding
 
-import fr.vco.genetic.algorithm.visualizer.MarsSettings
+import fr.vco.genetic.algorithm.visualizer.puzzle.PuzzleModule
 import fr.vco.genetic.algorithm.visualizer.server.routes.getIntParam
 import io.ktor.http.*
 import io.ktor.server.plugins.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import fr.vco.genetic.algorithm.visualizer.server.services.SimulationService
 
-fun Route.marsSimulationRouting() {
+fun Route.simulationRouting(module: PuzzleModule<*, *>) {
 
     val simulationService by inject<SimulationService>()
 
@@ -20,7 +19,7 @@ fun Route.marsSimulationRouting() {
         }
 
         post {
-            val settings = call.receive<MarsSettings>()
+            val settings = module.receiveSettingsAny(call)
             val id = simulationService.start(settings)
             call.respondText("$id")
         }
@@ -50,7 +49,6 @@ fun Route.marsSimulationRouting() {
                 get("/{generationId}") {
                     val simulationId = call.getIntParam("simulationId")
                     val generationId = call.getIntParam("generationId")
-
                     val result = simulationService.getGeneration(simulationId, generationId)
                         ?: throw NotFoundException("No Generation found for simulation [$simulationId] and generation [$generationId]")
                     call.respond(result)

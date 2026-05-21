@@ -1,12 +1,10 @@
 package fr.vco.genetic.algorithm.visualizer.server.services
 
-import fr.vco.genetic.algorithm.visualizer.marslanding.MARS_PUZZLES
+import fr.vco.genetic.algorithm.visualizer.puzzle.PuzzleRegistry
 
+class PuzzleService(private val registry: PuzzleRegistry) {
 
-class PuzzleService {
+    val puzzles get() = registry.allScenarios
 
-    val puzzles = MARS_PUZZLES
-
-    fun getPuzzle(id: Int) = puzzles.getOrNull(id)
-
+    fun getPuzzle(id: Int) = puzzles.firstOrNull { it.id == id }
 }

@@ -13,7 +13,19 @@ enum class LimitType(override val label: String): LabeledEnum {
 }
 
 enum class SelectionType(override val label: String): LabeledEnum {
-    RANDOM("Random")
+    RANDOM("Random"),
+    TOURNAMENT("Tournament"),
+    ROULETTE_WHEEL("Roulette Wheel"),
+}
+
+enum class CrossoverType(override val label: String): LabeledEnum {
+    BLEND("Blend"),
+    SINGLE_POINT("Single Point"),
+    UNIFORM("Uniform"),
+}
+
+enum class MutationType(override val label: String): LabeledEnum {
+    PER_GENE("Per Gene"),
 }
 
 @Serializable
@@ -31,7 +43,9 @@ data class GlobalSettings (
     var populationSize: Int,
     var mutationProbability: Double,
     var elitismPercent: Double,
-    var selectionType: SelectionType
+    var selectionType: SelectionType,
+    var crossoverType: CrossoverType = CrossoverType.BLEND,
+    var mutationType: MutationType = MutationType.PER_GENE,
 )
 
 @Serializable
