@@ -35,6 +35,6 @@ dependencies {
 
 }
 
-tasks.named("buildOpenApi") {
+tasks.matching { it.name == "buildOpenApi" }.configureEach {
     enabled = false
 }
