@@ -33,8 +33,8 @@ fun Route.simulationRouting(module: PuzzleModule<*, *>) {
             }
             delete {
                 val simulationId = call.getIntParam("simulationId")
-                simulationService.deleteSimulation(simulationId)
-                    ?: throw NotFoundException("No simulation found with id [$simulationId]")
+                if (!simulationService.deleteSimulation(simulationId))
+                    throw NotFoundException("No simulation found with id [$simulationId]")
                 call.respond(status = HttpStatusCode.NoContent, message = "")
             }
 

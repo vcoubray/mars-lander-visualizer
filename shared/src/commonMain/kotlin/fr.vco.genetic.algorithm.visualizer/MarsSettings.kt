@@ -13,4 +13,5 @@ data class MarsEngineSettings(
     var crashSpeedWeight: Double,
 ) : EngineSettings {
     override fun maxScore() = xSpeedWeight + ySpeedWeight + rotateWeight + distanceWeight
+    override fun withPuzzleId(puzzleId: Int): MarsEngineSettings = copy(puzzleId = puzzleId)
 }

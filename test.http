@@ -1,20 +1,27 @@
 ### Get all puzzles
-GET localhost:8080/puzzles
+GET localhost:8080/mars-landing/puzzles
 Accept: application/json
 
 ### Get the specified puzzle
-GET localhost:8080/puzzles/18
+GET localhost:8080/mars-landing/puzzles/1
 
 ### Start a simulation
-POST localhost:8080/simulations
+POST localhost:8080/mars-landing/simulations
 Accept: text/plain
 Content-Type: application/json
 
 {
-  "chromosomeSize": 100,
-  "populationSize": 100,
-  "mutationProbability": 0.2,
-  "elitismPercent": 0.2,
+  "globalSettings": {
+    "limitType": "TIME",
+    "limitValue": 2000,
+    "chromosomeSize": 100,
+    "populationSize": 100,
+    "mutationProbability": 0.2,
+    "elitismPercent": 0.2,
+    "selectionType": "RANDOM",
+    "crossoverType": "BLEND",
+    "mutationType": "PER_GENE"
+  },
   "engineSettings": {
     "puzzleId": 1,
     "speedMax": 100,
@@ -26,19 +33,87 @@ Content-Type: application/json
   }
 }
 
-### Get all simulation summary
-GET localhost:8080/simulations
+### Start a simulation (tournament selection)
+POST localhost:8080/mars-landing/simulations
+Accept: text/plain
+Content-Type: application/json
 
-### Get the specicified simulation summary
-GET localhost:8080/simulations/0
+{
+  "globalSettings": {
+    "limitType": "TIME",
+    "limitValue": 2000,
+    "chromosomeSize": 100,
+    "populationSize": 100,
+    "mutationProbability": 0.2,
+    "elitismPercent": 0.2,
+    "selectionType": "TOURNAMENT",
+    "crossoverType": "BLEND",
+    "mutationType": "PER_GENE"
+  },
+  "engineSettings": {
+    "puzzleId": 1,
+    "speedMax": 100,
+    "xSpeedWeight": 50,
+    "ySpeedWeight": 50,
+    "rotateWeight": 10,
+    "distanceWeight": 250,
+    "crashSpeedWeight": 0.9
+  }
+}
 
-### Delete the spectified simulation
-DELETE localhost:8080/simulations/0
+### Get all simulation summaries
+GET localhost:8080/mars-landing/simulations
 
+### Get the specified simulation summary
+GET localhost:8080/mars-landing/simulations/0
 
+### Delete the specified simulation
+DELETE localhost:8080/mars-landing/simulations/0
 
-### Get all generation for the specified simulation
-GET localhost:8080/simulations/0/generations
+### Get all generations for the specified simulation
+GET localhost:8080/mars-landing/simulations/0/generations
 
-### Get all generation for the specified simulation
-GET localhost:8080/simulations/0/generations/0
+### Get a specific generation for the specified simulation
+GET localhost:8080/mars-landing/simulations/0/generations/0
+
+### Start a benchmark
+POST localhost:8080/mars-landing/benchmarks
+Accept: text/plain
+Content-Type: application/json
+
+{
+  "puzzlesId": [1, 2],
+  "runCount": 2,
+  "globalSettings": {
+    "limitType": "TIME",
+    "limitValue": 2000,
+    "chromosomeSize": 100,
+    "populationSize": 100,
+    "mutationProbability": 0.2,
+    "elitismPercent": 0.2,
+    "selectionType": "RANDOM",
+    "crossoverType": "BLEND",
+    "mutationType": "PER_GENE"
+  },
+  "engineSettings": {
+    "puzzleId": 1,
+    "speedMax": 100,
+    "xSpeedWeight": 50,
+    "ySpeedWeight": 50,
+    "rotateWeight": 10,
+    "distanceWeight": 250,
+    "crashSpeedWeight": 0.9
+  }
+}
+
+### Get all benchmark results
+GET localhost:8080/mars-landing/benchmarks
+
+### Get the specified benchmark result
+GET localhost:8080/mars-landing/benchmarks/0
+
+### Delete the specified benchmark (409 if still running)
+DELETE localhost:8080/mars-landing/benchmarks/0
+
+### Reset DB (deletes all simulations and benchmarks)
+POST localhost:8080/admin/reset

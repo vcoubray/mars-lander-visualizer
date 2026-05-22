@@ -5,9 +5,11 @@ import kotlin.math.min
 
 @Suppress("UNCHECKED_CAST")
 private fun <T> makeArray(size: Int, init: (Int) -> T): Array<T> {
-    val arr = arrayOfNulls<Any>(size)
-    for (i in arr.indices) arr[i] = init(i)
-    return arr as Array<T>
+    val first = init(0)
+    val arr = java.lang.reflect.Array.newInstance((first as Any)::class.java, size) as Array<T>
+    arr[0] = first
+    for (i in 1 until size) arr[i] = init(i)
+    return arr
 }
 
 interface GeneticAlgorithm<T : Chromosome> {

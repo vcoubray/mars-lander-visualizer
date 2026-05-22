@@ -51,6 +51,7 @@ data class GlobalSettings (
 @Serializable
 sealed interface EngineSettings {
     fun maxScore(): Double
+    fun withPuzzleId(puzzleId: Int): EngineSettings
 }
 
 typealias MarsSettings = SimulationSettings<MarsEngineSettings>

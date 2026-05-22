@@ -8,6 +8,6 @@ fun Routing.puzzleRouting(module: PuzzleModule<*, *>) {
     route(module.routePrefix) {
         simulationRouting(module)
         puzzleScenariosRouting()
-        marsBenchmarkRouting()
+        benchmarkRouting()
     }
 }
