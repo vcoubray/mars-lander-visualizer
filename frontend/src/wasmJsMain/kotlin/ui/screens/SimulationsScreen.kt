@@ -13,13 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import di.LocalAppContainer
 import fr.vco.genetic.algorithm.visualizer.SimulationStatus
 import fr.vco.genetic.algorithm.visualizer.SimulationSummary
 import kotlinx.coroutines.launch
 import ui.UiState
+import ui.components.JsonColors
+import ui.components.JsonViewer
 
 @Composable
 fun SimulationsScreen(
@@ -135,14 +137,15 @@ fun SimulationListItem(
                 Column(modifier = Modifier.padding(top = 8.dp)) {
                     HorizontalDivider()
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        simulation.status.toString(),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontFamily = FontFamily.Monospace,
+
+                    val isDark = !MaterialTheme.colorScheme.background.luminance().let{it > 0.5f}
+                    JsonViewer(
+                        value = simulation.simulationSettings,
+                        colors = if(isDark) JsonColors.dark() else JsonColors.light(),
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
-
         }
     }
 }
