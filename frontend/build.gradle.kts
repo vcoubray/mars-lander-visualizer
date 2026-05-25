@@ -32,6 +32,10 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.navigation)
+            implementation(libs.ktor.clientCore)
+            implementation(libs.ktor.clientJs)
+            implementation(libs.ktor.clientContentNegotiation)
+            implementation(libs.ktor.serializationKotlinxJson)
             implementation(projects.shared)
         }
     }

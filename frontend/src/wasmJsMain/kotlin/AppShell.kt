@@ -28,7 +28,7 @@ fun AppShell(
     onResetDatabase: () -> Unit,
 ) {
     val navController = rememberNavController()
-    var menuExpanded  by remember { mutableStateOf(true) }
+    var menuExpanded by remember { mutableStateOf(true) }
 
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect { entry ->
@@ -41,7 +41,7 @@ fun AppShell(
         // Left panel
         SideMenu(
             expanded = menuExpanded,
-            onToggle = { menuExpanded  = !menuExpanded },
+            onToggle = { menuExpanded = !menuExpanded },
             onNavigateSimulations = {
                 navController.navigate(Routes.Simulations) { launchSingleTop = true }
             },
@@ -59,13 +59,17 @@ fun AppShell(
                 startDestination = Routes.Simulations,
                 modifier = Modifier.fillMaxSize(),
             ) {
-                composable<Routes.Simulations> { SimulationsScreen() }
+                composable<Routes.Simulations> {
+                    SimulationsScreen(onVisualize = { id ->
+                        navController.navigate(Routes.Visualization(id))
+                    })
+                }
                 composable<Routes.Benchhmarks> { BenchmarksScreen() }
                 composable<Routes.Visualization> { entry ->
                     VisualizationScreen(simulationId = entry.toRoute<Routes.Visualization>().simulationId)
                 }
-                composable<Routes.BenchmarkDetail> {entry ->
-                    BenchmarkDetailScreen(benchmarkId =  entry.toRoute<Routes.BenchmarkDetail>().benchmarkId)
+                composable<Routes.BenchmarkDetail> { entry ->
+                    BenchmarkDetailScreen(benchmarkId = entry.toRoute<Routes.BenchmarkDetail>().benchmarkId)
                 }
             }
 
