@@ -1,38 +1,26 @@
 package fr.vco.genetic.algorithm.visualizer.persistence
 
-import fr.vco.genetic.algorithm.visualizer.BenchmarkResult
-import fr.vco.genetic.algorithm.visualizer.BenchmarkRun
-import fr.vco.genetic.algorithm.visualizer.BenchmarkSettings
-import fr.vco.genetic.algorithm.visualizer.Puzzle
-import fr.vco.genetic.algorithm.visualizer.SimulationSettings
-import fr.vco.genetic.algorithm.visualizer.SimulationStatus
-import fr.vco.genetic.algorithm.visualizer.SimulationSummary
+import fr.vco.genetic.algorithm.visualizer.*
 import fr.vco.genetic.algorithm.visualizer.server.exceptions.ConflictException
 import kotlinx.serialization.json.Json
 import org.ktorm.database.Database
-import org.ktorm.dsl.and
-import org.ktorm.dsl.asc
-import org.ktorm.dsl.delete
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.from
-import org.ktorm.dsl.insertAndGenerateKey
-import org.ktorm.dsl.isNotNull
-import org.ktorm.dsl.map
-import org.ktorm.dsl.orderBy
-import org.ktorm.dsl.select
-import org.ktorm.dsl.update
-import org.ktorm.dsl.where
+import org.ktorm.dsl.*
 
 class BenchmarkRepository(private val db: Database, private val json: Json) {
 
+    private val benchmarkSettingsSerializer = BenchmarkSettings.serializer(EngineSettings.serializer())
+    private val simulationSettingsSerializer = SimulationSettings.serializer(EngineSettings.serializer())
+
+    @Suppress("UNCHECKED_CAST")
     fun insertPending(settings: BenchmarkSettings<*>): Int {
         return db.insertAndGenerateKey(Benchmarks) {
-            set(it.settingsJson, json.encodeToString(settings))
+            set(it.settingsJson, json.encodeToString(benchmarkSettingsSerializer, settings as BenchmarkSettings<EngineSettings>))
             set(it.status, SimulationStatus.PENDING.name)
             set(it.createdAt, System.currentTimeMillis())
         } as Int
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun insertRun(benchmarkId: Int, puzzleId: Int, runIdx: Int, settings: SimulationSettings<*>): Int {
         return db.insertAndGenerateKey(BenchmarkRuns) {
             set(it.benchmarkId, benchmarkId)
@@ -42,7 +30,7 @@ class BenchmarkRepository(private val db: Database, private val json: Json) {
             set(it.durationMs, 0L)
             set(it.bestScore, 0.0)
             set(it.generationCount, 0)
-            set(it.settingsJson, json.encodeToString(settings))
+            set(it.settingsJson, json.encodeToString(simulationSettingsSerializer, settings as SimulationSettings<EngineSettings>))
         } as Int
     }
 
@@ -72,7 +60,7 @@ class BenchmarkRepository(private val db: Database, private val json: Json) {
                 val id = row[Benchmarks.id]!!
                 BenchmarkResult(
                     id = id,
-                    settings = json.decodeFromString(row[Benchmarks.settingsJson]!!),
+                    settings = json.decodeFromString(benchmarkSettingsSerializer, row[Benchmarks.settingsJson]!!),
                     status = SimulationStatus.valueOf(row[Benchmarks.status]!!),
                     runs = runs[id] ?: emptyList(),
                 )
@@ -86,7 +74,7 @@ class BenchmarkRepository(private val db: Database, private val json: Json) {
             .map { row ->
                 BenchmarkResult(
                     id = row[Benchmarks.id]!!,
-                    settings = json.decodeFromString(row[Benchmarks.settingsJson]!!),
+                    settings = json.decodeFromString(benchmarkSettingsSerializer, row[Benchmarks.settingsJson]!!),
                     status = SimulationStatus.valueOf(row[Benchmarks.status]!!),
                     runs = loadRunsForBenchmark(id, puzzleLookup),
                 )
@@ -134,7 +122,7 @@ class BenchmarkRepository(private val db: Database, private val json: Json) {
     }
 
     private fun groupRunsByPuzzle(
-        rows: List<org.ktorm.dsl.QueryRowSet>,
+        rows: List<QueryRowSet>,
         puzzleLookup: (Int) -> Puzzle?,
     ): List<BenchmarkRun> {
         return rows
@@ -144,7 +132,7 @@ class BenchmarkRepository(private val db: Database, private val json: Json) {
                 val summaries = puzzleRows.map { row ->
                     SimulationSummary(
                         id = row[BenchmarkRuns.id]!!,
-                        simulationSettings = json.decodeFromString(row[BenchmarkRuns.settingsJson]!!),
+                        simulationSettings = json.decodeFromString(simulationSettingsSerializer, row[BenchmarkRuns.settingsJson]!!),
                         status = SimulationStatus.valueOf(row[BenchmarkRuns.status]!!),
                         duration = row[BenchmarkRuns.durationMs]!!,
                         bestScore = row[BenchmarkRuns.bestScore]!!,

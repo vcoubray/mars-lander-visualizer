@@ -3,6 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
+        google()
         mavenCentral()
         gradlePluginPortal()
         mavenLocal()
@@ -11,6 +12,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        google()
         mavenCentral()
         mavenLocal()
     }
@@ -18,3 +20,4 @@ dependencyResolutionManagement {
 
 include(":server")
 include(":shared")
+include(":frontend")

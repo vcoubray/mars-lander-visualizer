@@ -1,6 +1,7 @@
 package fr.vco.genetic.algorithm.visualizer.persistence
 
 import fr.vco.genetic.algorithm.visualizer.Action
+import fr.vco.genetic.algorithm.visualizer.EngineSettings
 import fr.vco.genetic.algorithm.visualizer.FitnessResult
 import fr.vco.genetic.algorithm.visualizer.GenerationResult
 import fr.vco.genetic.algorithm.visualizer.GenerationSummary
@@ -36,9 +37,12 @@ private data class ChromosomePayload(
 
 class SimulationRepository(private val db: Database, private val json: Json) {
 
+    private val settingsSerializer = SimulationSettings.serializer(EngineSettings.serializer())
+
+    @Suppress("UNCHECKED_CAST")
     fun insertPending(settings: SimulationSettings<*>): Int {
         return db.insertAndGenerateKey(Simulations) {
-            set(it.settingsJson, json.encodeToString(settings))
+            set(it.settingsJson, json.encodeToString(settingsSerializer, settings as SimulationSettings<EngineSettings>))
             set(it.status, SimulationStatus.PENDING.name)
             set(it.durationMs, 0L)
             set(it.bestScore, 0.0)
@@ -90,7 +94,7 @@ class SimulationRepository(private val db: Database, private val json: Json) {
             .map { row ->
                 SimulationSummary(
                     id = row[Simulations.id]!!,
-                    simulationSettings = json.decodeFromString(row[Simulations.settingsJson]!!),
+                    simulationSettings = json.decodeFromString(settingsSerializer, row[Simulations.settingsJson]!!),
                     status = SimulationStatus.valueOf(row[Simulations.status]!!),
                     duration = row[Simulations.durationMs]!!,
                     bestScore = row[Simulations.bestScore]!!,
@@ -106,7 +110,7 @@ class SimulationRepository(private val db: Database, private val json: Json) {
             .map { row ->
                 SimulationSummary(
                     id = row[Simulations.id]!!,
-                    simulationSettings = json.decodeFromString(row[Simulations.settingsJson]!!),
+                    simulationSettings = json.decodeFromString(settingsSerializer, row[Simulations.settingsJson]!!),
                     status = SimulationStatus.valueOf(row[Simulations.status]!!),
                     duration = row[Simulations.durationMs]!!,
                     bestScore = row[Simulations.bestScore]!!,
