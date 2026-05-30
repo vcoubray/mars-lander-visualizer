@@ -5,10 +5,15 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -18,6 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.browser.window
 import kotlinx.serialization.json.Json
 
 data class JsonColors(
@@ -140,6 +146,7 @@ fun colorizeJson(json: String, colors: JsonColors): AnnotatedString = buildAnnot
     }
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Composable
 fun JsonViewer(
     json: String,
@@ -151,14 +158,22 @@ fun JsonViewer(
     Box(
         modifier = modifier
             .background(colors.background, shape = MaterialTheme.shapes.small)
-            .padding(12.dp)
-            .horizontalScroll(rememberScrollState())
     ) {
         Text(
             text = annotated,
             fontFamily = FontFamily.Monospace,
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(12.dp)
         )
+        IconButton(
+            onClick = { window.navigator.clipboard.writeText(json) },
+            modifier = Modifier.align(Alignment.TopEnd),
+            shape = MaterialTheme.shapes.small
+        ) {
+            Icon(Icons.Default.ContentCopy, contentDescription = "Copy")
+        }
     }
 }
 

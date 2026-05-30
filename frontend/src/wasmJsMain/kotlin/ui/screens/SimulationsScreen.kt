@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import ui.UiState
 import ui.components.JsonColors
 import ui.components.JsonViewer
+import ui.components.SimulationFormPanel
 
 @Composable
 fun SimulationsScreen(
@@ -34,44 +35,56 @@ fun SimulationsScreen(
     LaunchedEffect(Unit) {
         state.load()
     }
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Simulation", style = MaterialTheme.typography.headlineMedium)
-            IconButton(onClick = { scope.launch { state.load() } }) {
-                Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+    Row (modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.weight(1f).padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Simulation", style = MaterialTheme.typography.headlineMedium)
+                IconButton(onClick = { scope.launch { state.load() } }) {
+                    Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                }
             }
-        }
-        Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-        when (val s = state.uiState) {
-            is UiState.Loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            when (val s = state.uiState) {
+                is UiState.Loading -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
 
-            is UiState.Error -> Text("Error: ${s.message}", color = MaterialTheme.colorScheme.error)
-            is UiState.Success -> {
-                if (s.data.isEmpty()) {
-                    Text("No simulation yet. Create one with the form")
-                } else {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        items(s.data, key = { it.id }) { simulation ->
-                            SimulationListItem(
-                                simulation = simulation,
-                                isExpanded = simulation.id in state.expandedIds,
-                                onExpand = { state.toggleExpand(simulation.id) },
-                                onVisualize = { onVisualize(simulation.id) },
-                                onDelete = { scope.launch { state.delete(simulation.id) } },
-                            )
+                is UiState.Error -> Text("Error: ${s.message}", color = MaterialTheme.colorScheme.error)
+                is UiState.Success -> {
+                    if (s.data.isEmpty()) {
+                        Text("No simulation yet. Create one with the form")
+                    } else {
+                        LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            items(s.data, key = { it.id }) { simulation ->
+                                SimulationListItem(
+                                    simulation = simulation,
+                                    isExpanded = simulation.id in state.expandedIds,
+                                    onExpand = { state.toggleExpand(simulation.id) },
+                                    onVisualize = { onVisualize(simulation.id) },
+                                    onDelete = { scope.launch { state.delete(simulation.id) } },
+                                )
 
+                            }
                         }
                     }
                 }
             }
+        }
+
+        VerticalDivider()
+
+        Box(modifier = Modifier.width(360.dp).fillMaxHeight()) {
+            SimulationFormPanel(
+                onSubmit = { settings ->
+                    api.create(settings)
+                    state.load()
+                }
+            )
         }
     }
 }
