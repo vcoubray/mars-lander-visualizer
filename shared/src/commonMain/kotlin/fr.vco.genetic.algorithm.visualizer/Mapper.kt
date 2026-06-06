@@ -1,6 +1,6 @@
 package fr.vco.genetic.algorithm.visualizer
 
-fun SimulationResult.toSummary() = SimulationSummary(
+fun <T : EngineSettings> SimulationResult<T>.toSummary() = SimulationSummary(
     id = this.id,
     simulationSettings = this.simulationSettings,
     status = this.status,

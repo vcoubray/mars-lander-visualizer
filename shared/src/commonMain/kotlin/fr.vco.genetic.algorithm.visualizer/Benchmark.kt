@@ -14,7 +14,7 @@ data class BenchmarkResult (
 data class BenchmarkRun(
     val puzzle: Puzzle,
     val status: SimulationStatus = SimulationStatus.PENDING,
-    val simulationsSummaries: List<SimulationSummary> = emptyList()
+    val simulationsSummaries: List<SimulationSummary<EngineSettings>> = emptyList()
 ) {
     val maxTime = simulationsSummaries.maxOf{it.duration}
 }

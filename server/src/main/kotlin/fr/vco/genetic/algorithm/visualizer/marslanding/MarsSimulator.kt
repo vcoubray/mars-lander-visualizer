@@ -40,7 +40,7 @@ data class MarsState(
     }
 }
 
-data class MarsSimulationResult(
+data class MarsSimulationRun(
     val finalState: MarsState = MarsState(),
     val path: MutableList<Pair<Double, Double>> = mutableListOf(),
     var fitness: FitnessResult? = null,
@@ -56,8 +56,8 @@ object MarsSimulator {
         initialState: MarsState,
         actions: Array<Action>,
         surface: Surface,
-        result: MarsSimulationResult,
-    ): MarsSimulationResult {
+        result: MarsSimulationRun,
+    ): MarsSimulationRun {
         workingState.loadFrom(initialState)
         result.path.clear()
         result.path.add(workingState.x to workingState.y)

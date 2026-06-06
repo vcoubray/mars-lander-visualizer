@@ -8,9 +8,9 @@ enum class SimulationStatus {
 }
 
 @Serializable
-data class SimulationResult(
+data class SimulationResult<T : EngineSettings>(
     var id: Int,
-    var simulationSettings: SimulationSettings<EngineSettings>,
+    var simulationSettings: SimulationSettings<T>,
     var status: SimulationStatus = SimulationStatus.PENDING,
     var duration: Long = 0,
     var bestScore: Double = 0.0,
@@ -38,9 +38,9 @@ class MarsChromosomeResult(
 )
 
 @Serializable
-data class SimulationSummary(
+data class SimulationSummary<T : EngineSettings>(
     var id: Int,
-    var simulationSettings: SimulationSettings<EngineSettings>,
+    var simulationSettings: SimulationSettings<T>,
     var status: SimulationStatus = SimulationStatus.PENDING,
     var duration: Long = 0,
     var bestScore: Double = 0.0,

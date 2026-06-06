@@ -54,7 +54,7 @@ class MarsSimulatorTest : FunSpec({
         val surface = MARS_PUZZLES[0].toSurface()
         val initial = MarsState().apply { loadFrom(initialState) }
         chromosomes.forEachIndexed { i, actions ->
-            val result = MarsSimulationResult()
+            val result = MarsSimulationRun()
             MarsSimulator.play(initial, actions, surface, result)
             result.finalState shouldBe MarsState().apply { loadFrom(expectedStates[i]) }
         }
@@ -63,7 +63,7 @@ class MarsSimulatorTest : FunSpec({
     test("MarsSimulator.play populates path with initial position + one point per action played") {
         val surface = MARS_PUZZLES[0].toSurface()
         val initial = MarsState().apply { loadFrom(initialState) }
-        val result = MarsSimulationResult()
+        val result = MarsSimulationRun()
         MarsSimulator.play(initial, chromosomes[0], surface, result)
 
         result.path.first() shouldBe (initialState.x to initialState.y)
@@ -74,7 +74,7 @@ class MarsSimulatorTest : FunSpec({
     test("MarsSimulator.play populates fitness with non-null result") {
         val surface = MARS_PUZZLES[0].toSurface()
         val initial = MarsState().apply { loadFrom(initialState) }
-        val result = MarsSimulationResult()
+        val result = MarsSimulationRun()
         MarsSimulator.play(initial, chromosomes[0], surface, result)
         (result.fitness != null) shouldBe true
     }
@@ -147,7 +147,7 @@ class MarsSimulatorTest : FunSpec({
     xtest("MarsSimulator throughput (manual benchmark)") {
         val surface = MARS_PUZZLES[0].toSurface()
         val initial = MarsState().apply { loadFrom(initialState) }
-        val result = MarsSimulationResult()
+        val result = MarsSimulationRun()
         measureTimeMillis {
             repeat(10000) {
                 chromosomes.forEach { actions ->

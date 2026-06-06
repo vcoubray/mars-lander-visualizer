@@ -15,3 +15,6 @@ data class MarsEngineSettings(
     override fun maxScore() = xSpeedWeight + ySpeedWeight + rotateWeight + distanceWeight
     override fun withPuzzleId(puzzleId: Int): MarsEngineSettings = copy(puzzleId = puzzleId)
 }
+
+typealias MarsSimulationResult = SimulationResult<MarsEngineSettings>
+typealias MarsSimulationSummary = SimulationSummary<MarsEngineSettings>

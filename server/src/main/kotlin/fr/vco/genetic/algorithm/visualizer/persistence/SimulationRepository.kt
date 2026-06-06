@@ -87,7 +87,7 @@ class SimulationRepository(private val db: Database, private val json: Json) {
         }
     }
 
-    fun findSummaries(): List<SimulationSummary> {
+    fun findSummaries(): List<SimulationSummary<EngineSettings>> {
         return db.from(Simulations)
             .select()
             .orderBy(Simulations.id.asc())
@@ -103,7 +103,7 @@ class SimulationRepository(private val db: Database, private val json: Json) {
             }
     }
 
-    fun findSummary(id: Int): SimulationSummary? {
+    fun findSummary(id: Int): SimulationSummary<EngineSettings>? {
         return db.from(Simulations)
             .select()
             .where { Simulations.id eq id }

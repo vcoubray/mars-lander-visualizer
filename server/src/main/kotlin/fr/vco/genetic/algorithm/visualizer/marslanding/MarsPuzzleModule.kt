@@ -30,7 +30,7 @@ class MarsPuzzleModule : PuzzleModule<MarsEngineSettings, MarsChromosome> {
             ?: error("Puzzle not found: ${engine.puzzleId}")
         val surface = puzzle.toSurface()
         val initialMarsState = MarsState().apply { loadFrom(puzzle.initialState) }
-        val result = MarsSimulationResult()
+        val result = MarsSimulationRun()
         val validScore = engine.xSpeedWeight + engine.ySpeedWeight + engine.rotateWeight + engine.distanceWeight
 
         return geneticAlgorithm {
